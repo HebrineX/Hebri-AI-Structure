@@ -13,7 +13,7 @@ Antes de crear cualquier archivo, necesito entender el proyecto.
 7. ¿Qué CI o herramienta principal usás? (GitHub Actions, Claude, otro)
 
 Con esas respuestas propongo: estructura de carpetas, AGENTS.md base,
-README-PROGRESPJ.md inicial y lista de gaps de partida desde la biblioteca
+PROGRESS.md inicial y lista de gaps de partida desde la biblioteca
 de Hebri-AI-Structure Vol 06.
 
 No se escribe código hasta tener esos artefactos.

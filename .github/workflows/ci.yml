@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  markdownlint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run markdownlint-cli2
+        run: npx --yes markdownlint-cli2 "**/*.md" "#node_modules"
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --include-fragments './**/*.md'
+          fail: true
+
+  toc-consistency:
+    name: TOC consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify volumes are referenced from README
+        run: |
+          set -e
+          for vol in biblia/vol-*.md; do
+            base=$(basename "$vol")
+            if ! grep -q "$base" README.md; then
+              echo "ERROR: README.md no referencia $base"
+              exit 1
+            fi
+          done
+          echo "OK: todos los volúmenes están referenciados."
