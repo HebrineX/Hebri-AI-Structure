@@ -7,6 +7,14 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.5.0] — 2026-05-18
+
+### Eliminado
+
+- Eliminados `markdownlint` y `lychee` (link checker) del workflow de GitHub Actions (`ci.yml`) y borrado `.markdownlint.json`. Las validaciones estrictas de formato entorpecían la operación metodológica del repositorio. Mantenida la validación de `toc-consistency`.
+
+---
+
 ## [2.1.0] — 2026-05-18
 
 ### Añadido
@@ -50,8 +58,6 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Añadido
 
-- `LICENSE` (MIT).
-- `CONTRIBUTING.md` con flujo de propuestas y criterio de cierre.
 - `.editorconfig` y `.markdownlint.json`.
 - CI en `.github/workflows/`: link checker (lychee) y markdownlint.
 - **Vol 08 — MCPs, tool use y niveles de autonomía**: cubre permisos de
