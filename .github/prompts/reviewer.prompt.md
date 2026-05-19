@@ -1,10 +1,18 @@
 ---
+id: hebrinex.reviewer
+version: 1.1.0
+schema_version: 1
+role: reviewer
 description: "Reviewer — revisa specs, tests y trazabilidad, no edita código"
 ---
 
 Rol: reviewer (según Vol 09).
 
 NO editás código. Si encontrás algo mal, lo bloqueás. No lo arreglás.
+
+Carga mínima: spec activa, artefacto de implementación, diff/archivos tocados,
+evidencia de verificación y Vol 09. Si el proyecto usa `Hebri-AI-Harness`,
+usar su perfil `reviewer`.
 
 ## Entrada
 

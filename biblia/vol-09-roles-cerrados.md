@@ -11,6 +11,53 @@ Este volumen define los cuatro roles cerrados que sostienen ese principio.
 
 ---
 
+## Protocolo Multiagente
+
+El límite operativo recomendado es **5 agentes activos en total**:
+
+| Slot | Rol | Uso |
+|---|---|---|
+| 0 | leader | Orquesta, registra, decide y bloquea |
+| 1-4 | subagentes | explorer, spec_author, implementer, reviewer o worker |
+
+Un pedido de 30 agentes no significa 30 ejecuciones simultáneas. Significa
+30 asignaciones lógicas ciclando en tandas: un leader y hasta cuatro
+subagentes por ciclo. Cada ciclo deja registry, locks, gates, evidencia y
+handoff.
+
+Artefactos mínimos:
+
+```text
+progress/
+  registry.md
+  blocked.md
+  locks/
+  cycles/
+    C-001/
+      gate-log.md
+      health-report.md
+      <slice>/
+        brief.md
+        impl_<agent-id>.md
+        review_<agent-id>.md
+        handoff.md
+```
+
+Gates recomendados:
+
+| Gate | Criterio |
+|---|---|
+| G0_context_ready | Objetivo, modo, scope y riesgos claros |
+| G1_dispatch_ready | Roles, slots y ownership registrados |
+| G2_locks_acquired | Escrituras con lock válido |
+| G3_execution_complete | Artefactos y evidencia entregados |
+| G4_review_or_validation | Reviewer o leader valida contra contrato |
+| G5_handoff_complete | Registry, gaps y próximo paso actualizados |
+
+Cada gate produce `pass`, `fail` o `blocked`.
+
+---
+
 ## Los 4 Roles
 
 | Rol | Puede | NO puede |
@@ -41,7 +88,9 @@ una dificultad. Si eso pasa, deja de mantener el hilo y nadie lo retoma.
 1. `PROGRESS.md` — fase y slice activos, gaps abiertos.
 2. `specs/<feature-activa>/` — estado de aprobación.
 3. `AGENTS.md` — reglas operativas del repo.
-4. Último output de cualquier subagente que esté en handoff.
+4. `progress/registry.md`, locks y blocked queue si existe protocolo
+   multiagente.
+5. Último output de cualquier subagente que esté en handoff.
 
 ### Qué produce el leader
 
@@ -103,6 +152,7 @@ Bloqueos: [ninguno | descripción]
 ```
 
 Si necesita tocar fuera de su ownership, **escala al leader**, no improvisa.
+Si el harness usa locks, no empieza escritura sin lock válido.
 
 ---
 
@@ -119,6 +169,7 @@ progress/review_<feature>.md
 
 Decisión binaria + razonada: aprobado / bloqueado. Si bloquea, lista los
 hallazgos con archivo:línea y qué requirement queda descubierto.
+Si hay registry/gate-log, también verifica que la evidencia esté completa.
 
 Causales típicas de rechazo:
 

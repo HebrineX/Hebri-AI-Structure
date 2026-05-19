@@ -18,3 +18,20 @@ Metodología de trabajo con IA aplicada a proyectos de software.
 ---
 
 **Principio base:** El chat coordina. El repositorio conserva la verdad.
+
+---
+
+## Lectura mínima por intención
+
+| Intención | Ruta mínima |
+|---|---|
+| Arrancar proyecto nuevo | Vol 01 + Vol 04 + Vol 07 |
+| Diseñar un flujo con agentes | Vol 02 + Vol 09 |
+| Trabajar con specs aprobables | Vol 03 + Vol 09 |
+| Escribir o refactorizar prompts | Vol 05 |
+| Registrar deuda o faltantes | Vol 06 |
+| Dar tools, modelos o autonomía | Vol 08 |
+| Ver un recorrido completo | Apéndice |
+
+No cargues todos los volúmenes salvo auditoría metodológica completa. La
+unidad mínima de contexto también aplica a esta biblia.

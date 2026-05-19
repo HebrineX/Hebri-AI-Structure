@@ -2,7 +2,7 @@
 
 > Anterior: [Vol 09 · Roles cerrados](./vol-09-roles-cerrados.md)
 
-Recorrido completo de un slice ficticio aplicando los 8 volúmenes. El
+Recorrido completo de un slice ficticio aplicando los 9 volúmenes. El
 proyecto es **TaskNotifier**: un servicio .NET 8 que envía recordatorios de
 tareas vencidas a un canal de Slack.
 

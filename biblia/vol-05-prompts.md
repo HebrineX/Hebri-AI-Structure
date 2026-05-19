@@ -75,3 +75,42 @@ de GitHub Copilot / VS Code. Para otras herramientas:
 **Regla:** El contenido semántico del prompt no cambia. Solo cambia el
 mecanismo de interpolación. Si tu equipo usa varias herramientas, mantener
 el contenido y duplicar el envoltorio.
+
+---
+
+## Prompts Versionados
+
+Todo prompt operativo reusable debería declarar metadata mínima en
+frontmatter:
+
+```yaml
+---
+id: hebrinex.implementer
+version: 1.1.0
+schema_version: 1
+role: implementer
+description: "Implementer — ejecuta tasks aprobadas"
+---
+```
+
+Esto permite saber qué prompt produjo una decisión, qué schema de salida se
+esperaba y cuándo un cambio de prompt puede romper automatizaciones.
+
+**Regla de economía:** un prompt invocable no debe cargar toda la metodología.
+Debe decir qué volumen, perfil o archivo leer. Las reglas comunes viven en
+un archivo compartido del harness; el prompt las referencia.
+
+---
+
+## Prompt Liviano vs Spec Larga
+
+Si un prompt mezcla instrucciones, estructura de repo, checklist, ejemplos y
+criterios de aceptación, probablemente está haciendo de spec. Separar:
+
+```text
+prompts/crear-harness.prompt.md       prompt corto: rol, entradas, salida
+orquestador/sdd/specs/bootstrap.md    spec larga: estructura, criterios, QA
+```
+
+El prompt diario debe ser chico. La spec larga se carga solo cuando la tarea
+lo necesita.

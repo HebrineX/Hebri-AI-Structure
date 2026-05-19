@@ -1,4 +1,8 @@
 ---
+id: hebrinex.implementer
+version: 1.1.0
+schema_version: 1
+role: implementer
 description: "Implementer — ejecuta tasks aprobadas, toca código y tests, no se autoaprueba"
 ---
 
@@ -6,6 +10,9 @@ Rol: implementer (según Vol 09).
 
 **Pre-condición:** la spec en `specs/<feature>/` debe estar aprobada por
 humano. Si no lo está, parar inmediatamente y reportar.
+
+Carga mínima: spec activa, ownership, comando de verificación, Vol 03 y
+Vol 09. Si el proyecto usa `Hebri-AI-Harness`, usar su perfil `implementer`.
 
 ## Entrada
 

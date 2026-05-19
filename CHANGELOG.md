@@ -7,6 +7,38 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.6.0] — 2026-05-19
+
+### Añadido
+
+- README y `biblia/README.md` ahora incluyen rutas de lectura mínima para
+  evitar cargar toda la biblia por defecto.
+- Vol 05 agrega reglas de prompts versionados y separación entre prompt
+  liviano y spec larga.
+- Vol 07 formaliza la relación entre `Hebri-AI-Structure` y
+  `Hebri-AI-Harness`, más un protocolo de evolución biblia ↔ harness.
+- Vol 08 agrega perfiles de contexto por rol para reducir tokens.
+- Vol 07 ahora documenta el harness mínimo recomendado con modos,
+  registry, locks, gates, handoffs, políticas y guía de AI Engineering.
+- Vol 08 agrega modos `manual` y `automático`, arquitectura de runtime LLM,
+  resiliencia de llamadas a modelos, validación de salidas, cache y economía
+  de tokens.
+- Vol 09 agrega protocolo multiagente: límite operativo de 5 agentes activos
+  totales (leader + 4 subagentes), registry, locks, gates y handoffs por ciclo.
+- Prompt `/lider` actualizado para respetar modo, slots, registry y aprobación
+  explícita antes de mutar estado.
+
+### Modificado
+
+- README actualizado a versión 2.6.0 y con ruta práctica hacia el protocolo
+  multiagente.
+- AGENTS.md alineado con el CI actual: se elimina la referencia operativa a
+  markdownlint/lychee como checks obligatorios y queda la consistencia de TOC.
+- Gap H-01 pasa de "Identificado" a "Publicado · En validación" por la
+  publicación de `Hebri-AI-Harness` como repo independiente.
+
+---
+
 ## [2.5.0] — 2026-05-18
 
 ### Eliminado

@@ -10,7 +10,7 @@ principios y patrones, no instrucciones para ejecutar.
 ## Stack
 
 - Markdown (CommonMark) + Mermaid embebido.
-- CI: GitHub Actions con markdownlint y lychee (link checker).
+- CI: GitHub Actions con verificación de consistencia del índice.
 - Sin código de runtime.
 
 ## Entrada rápida
@@ -23,12 +23,6 @@ principios y patrones, no instrucciones para ejecutar.
 ## Comandos
 
 ```bash
-# Validar links (incluyendo anchors)
-lychee --no-progress --include-fragments './**/*.md'
-
-# Validar formato markdown
-npx markdownlint-cli2 '**/*.md' '#node_modules'
-
 # Verificar consistencia índice ↔ volúmenes
 for vol in biblia/vol-*.md; do grep -q "$(basename $vol)" README.md || echo "FALTA: $vol"; done
 ```
@@ -37,7 +31,7 @@ for vol in biblia/vol-*.md; do grep -q "$(basename $vol)" README.md || echo "FAL
 
 | Archivo / Carpeta | Contenido | Cuándo leer |
 |---|---|---|
-| `biblia/` | 8 volúmenes + apéndice | Para todo el contenido metodológico |
+| `biblia/` | 9 volúmenes + apéndice | Para todo el contenido metodológico |
 | `README.md` | Índice y ruta práctica | Primer vistazo |
 | `BIBLIA.md` | Redirección al índice nuevo | Compatibilidad con links viejos |
 | `.github/prompts/` | Prompts operativos invocables | Antes de iniciar una tarea |
@@ -74,14 +68,15 @@ for vol in biblia/vol-*.md; do grep -q "$(basename $vol)" README.md || echo "FAL
 
 - Cambios pequeños (typo, link, ejemplo) → PR directo.
 - Cambios estructurales (volumen nuevo, renombre) → issue primero.
-- Todo PR debe pasar markdownlint y link checker antes de mergear.
+- Todo PR debe mantener coherentes `README.md`, `biblia/README.md`,
+  `AGENTS.md` y `CHANGELOG.md`.
+- El CI actual valida consistencia de TOC; markdownlint y lychee fueron
+  retirados en v2.5.0.
 - Versionar siguiendo SemVer en `CHANGELOG.md`.
 
 ## Cierre de una edición
 
 Antes de declarar una edición completa:
 
-- [ ] Links validados (`lychee`).
-- [ ] Markdownlint limpio.
 - [ ] Índices coherentes (`README.md` ↔ `biblia/README.md` ↔ archivos reales).
 - [ ] `CHANGELOG.md` actualizado.

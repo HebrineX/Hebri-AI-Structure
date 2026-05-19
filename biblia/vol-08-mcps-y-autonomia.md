@@ -80,6 +80,103 @@ de slice/fase.
 
 ---
 
+## Modos de Operación
+
+Los niveles de autonomía definen qué puede hacer un agente. El modo define
+cuánta aprobación humana necesita antes de avanzar.
+
+| Modo | Uso | Regla |
+|---|---|---|
+| `manual` | Control fino, tareas riesgosas, primera vez de un flujo | El operador aprueba cada cambio, comando, slice y handoff |
+| `automático` | Flujo conocido con scope aprobado | El leader decide pasos seguros, pero pide `SI` antes de editar, correr comandos, llamar APIs/modelos o cambiar estado |
+
+En modo automático el agente no tiene permiso para sorprender. Antes de
+mutar estado debe explicar: acción propuesta, archivos o tools involucradas,
+riesgo, verificación y resultado esperado. Después espera un `SI`.
+
+En modo manual, si una fase tiene cinco slices, se presenta cada slice por
+separado y se espera aprobación antes de continuar.
+
+---
+
+## Runtime LLM como Adaptador
+
+En proyectos que conectan modelos por API, el LLM no debe ser dueño de la
+arquitectura. Debe vivir como adaptador detrás de contratos explícitos.
+
+```text
+domain/          reglas puras: roles, ownership, SDD, gaps
+application/     casos de uso
+workflows/       estados, gates y aprobaciones
+orchestration/   leader, dispatch y ciclos multiagente
+prompts/         templates versionados y renderer
+llm/             cliente de modelo, retries, fallbacks, usage
+tools/           registry, policy y auditoría
+infrastructure/  filesystem, shell, git, artifact store
+interfaces/      CLI, HTTP, desktop, MCP
+```
+
+**Reglas:**
+
+- `domain/` no importa `llm/`, `tools/`, `prompts/` ni infraestructura.
+- `llm/` no conoce SDD, roles ni ownership.
+- `prompts/` renderiza texto; no ejecuta tools.
+- `tools/` siempre pasa por una policy de permisos.
+- `workflows/` controla gates, estados y aprobación humana.
+
+---
+
+## Resiliencia de Llamadas a Modelos
+
+Para llamadas LLM productivas:
+
+- timeout por request;
+- máximo 3 intentos;
+- backoff exponencial con jitter;
+- reintentos solo en errores transitorios (timeout, 429, 5xx, conexión);
+- fallback de modelo por tipo de tarea;
+- circuit breaker por proveedor si hay fallas repetidas;
+- idempotency key por `traceId + promptId + inputHash`;
+- validación estricta de salida antes de avanzar gates.
+
+Las salidas que alimentan workflow deben ser JSON con schema o Markdown
+validable. Respuestas vacías, genéricas, con rutas inexistentes no marcadas
+como `to_create`, requirements sin tests o evidencia sin comando bloquean el
+gate.
+
+---
+
+## Costos, Cache y Contexto
+
+Optimizar costo no es usar siempre el modelo más barato; es reducir contexto
+irrelevante y elegir capacidad por tarea.
+
+- Usar context slicing: cargar solo archivos del brief.
+- Versionar prompts con `id`, `version`, `schema_version`, `role`,
+  `source` y `last_reviewed`.
+- Cachear respuestas determinísticas con
+  `promptId + promptVersion + inputHash + model + schemaVersion`.
+- Cachear embeddings de docs/specs por hash de archivo.
+- Registrar token usage por `traceId`, rol y prompt.
+- Evitar prompts gigantes que mezclan spec, template, checklist y runtime.
+
+### Perfiles de contexto
+
+Un harness operativo debería definir perfiles de lectura por rol:
+
+| Perfil | Lee | No lee salvo necesidad |
+|---|---|---|
+| `leader` | estado, modo, registry, bloqueos | spec completa de todos los slices |
+| `spec_author` | contexto producto/arquitectura, template SDD | prompts de implementación |
+| `implementer` | spec activa, lock, ownership, verificación | biblioteca completa de gaps |
+| `reviewer` | spec, diff/artefacto impl, gate log | docs no relacionadas |
+| `bootstrap` | prompt bootstrap + spec larga | runtime LLM completo |
+
+El objetivo no es ahorrar por ahorrar: es evitar que el agente mezcle señales
+irrelevantes con el contrato activo.
+
+---
+
 ## Permisos por archivo y por comando
 
 Ownership de archivos ([Vol 02](./vol-02-subagentes.md)) y autonomía

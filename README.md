@@ -39,6 +39,7 @@ La metodología vive en [`biblia/`](./biblia/), un volumen por archivo.
 - **Registrar algo que falta** → [Vol 06 · Gap tracking](./biblia/vol-06-gap-tracking.md)
 - **Configurar acceso a herramientas** → [Vol 08 · MCPs y autonomía](./biblia/vol-08-mcps-y-autonomia.md)
 - **Orquestar entre roles (leader, spec_author, implementer, reviewer)** → [Vol 09 · Roles cerrados](./biblia/vol-09-roles-cerrados.md)
+- **Configurar ciclos multiagente con límite operativo** → [Vol 09 · Protocolo multiagente](./biblia/vol-09-roles-cerrados.md#protocolo-multiagente)
 - **Ver un caso completo** → [Apéndice · Ejemplo end-to-end](./biblia/apendice-ejemplo-end-to-end.md)
 
 ---
@@ -46,6 +47,39 @@ La metodología vive en [`biblia/`](./biblia/), un volumen por archivo.
 ## Principio base
 
 > El chat coordina. El repositorio conserva la verdad.
+
+---
+
+## Relación con Hebri-AI-Harness
+
+Este repo define el criterio: modelo mental, roles, SDD, autonomía, prompts,
+gaps y economía de contexto.
+
+El harness operativo vive aparte:
+**[Hebri-AI-Harness](https://github.com/HebrineX/Hebri-AI-Harness)**.
+
+Regla de separación:
+
+- `Hebri-AI-Structure` explica qué hacer y por qué.
+- `Hebri-AI-Harness` implementa cómo se opera en proyectos reales.
+- Si hay conflicto, se registra el gap y se decide si corresponde cambiar la
+  biblia, el harness o ambos.
+
+---
+
+## Lectura mínima
+
+No cargues toda la biblia por defecto. Elegí la ruta mínima:
+
+| Objetivo | Leer |
+|---|---|
+| Arrancar proyecto | Vol 01 + Vol 04 + Vol 07 |
+| Delegar agentes | Vol 02 + Vol 09 |
+| Usar SDD | Vol 03 + Vol 09 |
+| Mejorar prompts | Vol 05 |
+| Registrar gaps | Vol 06 |
+| Configurar tools/autonomía/modelos | Vol 08 |
+| Validar un flujo completo | Apéndice |
 
 ---
 
@@ -57,7 +91,7 @@ escribime y lo charlamos.
 
 ## Versión y cambios
 
-Versión actual: **2.1.0**. Ver [CHANGELOG.md](./CHANGELOG.md).
+Versión actual: **2.6.0**. Ver [CHANGELOG.md](./CHANGELOG.md).
 
 ## Créditos
 

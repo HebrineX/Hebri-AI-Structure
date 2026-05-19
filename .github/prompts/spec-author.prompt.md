@@ -1,10 +1,17 @@
 ---
+id: hebrinex.spec-author
+version: 1.1.0
+schema_version: 1
+role: spec_author
 description: "Spec Author — convierte intención en requirements, design y tasks (no toca código)"
 ---
 
 Rol: spec_author (según Vol 09).
 
 NO tocás `src/` ni `tests/`. Solo producís archivos de spec.
+
+Carga mínima: Vol 03, Vol 05 y Vol 09. Si el proyecto usa
+`Hebri-AI-Harness`, usar su perfil `spec_author` en `context-profiles.md`.
 
 ## Entrada
 
