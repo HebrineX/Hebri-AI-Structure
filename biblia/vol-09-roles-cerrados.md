@@ -13,6 +13,12 @@ Este volumen define los cuatro roles cerrados que sostienen ese principio.
 
 ## Protocolo Multiagente
 
+En `Hebri-AI-Harness 0.5.0`, el chat visible actúa como **intérprete** por
+defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
+coordinador operativo y debe quedar visible en conversación, registry o
+artefacto. Si el leader no está visible, no se despachan workers ni se cierran
+fases.
+
 El límite operativo recomendado es **5 agentes activos en total**:
 
 | Slot | Rol | Uso |
@@ -29,17 +35,23 @@ Artefactos mínimos:
 
 ```text
 progress/
+  state.yaml
+  registry.yaml
   registry.md
   blocked.md
+  approvals/
   locks/
   cycles/
     C-001/
-      gate-log.md
-      health-report.md
+      audit.jsonl
+      gate-log.yaml
       <slice>/
         brief.md
         impl_<agent-id>.md
         review_<agent-id>.md
+        verification-matrix.yaml
+        final-report.md
+        agent-closure.md
         handoff.md
 ```
 
@@ -47,14 +59,21 @@ Gates recomendados:
 
 | Gate | Criterio |
 |---|---|
-| G0_context_ready | Objetivo, modo, scope y riesgos claros |
-| G1_dispatch_ready | Roles, slots y ownership registrados |
-| G2_locks_acquired | Escrituras con lock válido |
-| G3_execution_complete | Artefactos y evidencia entregados |
-| G4_review_or_validation | Reviewer o leader valida contra contrato |
-| G5_handoff_complete | Registry, gaps y próximo paso actualizados |
+| G0_session_contract | Contrato de sesión declarado, modo definido, chat intérprete y leader visible |
+| G1_context_ready | Objetivo, modo, scope y riesgos claros |
+| G2_dispatch_ready | Roles, slots y ownership registrados |
+| G3_locks_acquired | Escrituras con lock válido |
+| G4_execution_complete | Artefactos y evidencia entregados |
+| G5_review_or_validation | Reviewer o leader valida contra contrato |
+| G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
+| G7_handoff_complete | Registry, gaps y próximo paso actualizados |
 
 Cada gate produce `pass`, `fail` o `blocked`.
+
+**Regla P0:** un ciclo no puede cerrarse si quedan agentes abiertos, locks
+sin resolver, approval pendiente o evidencia ausente. Los ciclos históricos
+sin estos artefactos se marcan como `legacy_unverified`; no se inventa
+evidencia retroactiva.
 
 ---
 
@@ -153,6 +172,8 @@ Bloqueos: [ninguno | descripción]
 
 Si necesita tocar fuera de su ownership, **escala al leader**, no improvisa.
 Si el harness usa locks, no empieza escritura sin lock válido.
+Si el harness usa controles P0, también requiere preflight, approval envelope
+y write-set declarado antes de mutar archivos.
 
 ---
 
@@ -170,6 +191,8 @@ progress/review_<feature>.md
 Decisión binaria + razonada: aprobado / bloqueado. Si bloquea, lista los
 hallazgos con archivo:línea y qué requirement queda descubierto.
 Si hay registry/gate-log, también verifica que la evidencia esté completa.
+Si hay controles P0, verifica `state.yaml`, `registry.yaml`, `gate-log.yaml`,
+`verification-matrix.yaml`, `final-report.md` y `agent-closure.md`.
 
 Causales típicas de rechazo:
 

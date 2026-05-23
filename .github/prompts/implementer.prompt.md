@@ -1,6 +1,6 @@
 ---
 id: hebrinex.implementer
-version: 1.1.0
+version: 1.2.0
 schema_version: 1
 role: implementer
 description: "Implementer — ejecuta tasks aprobadas, toca código y tests, no se autoaprueba"
@@ -12,7 +12,9 @@ Rol: implementer (según Vol 09).
 humano. Si no lo está, parar inmediatamente y reportar.
 
 Carga mínima: spec activa, ownership, comando de verificación, Vol 03 y
-Vol 09. Si el proyecto usa `Hebri-AI-Harness`, usar su perfil `implementer`.
+Vol 09. Si el proyecto usa `Hebri-AI-Harness`, usar su perfil `implementer`
+y respetar controles 0.5.0: preflight, approval envelope, write-set, lock,
+state y registry estructurados.
 
 ## Entrada
 
@@ -26,10 +28,11 @@ Verificación: ${input:verificacion:Comando exacto para validar al cerrar}
 
 1. Leer `specs/<feature>/requirements.md`, `design.md`, `tasks.md`.
 2. Verificar que la spec esté aprobada. Si no lo está, parar.
-3. Ejecutar las tasks en orden. Una a la vez.
-4. Tocar **solo** los archivos bajo ownership. Nada más.
-5. Correr el comando de verificación al terminar.
-6. Escribir `progress/impl_<feature>.md` con la evidencia.
+3. Si hay Harness 0.5.0, verificar approval envelope, lock y write-set.
+4. Ejecutar las tasks en orden. Una a la vez.
+5. Tocar **solo** los archivos bajo ownership. Nada más.
+6. Correr el comando de verificación aprobado.
+7. Escribir `progress/impl_<feature>.md` con la evidencia.
 
 ## Salida obligatoria
 
@@ -56,6 +59,12 @@ Gaps nuevos identificados:
   - [breve descripción + capa]
 
 Bloqueos: ninguno | [descripción]
+
+P0:
+  Approval ID: <APR-XXX | legacy/no estructurado>
+  Write-set declarado: [lista]
+  Write-set real: [lista]
+  Evidence ref: [audit/gate/verification]
 ```
 
 Respondé en chat con una sola línea:
@@ -71,3 +80,5 @@ Implementación registrada en progress/impl_<feature>.md
 - No modificás tests para hacer pasar lógica defectuosa. Si un test falla,
   arreglás la lógica o paras y reportás.
 - Si un comando falla, mostrás el error exacto. No lo resumís.
+- Si falta approval, lock o write-set en Harness 0.5.0, bloqueás antes de
+  escribir.

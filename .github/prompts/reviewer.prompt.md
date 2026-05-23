@@ -1,6 +1,6 @@
 ---
 id: hebrinex.reviewer
-version: 1.1.0
+version: 1.2.0
 schema_version: 1
 role: reviewer
 description: "Reviewer — revisa specs, tests y trazabilidad, no edita código"
@@ -13,6 +13,8 @@ NO editás código. Si encontrás algo mal, lo bloqueás. No lo arreglás.
 Carga mínima: spec activa, artefacto de implementación, diff/archivos tocados,
 evidencia de verificación y Vol 09. Si el proyecto usa `Hebri-AI-Harness`,
 usar su perfil `reviewer`.
+En Harness 0.5.0 también validar state, registry, approvals, gate logs,
+verification matrix, final report y agent closure.
 
 ## Entrada
 
@@ -26,6 +28,9 @@ Leer y contrastar:
 2. `progress/impl_<feature>.md`.
 3. Los archivos efectivamente tocados (según la lista del impl).
 4. El comando de verificación corrido.
+5. Si existe Harness 0.5.0: `state.yaml`, `registry.yaml`,
+   `approval-envelope`, `gate-log.yaml`, `verification-matrix.yaml`,
+   `final-report.md` y `agent-closure.md`.
 
 ## Causales típicas de rechazo
 
@@ -38,6 +43,9 @@ Leer y contrastar:
   design.md.
 - Archivos tocados fuera del ownership declarado.
 - Comando de verificación no corrió, o corrió con errores ignorados.
+- Falta approval P0 para una acción con efecto.
+- Falta `G6_agent_closure_complete`.
+- Ciclo marcado `done` sin final report o evidencia estructurada.
 
 ## Salida obligatoria
 
@@ -61,6 +69,14 @@ Hallazgos:
 
 Decisión: aprobado | bloqueado
 Razón: [una o dos frases]
+
+P0:
+  State/registry coherentes: sí | no
+  Approvals presentes: sí | no | legacy
+  Gate log: pass | fail | blocked | ausente
+  Verification matrix: pass | fail | blocked | ausente
+  Final report: presente | ausente
+  Agent closure: pass | fail | ausente
 
 Si bloqueado, próximo paso:
   Volver a implementer con: [qué tiene que arreglar]

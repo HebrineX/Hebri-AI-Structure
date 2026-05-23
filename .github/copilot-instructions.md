@@ -5,7 +5,7 @@ proyecto de software con código ejecutable.
 
 ## Qué es esto
 
-Documentación metodológica organizada en 8 volúmenes más un apéndice, en
+Documentación metodológica organizada en 9 volúmenes más apéndices, en
 la carpeta `biblia/`. Los archivos son Markdown con diagramas Mermaid
 embebidos. No hay código fuente, tests ni builds.
 
@@ -29,4 +29,5 @@ embebidos. No hay código fuente, tests ni builds.
 - Sin verbos blandos ("intentar", "considerar", "tratar de").
 - Si se agrega un volumen, actualizar `README.md`, `biblia/README.md`,
   `AGENTS.md` y `CHANGELOG.md` en el mismo PR.
-- Pasar markdownlint y link checker antes de mergear.
+- El CI actual valida consistencia de índices. Markdownlint y link checker
+  fueron retirados en v2.5.0.

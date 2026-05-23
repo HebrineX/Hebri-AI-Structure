@@ -7,6 +7,9 @@ Este repositorio es una biblia personal de metodología de trabajo con IA.
 Documentación metodológica — no un harness ejecutable. Los contenidos son
 principios y patrones, no instrucciones para ejecutar.
 
+Referencia operativa actual del repo hermano:
+`Hebri-AI-Harness 0.5.0`.
+
 ## Stack
 
 - Markdown (CommonMark) + Mermaid embebido.
@@ -23,15 +26,26 @@ principios y patrones, no instrucciones para ejecutar.
 ## Comandos
 
 ```bash
-# Verificar consistencia índice ↔ volúmenes
-for vol in biblia/vol-*.md; do grep -q "$(basename $vol)" README.md || echo "FALTA: $vol"; done
+# Verificar consistencia básica índice ↔ volúmenes
+for vol in biblia/vol-*.md; do
+  base="$(basename "$vol")"
+  grep -q "$base" README.md || echo "FALTA en README.md: $vol"
+  grep -q "$base" biblia/README.md || echo "FALTA en biblia/README.md: $vol"
+  grep -q "$vol" BIBLIA.md || echo "FALTA en BIBLIA.md: $vol"
+done
+for ap in biblia/apendice-*.md; do
+  base="$(basename "$ap")"
+  grep -q "$base" README.md || echo "FALTA en README.md: $ap"
+  grep -q "$base" biblia/README.md || echo "FALTA en biblia/README.md: $ap"
+  grep -q "$ap" BIBLIA.md || echo "FALTA en BIBLIA.md: $ap"
+done
 ```
 
 ## Mapa
 
 | Archivo / Carpeta | Contenido | Cuándo leer |
 |---|---|---|
-| `biblia/` | 9 volúmenes + apéndice | Para todo el contenido metodológico |
+| `biblia/` | 9 volúmenes + apéndices | Para todo el contenido metodológico |
 | `README.md` | Índice y ruta práctica | Primer vistazo |
 | `BIBLIA.md` | Redirección al índice nuevo | Compatibilidad con links viejos |
 | `.github/prompts/` | Prompts operativos invocables | Antes de iniciar una tarea |
@@ -52,6 +66,7 @@ for vol in biblia/vol-*.md; do grep -q "$(basename $vol)" README.md || echo "FAL
 | Vol 08 · MCPs y autonomía | Antes de dar acceso a herramientas |
 | Vol 09 · Roles cerrados de harness | Al pasar de explorer/worker a SDD con aprobación |
 | Apéndice · Ejemplo end-to-end | Onboarding o duda práctica |
+| Apéndice · Operación y auditoría de harness 0.5.0 | Auditar cumplimiento, regularizar P0 o configurar presets |
 
 ## Reglas operativas
 
@@ -70,7 +85,9 @@ for vol in biblia/vol-*.md; do grep -q "$(basename $vol)" README.md || echo "FAL
 - Cambios estructurales (volumen nuevo, renombre) → issue primero.
 - Todo PR debe mantener coherentes `README.md`, `biblia/README.md`,
   `AGENTS.md` y `CHANGELOG.md`.
-- El CI actual valida consistencia de TOC; markdownlint y lychee fueron
+- Si cambia la versión operativa de `Hebri-AI-Harness`, actualizar Vol 07,
+  Vol 08, Vol 09, prompts operativos y `CHANGELOG.md`.
+- El CI actual valida consistencia de índices; markdownlint y lychee fueron
   retirados en v2.5.0.
 - Versionar siguiendo SemVer en `CHANGELOG.md`.
 

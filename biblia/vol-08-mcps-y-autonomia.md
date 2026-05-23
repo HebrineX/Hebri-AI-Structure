@@ -196,6 +196,29 @@ operador.
 
 ---
 
+## Controles P0 de Tool Use
+
+En `Hebri-AI-Harness 0.5.0`, las acciones con efecto no dependen solo de una
+frase en el chat. Deben pasar por controles estructurados:
+
+| Control | Para qué existe |
+|---|---|
+| `tool-policy.yaml` | Clasifica por rol qué acciones son `allow`, `ask` o `deny` |
+| `command-taxonomy.md` | Distingue lectura segura, verificación local, escritura, red, git, destructivo y secretos |
+| `write-set-policy.md` | Obliga a declarar qué archivos se van a escribir y comparar contra el diff real |
+| `secret-denylist.md` | Bloquea por defecto `.env`, llaves, tokens, certificados, backups y logs sensibles |
+| `preflight-template.md` | Estandariza qué se explica antes de ejecutar una acción con efecto |
+| `approval-envelope.md` | Convierte el `SI` humano en aprobación concreta por acción, scope y riesgo |
+
+**Regla:** en modo automático el leader puede decidir micro-pasos, pero no
+puede editar, ejecutar comandos, usar red, hacer git, cambiar estado SDD ni
+abrir subagentes con escritura/verificación sin preflight y `SI`.
+
+Un `SI` no aprueba una sesión entera. Aprueba el action envelope declarado.
+Si cambia comando, cwd, write-set, red, git o riesgo, se pide otro `SI`.
+
+---
+
 ## Recuperación de Errores
 
 Los agentes fallan. La pregunta no es si, sino cómo se detecta y se sale.
@@ -277,6 +300,8 @@ Si el agente puede ejecutar, hay que poder auditar lo que ejecutó.
 2. Diff por sesión: qué archivos cambiaron, qué comandos corrieron.
 3. Estado declarado al cerrar: "tasks T1, T2 completas; verificación con
    `[comando]`; resultado `[N] passed`".
+4. Para harness P0: `audit.jsonl`, `gate-log.yaml`, `verification-matrix.yaml`,
+   `final-report.md` y `agent-closure.md` por ciclo o slice relevante.
 
 **Para tareas con autonomía N3+:** logs persistidos fuera del chat (archivo
 o sistema central). El chat es efímero.

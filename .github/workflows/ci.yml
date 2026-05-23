@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify volumes are referenced from README
+      - name: Verify volumes are referenced from indices
         run: |
           set -e
           for vol in biblia/vol-*.md; do
@@ -22,5 +22,50 @@ jobs:
               echo "ERROR: README.md no referencia $base"
               exit 1
             fi
+            if ! grep -q "$base" biblia/README.md; then
+              echo "ERROR: biblia/README.md no referencia $base"
+              exit 1
+            fi
+            if ! grep -q "$vol" BIBLIA.md; then
+              echo "ERROR: BIBLIA.md no referencia $vol"
+              exit 1
+            fi
           done
-          echo "OK: todos los volúmenes están referenciados."
+          count=$(ls biblia/vol-*.md | wc -l)
+          if ! grep -q "9 volúmenes" AGENTS.md; then
+            echo "ERROR: AGENTS.md no declara 9 volúmenes"
+            exit 1
+          fi
+          if [ "$count" -ne 9 ]; then
+            echo "ERROR: cantidad inesperada de volúmenes: $count"
+            exit 1
+          fi
+          for ap in biblia/apendice-*.md; do
+            base=$(basename "$ap")
+            if ! grep -q "$base" README.md; then
+              echo "ERROR: README.md no referencia $base"
+              exit 1
+            fi
+            if ! grep -q "$base" biblia/README.md; then
+              echo "ERROR: biblia/README.md no referencia $base"
+              exit 1
+            fi
+            if ! grep -q "$ap" BIBLIA.md; then
+              echo "ERROR: BIBLIA.md no referencia $ap"
+              exit 1
+            fi
+          done
+          harness_version=$(cat HARNESS_VERSION)
+          if ! grep -q "Hebri-AI-Harness $harness_version" README.md; then
+            echo "ERROR: README.md no referencia Hebri-AI-Harness $harness_version"
+            exit 1
+          fi
+          if ! grep -q "Hebri-AI-Harness $harness_version" biblia/vol-07-harness.md; then
+            echo "ERROR: Vol 07 no referencia Hebri-AI-Harness $harness_version"
+            exit 1
+          fi
+          if ! grep -q "Hebri-AI-Harness $harness_version" CHANGELOG.md; then
+            echo "ERROR: CHANGELOG.md no referencia Hebri-AI-Harness $harness_version"
+            exit 1
+          fi
+          echo "OK: índices coherentes."

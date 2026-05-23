@@ -50,11 +50,12 @@ diario → Claude-first. Sin preferencia → Portable.
 **Esta biblia aporta:** el modelo mental, el proceso, las convenciones por
 stack, la biblioteca de gaps, los formatos.
 
-**El harness template aporta:** la estructura de carpetas lista para copiar,
+**El harness operativo aporta:** la estructura de carpetas lista para copiar,
 AGENTS.md base pre-cargado, templates de specs, prompts pre-cargados,
-scripts de setup.
+scripts de setup, estado estructurado y controles de aprobación.
 
-El template implementa la biblia. Si hay conflicto, la biblia gana.
+El harness implementa la biblia. Si hay conflicto, se registra el gap y se
+decide si corresponde corregir la biblia, el harness o ambos.
 
 El repositorio operativo del harness vive separado:
 [Hebri-AI-Harness](https://github.com/HebrineX/Hebri-AI-Harness).
@@ -73,9 +74,14 @@ Un harness preparado para producción no es solo una carpeta de prompts.
 Debe traer contratos operativos mínimos:
 
 - modos de operación (`manual` y `automático`);
+- contrato de sesión obligatorio;
 - límite de concurrencia y registry de agentes;
 - locks de ownership antes de escribir;
 - gates binarios por ciclo o slice;
+- preflight y approval envelope antes de efectos;
+- state y registry estructurados;
+- audit trail y evidencia verificable;
+- cierre explícito de agentes;
 - handoffs por archivo;
 - políticas de permisos, riesgo y recuperación;
 - guía de AI Engineering para prompts, modelos, tools, retries, validación,
@@ -109,22 +115,41 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 .hebrinex/
   AGENTS.md
   PROGRESS.md
+  init.sh
   prompts/
   agents/
   orquestador/
+    context-profiles.md
     context/
     method/
+      session-contract.md
       operating-modes.md
       multiagent-protocol.md
       ai-engineering.md
     policies/
+      tool-policy.yaml
+      command-taxonomy.md
+      write-set-policy.md
+      secret-denylist.md
     sdd/
       specs/
       progress/
+        state.yaml
+        registry.yaml
         registry.md
         blocked.md
+        approvals/
         locks/
         cycles/
+          _template/
+            audit.jsonl
+            gate-log.yaml
+        templates/
+          approval-envelope.md
+          preflight-template.md
+          verification-matrix.yaml
+          final-report.md
+          agent-closure.md
 ```
 
 La ruta exacta puede variar por herramienta (`.github/orquestador/`,
@@ -153,24 +178,27 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 
 ## Gaps activos de este volumen
 
-### Gap H-01 — Harness template publicado, pendiente de validación
+### Gap H-01 — Harness operativo publicado, pendiente de validación piloto
 
-**Estado:** Publicado · En validación · **Capa:** Docs
+**Estado:** Publicado · En validación piloto · **Capa:** Docs
 
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
-repo independiente, pendiente de validación con proyectos reales.
+repo independiente. La referencia operativa actual es
+`Hebri-AI-Harness 0.5.0`, que agrega contrato de sesión, controles P0
+estructurados, state/registry YAML, preflight, approval envelope, policies
+deny-by-default, audit trail, gate logs y cierre explícito de agentes.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El primer hito fue dejar la metodología
-documentada y estable. El harness ahora entra en etapa de validación como
-proyecto propio, con SDD y fases.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.5.0.
+El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
+biblia con fricciones repetidas.
 
 **Destino:** [Hebri-AI-Harness](https://github.com/HebrineX/Hebri-AI-Harness).
 Cuando pase validación piloto, se marcará como resuelto.
 
-**Resuelto por:** Publicación inicial de `Hebri-AI-Harness` (pendiente de
-validación en proyecto piloto).
+**Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
+0.5.0 (pendiente de validación en proyecto piloto).

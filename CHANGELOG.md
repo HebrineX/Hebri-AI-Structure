@@ -7,6 +7,44 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.7.0] — 2026-05-23
+
+### Añadido
+
+- README declara `Hebri-AI-Harness 0.5.0` como referencia operativa actual.
+- Vol 07 documenta el harness mínimo recomendado con controles P0:
+  `session-contract`, `state.yaml`, `registry.yaml`, preflight, approval
+  envelope, audit trail, gate logs, verification matrix, final report y
+  cierre explícito de agentes.
+- Vol 08 agrega controles P0 de tool use: `tool-policy.yaml`,
+  `command-taxonomy.md`, `write-set-policy.md`, `secret-denylist.md`,
+  `preflight-template.md` y `approval-envelope.md`.
+- Vol 09 actualiza el protocolo multiagente con chat intérprete, leader
+  visible, gates `G0` a `G7`, `G6_agent_closure_complete` y regla
+  `legacy_unverified` para ciclos históricos sin evidencia P0.
+- Nuevo apéndice de operación y auditoría de harness 0.5.0, con criterios
+  `cumple/parcial/no`, regularización P0, presets para Codex/Claude/Gemini,
+  matriz biblia ↔ harness y sincronización versionada.
+- `HARNESS_VERSION` fija la versión operativa del harness que la biblia debe
+  reflejar.
+
+### Modificado
+
+- Prompts operativos `lider`, `implementer`, `reviewer`, `worker` y
+  `cierre-fase` ahora reconocen `Hebri-AI-Harness 0.5.0`.
+- `.github/copilot-instructions.md` corrige 9 volúmenes y elimina la
+  exigencia obsoleta de markdownlint/link checker.
+- CI valida referencias en `README.md`, `biblia/README.md`, `BIBLIA.md` y
+  cantidad esperada de volúmenes.
+- CI valida apéndices y que `README.md`, Vol 07 y `CHANGELOG.md` mencionen la
+  versión indicada en `HARNESS_VERSION`.
+- Apéndice end-to-end actualizado con preflight, approval envelope, artefactos
+  P0, gates `G0` a `G7` y cierre explícito de agentes.
+- `.gitignore` deja de ignorar `.github/`, porque prompts y workflows son
+  parte versionada de este repo.
+
+---
+
 ## [2.6.0] — 2026-05-19
 
 ### Añadido

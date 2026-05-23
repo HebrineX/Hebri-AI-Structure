@@ -174,6 +174,55 @@ Riesgos:
 
 ---
 
+## 6.1 · Controles Harness 0.5.0
+
+Aplicando [Vol 09](./vol-09-roles-cerrados.md) y el
+[Apéndice Harness 0.5](./apendice-harness-0-5-operacion.md), antes de que el
+Worker escriba se declara preflight:
+
+```text
+Preflight:
+- Approval ID: APR-2.1-001
+- Acción propuesta: implementar Slice 2.1 según spec aprobada
+- CWD: repo TaskNotifier
+- Read-set:
+  - specs/2.1-scheduler/
+  - src/TaskNotifier.Core/Models/Task.cs
+  - src/TaskNotifier.Worker/Program.cs
+- Write-set:
+  - src/TaskNotifier.Worker/Scheduling/
+  - tests/TaskNotifier.Worker.Tests/Scheduling/
+  - src/TaskNotifier.Worker/Program.cs
+- Comando/tool:
+  - dotnet test --filter "FullyQualifiedName~Scheduling"
+- Red/git/externo: no
+- Riesgo: medio
+- Verificación: tests T3/T4 verdes y build limpio
+- Evidencia esperada:
+  - progress/cycles/C-021/gate-log.yaml
+  - progress/cycles/C-021/slice-2.1/verification-matrix.yaml
+  - progress/cycles/C-021/slice-2.1/final-report.md
+  - progress/cycles/C-021/slice-2.1/agent-closure.md
+- Requiere SI: sí
+```
+
+El `SI` aprueba solo este envelope. Si cambia el write-set o el comando, el
+leader pide un nuevo `SI`.
+
+Artefactos de estado esperados:
+
+```text
+progress/state.yaml
+progress/registry.yaml
+progress/cycles/C-021/audit.jsonl
+progress/cycles/C-021/gate-log.yaml
+progress/cycles/C-021/slice-2.1/verification-matrix.yaml
+progress/cycles/C-021/slice-2.1/final-report.md
+progress/cycles/C-021/slice-2.1/agent-closure.md
+```
+
+---
+
 ## 7 · Ejecución
 
 El Worker abre las specs, lee el modelo `Task`, escribe los archivos
@@ -203,6 +252,13 @@ Gaps identificados:
   - Gap nuevo: el TaskRepository no tiene método GetOverdue(); usé Where
     inline en el scanner. Aceptable para el slice, pero deja un D-03
     (lógica en handler) que conviene refactorizar.
+
+P0:
+  Approval ID: APR-2.1-001
+  Write-set declarado: src/TaskNotifier.Worker/Scheduling/,
+    tests/TaskNotifier.Worker.Tests/Scheduling/, Program.cs
+  Write-set real: coincide
+  Evidence ref: progress/cycles/C-021/audit.jsonl
 ```
 
 ---
@@ -241,9 +297,32 @@ Comando final ejecutado:
 ```bash
 dotnet test                       # 47 passed (42 + 5)
 dotnet build -c Release           # build limpio
-git add -A
-git commit -m "Slice 2.1: OverdueScanner — closes R1,R2,R3"
 ```
+
+Controles P0:
+
+```text
+G0_session_contract: pass
+G1_context_ready: pass
+G2_dispatch_ready: pass
+G3_locks_acquired: pass
+G4_execution_complete: pass
+G5_review_or_validation: pass
+G6_agent_closure_complete: pass
+G7_handoff_complete: pass
+```
+
+Archivos de cierre:
+
+```text
+progress/cycles/C-021/gate-log.yaml
+progress/cycles/C-021/slice-2.1/verification-matrix.yaml
+progress/cycles/C-021/slice-2.1/final-report.md
+progress/cycles/C-021/slice-2.1/agent-closure.md
+```
+
+Si corresponde versionar el cambio, el leader pide un preflight separado para
+`git add`, `git commit` o `git push`.
 
 Listo. Siguiente iteración: Slice 2.2.
 
