@@ -4,13 +4,19 @@
 
 ## Explorer/Worker
 
-La separación más útil cuando se trabaja con subagentes. No es una
-separación técnica — es una separación de responsabilidades.
+La separación más útil para empezar a trabajar con subagentes. No es una
+separación técnica — es una separación de responsabilidades. En versiones
+anteriores de esta biblia, Explorer/Worker funcionaba como la división central.
+Desde `3.0.0`, se entiende como **familia base**, no como límite conceptual.
 
 > **Cuándo escalar a roles cerrados:** cuando el proyecto suma SDD, equipo
 > y reviewers externos, Explorer/Worker queda corto. Pasar a los 4 roles
 > cerrados de [Vol 09](./vol-09-roles-cerrados.md): leader, spec_author,
 > implementer, reviewer.
+
+La regla de fondo no cambia: no se crean agentes por capricho. Se agregan
+capacidades solo cuando reducen ambigüedad, mejoran evidencia o protegen el
+flujo.
 
 **Explorer** sirve para entender. Solo lectura. Devuelve hallazgos con
 evidencia. No edita archivos, no propone soluciones mientras explora, no
@@ -43,6 +49,87 @@ Salida esperada: [descripción del resultado]
 
 **Regla:** Explorer primero, Worker después. Si no podés describir el
 ownership del Worker en una frase, el Explorer todavía no terminó.
+
+---
+
+## Roles Mínimos y Perfiles Parametrizados
+
+El objetivo futuro no es tener más agentes. Es tener pocos roles estables y
+especializarlos por perfil cuando la tarea lo justifica.
+
+```text
+Rol estructural = responsabilidad estable.
+Perfil = especialización temporal.
+Tarea = objetivo concreto de ese ciclo.
+```
+
+Roles mínimos recomendados:
+
+| Rol | Responsabilidad |
+|---|---|
+| `interpreter` | Comunica con el operador, traduce estado y pide `SI` |
+| `leader` | Coordina, decide flujo, mantiene trazabilidad y gates |
+| `executor` | Produce cambios dentro del scope aprobado |
+| `reviewer` | Revisa producción contra spec, diff y evidencia |
+| `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento |
+| `reporter` | Comunica resultados de forma clara, humana y accionable |
+
+Perfiles posibles:
+
+```yaml
+role: auditor
+profile: harness_compliance | cost | security | architecture | release | detractor
+```
+
+```yaml
+role: reporter
+profile: operator | technical | executive
+```
+
+**Regla anti-explosión:** no se crea un rol nuevo si la necesidad puede
+expresarse como perfil de un rol existente.
+
+Ejemplos:
+
+| Necesidad | Forma correcta |
+|---|---|
+| Auditar consumo de tokens | `auditor(profile: cost)` |
+| Buscar riesgos de seguridad | `auditor(profile: security)` |
+| Cuestionar un cierre | `auditor(profile: detractor)` |
+| Explicar resultados al operador | `reporter(profile: operator)` |
+| Preparar informe técnico | `reporter(profile: technical)` |
+
+Esto mantiene la esencia del sistema: mínima cantidad de agentes activos,
+máxima claridad de intención.
+
+---
+
+## Auditor, Reporter y Detractor
+
+Estos perfiles aparecen porque Explorer/Worker es demasiado general para tres
+necesidades distintas:
+
+1. verificar cumplimiento;
+2. comunicar resultados;
+3. cuestionar conclusiones propias del sistema.
+
+**Auditor** es read-only. Su tarea es revisar contrato, evidencia, gates,
+roles, riesgos, costos, seguridad o arquitectura. No implementa y no aprueba.
+
+**Reporter** transforma resultados técnicos en una salida legible para el
+operador. No inventa evidencia, no cambia el veredicto y no aprueba.
+
+**Detractor** es un perfil del auditor. Busca errores de los agentes, sesgos,
+supuestos débiles, conclusiones no demostradas y riesgos omitidos. No bloquea
+por gusto: cada objeción debe traer evidencia o una hipótesis verificable.
+
+```text
+Anti-confirmation bias = no asumir que el usuario tiene razón.
+Detractor pass = no asumir que los agentes tienen razón.
+```
+
+El sistema mejora cuando sus propias conclusiones pueden ser atacadas sin
+romper el flujo.
 
 ---
 

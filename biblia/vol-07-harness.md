@@ -75,12 +75,17 @@ Debe traer contratos operativos mínimos:
 
 - modos de operación (`manual` y `automático`);
 - contrato de sesión obligatorio;
+- independencia técnica y anti-confirmation bias;
 - límite de concurrencia y registry de agentes;
+- roles mínimos con perfiles parametrizados;
 - locks de ownership antes de escribir;
 - gates binarios por ciclo o slice;
+- clarification gate, analysis checklist y blast radius;
+- task graph para slices, dependencias y waves;
 - preflight y approval envelope antes de efectos;
 - state y registry estructurados;
 - audit trail y evidencia verificable;
+- auditor, reporter y detractor pass para decisiones importantes;
 - cierre explícito de agentes;
 - handoffs por archivo;
 - políticas de permisos, riesgo y recuperación;
@@ -125,6 +130,7 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
       session-contract.md
       operating-modes.md
       multiagent-protocol.md
+      agent-role-taxonomy.md
       ai-engineering.md
     policies/
       tool-policy.yaml
@@ -147,6 +153,12 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
         templates/
           approval-envelope.md
           preflight-template.md
+          clarification-checklist.md
+          analysis-checklist.md
+          blast-radius.md
+          task-graph.yaml
+          agent-profile-template.yaml
+          detractor-pass.md
           verification-matrix.yaml
           final-report.md
           agent-closure.md
@@ -185,15 +197,18 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.5.0`, que agrega contrato de sesión, controles P0
+`Hebri-AI-Harness 0.6.0`, que agrega contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
-deny-by-default, audit trail, gate logs y cierre explícito de agentes.
+deny-by-default, audit trail, gate logs, cierre explícito de agentes,
+anti-confirmation bias, roles mínimos con perfiles parametrizados, auditor,
+reporter, detractor pass, clarification gate, analysis checklist, blast radius
+y task graph.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.5.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.6.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -201,4 +216,4 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.5.0 (pendiente de validación en proyecto piloto).
+0.6.0 (pendiente de validación en proyecto piloto `Hebri-AI-Portfolio`).

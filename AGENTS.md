@@ -8,7 +8,7 @@ Documentación metodológica — no un harness ejecutable. Los contenidos son
 principios y patrones, no instrucciones para ejecutar.
 
 Referencia operativa actual del repo hermano:
-`Hebri-AI-Harness 0.5.0`.
+`Hebri-AI-Harness 0.6.0`.
 
 ## Stack
 
@@ -57,7 +57,7 @@ done
 | Volumen | Cuándo leer |
 |---|---|
 | Vol 01 · Modelo de trabajo | Duda sobre el approach general |
-| Vol 02 · Subagentes | Antes de delegar trabajo |
+| Vol 02 · Subagentes, roles mínimos y perfiles | Antes de delegar trabajo |
 | Vol 03 · SDD | Antes de planear fase o feature |
 | Vol 04 · Arquitectura de repo | Antes de definir estructura |
 | Vol 05 · Prompts | Antes de escribir prompts |
@@ -66,7 +66,7 @@ done
 | Vol 08 · MCPs y autonomía | Antes de dar acceso a herramientas |
 | Vol 09 · Roles cerrados de harness | Al pasar de explorer/worker a SDD con aprobación |
 | Apéndice · Ejemplo end-to-end | Onboarding o duda práctica |
-| Apéndice · Operación y auditoría de harness 0.5.0 | Auditar cumplimiento, regularizar P0 o configurar presets |
+| Apéndice · Operación y auditoría de harness 0.6.0 | Auditar cumplimiento, regularizar P0 o configurar presets |
 
 ## Reglas operativas
 

@@ -7,6 +7,30 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.0.0] — 2026-05-23
+
+### Añadido
+
+- La biblia adopta `Hebri-AI-Harness 0.6.0` como referencia operativa.
+- Vol 02 redefine `Explorer/Worker` como familias base y agrega el principio
+  de roles mínimos con perfiles parametrizados.
+- Vol 08 incorpora independencia técnica, anti-confirmation bias y detractor
+  pass como controles contra errores del usuario y de los agentes.
+- Vol 09 amplía el modelo de roles cerrados con `interpreter`, `leader`,
+  `executor`, `reviewer`, `auditor` y `reporter`, más perfiles como
+  `detractor`, `cost`, `security`, `architecture`, `operator` y `technical`.
+- El apéndice de operación y auditoría documenta el roadmap `3.0.0/0.6.0`,
+  fases/slices P0-P2 y el piloto recomendado `Hebri-AI-Portfolio`.
+
+### Modificado
+
+- README, índice de la biblia, `BIBLIA.md`, `AGENTS.md` y `HARNESS_VERSION`
+  quedan alineados con la versión operativa `Hebri-AI-Harness 0.6.0`.
+- La metodología pasa a tratar la contradicción técnica controlada como parte
+  del cierre de decisiones importantes, sin aumentar el límite de agentes.
+
+---
+
 ## [2.7.1] — 2026-05-23
 
 ### Añadido

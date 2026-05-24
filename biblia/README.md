@@ -5,7 +5,7 @@ Metodología de trabajo con IA aplicada a proyectos de software.
 | Volumen | Tema | Cuándo leer |
 |---|---|---|
 | [Vol 01](./vol-01-modelo-de-trabajo.md) | Modelo de trabajo | Duda sobre el approach general |
-| [Vol 02](./vol-02-subagentes.md) | Subagentes (Explorer/Worker) | Antes de delegar trabajo |
+| [Vol 02](./vol-02-subagentes.md) | Subagentes, roles mínimos y perfiles | Antes de delegar trabajo |
 | [Vol 03](./vol-03-sdd.md) | Specification-Driven Development | Antes de planear fase o feature |
 | [Vol 04](./vol-04-arquitectura-repo.md) | Arquitectura de repo | Antes de definir estructura |
 | [Vol 05](./vol-05-prompts.md) | Prompts operativos | Antes de escribir prompts |
@@ -14,7 +14,7 @@ Metodología de trabajo con IA aplicada a proyectos de software.
 | [Vol 08](./vol-08-mcps-y-autonomia.md) | MCPs, tool use y niveles de autonomía | Antes de dar acceso a herramientas |
 | [Vol 09](./vol-09-roles-cerrados.md) | Roles cerrados de harness (leader, spec_author, implementer, reviewer) | Al pasar de explorer/worker a SDD con aprobación |
 | [Apéndice](./apendice-ejemplo-end-to-end.md) | Ejemplo end-to-end trabajado | Onboarding o duda práctica |
-| [Apéndice Harness 0.5](./apendice-harness-0-5-operacion.md) | Operación y auditoría de harness 0.5.0 | Auditar cumplimiento, regularizar P0 o configurar presets |
+| [Apéndice Harness 0.6](./apendice-harness-0-5-operacion.md) | Operación y auditoría de harness 0.6.0 | Auditar cumplimiento, regularizar P0 o configurar presets |
 
 ---
 
@@ -32,7 +32,7 @@ Metodología de trabajo con IA aplicada a proyectos de software.
 | Escribir o refactorizar prompts | Vol 05 |
 | Registrar deuda o faltantes | Vol 06 |
 | Dar tools, modelos o autonomía | Vol 08 |
-| Auditar o regularizar harness 0.5.0 | Apéndice Harness 0.5 |
+| Auditar o regularizar harness 0.6.0 | Apéndice Harness 0.6 |
 | Ver un recorrido completo | Apéndice |
 
 No cargues todos los volúmenes salvo auditoría metodológica completa. La

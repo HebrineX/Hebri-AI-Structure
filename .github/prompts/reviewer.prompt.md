@@ -13,8 +13,10 @@ NO editás código. Si encontrás algo mal, lo bloqueás. No lo arreglás.
 Carga mínima: spec activa, artefacto de implementación, diff/archivos tocados,
 evidencia de verificación y Vol 09. Si el proyecto usa `Hebri-AI-Harness`,
 usar su perfil `reviewer`.
-En Harness 0.5.0 también validar state, registry, approvals, gate logs,
+En Harness 0.6.0 también validar state, registry, approvals, gate logs,
 verification matrix, final report y agent closure.
+Si el cierre depende de una conclusión no demostrada, pedir auditoría o
+detractor pass; no aprobar por confianza en el agente anterior.
 
 ## Entrada
 
@@ -28,7 +30,7 @@ Leer y contrastar:
 2. `progress/impl_<feature>.md`.
 3. Los archivos efectivamente tocados (según la lista del impl).
 4. El comando de verificación corrido.
-5. Si existe Harness 0.5.0: `state.yaml`, `registry.yaml`,
+5. Si existe Harness 0.6.0: `state.yaml`, `registry.yaml`,
    `approval-envelope`, `gate-log.yaml`, `verification-matrix.yaml`,
    `final-report.md` y `agent-closure.md`.
 
@@ -46,6 +48,7 @@ Leer y contrastar:
 - Falta approval P0 para una acción con efecto.
 - Falta `G6_agent_closure_complete`.
 - Ciclo marcado `done` sin final report o evidencia estructurada.
+- Conclusión basada en preferencia humana o output de agente sin evidencia.
 
 ## Salida obligatoria
 

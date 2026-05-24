@@ -99,6 +99,82 @@ separado y se espera aprobación antes de continuar.
 
 ---
 
+## Independencia Técnica y Anti-confirmation Bias
+
+Un agente útil no debe confirmar una decisión solo porque la dijo el operador.
+El operador puede equivocarse, los agentes pueden equivocarse y una aprobación
+humana puede estar basada en información incompleta.
+
+Principio:
+
+```text
+El sistema no valida una decisión por autoridad.
+La valida por evidencia, contrato, contexto y riesgo.
+```
+
+Todo rol debe separar:
+
+| Campo | Pregunta |
+|---|---|
+| Pedido | ¿Qué pidió el operador o el rol anterior? |
+| Hecho observado | ¿Qué evidencia existe en archivos, comandos o estado? |
+| Inferencia | ¿Qué conclusión se está deduciendo? |
+| Riesgo | ¿Qué podría estar mal o incompleto? |
+| Decisión | ¿Qué se puede aprobar, bloquear o pedir aclarar? |
+
+Reglas:
+
+- No convertir preferencias del usuario en verdad técnica.
+- Marcar supuestos y evidencia faltante.
+- Desafiar instrucciones ambiguas, riesgosas o contradictorias.
+- Decir "no hay evidencia suficiente" cuando corresponda.
+- Escalar al leader si una instrucción humana rompe contrato, seguridad,
+  evidencia o trazabilidad.
+
+Modo automático no significa obediencia automática. Modo manual no significa
+que cada `SI` sea técnicamente correcto.
+
+---
+
+## Detractor Pass
+
+El detractor pass es una revisión adversarial controlada. Existe para detectar
+errores de los propios agentes antes de cerrar decisiones importantes.
+
+Se modela como:
+
+```yaml
+role: auditor
+profile: detractor
+mode: read_only
+objective: buscar fallas, supuestos débiles, sesgos, riesgos omitidos y conclusiones no demostradas
+```
+
+Se activa en:
+
+- cierre de fase o slice crítico;
+- planes P0;
+- cambios de arquitectura;
+- auditorías de cumplimiento;
+- decisiones con riesgo alto;
+- cierres donde la evidencia es débil o contradictoria.
+
+Salida mínima:
+
+```text
+Tesis evaluada:
+Objeciones:
+Evidencia:
+Severidad:
+Qué falsaría la objeción:
+Recomendación: aceptar | ajustar | bloquear | pedir evidencia
+```
+
+Regla anti-ruido: el detractor no objeta por gusto. Cada objeción debe estar
+apoyada por evidencia o por una hipótesis verificable.
+
+---
+
 ## Runtime LLM como Adaptador
 
 En proyectos que conectan modelos por API, el LLM no debe ser dueño de la
@@ -198,7 +274,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.5.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.6.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -209,6 +285,11 @@ frase en el chat. Deben pasar por controles estructurados:
 | `secret-denylist.md` | Bloquea por defecto `.env`, llaves, tokens, certificados, backups y logs sensibles |
 | `preflight-template.md` | Estandariza qué se explica antes de ejecutar una acción con efecto |
 | `approval-envelope.md` | Convierte el `SI` humano en aprobación concreta por acción, scope y riesgo |
+| `clarification-checklist.md` | Bloquea planes prematuros cuando falta información mínima |
+| `analysis-checklist.md` | Fuerza requisitos, constraints, riesgos y evidencia antes de implementar |
+| `blast-radius.md` | Declara módulos, archivos, comandos, red, git, rollback y riesgos |
+| `task-graph.yaml` | Ordena dependencias, waves y paralelismo dentro del límite de agentes |
+| `detractor-pass.md` | Revisa conclusiones de agentes buscando errores y sesgos |
 
 **Regla:** en modo automático el leader puede decidir micro-pasos, pero no
 puede editar, ejecutar comandos, usar red, hacer git, cambiar estado SDD ni
@@ -318,6 +399,8 @@ o sistema central). El chat es efímero.
       solo necesita lectura).
 - [ ] Plan de salida si falla (qué se revierte, dónde se registra).
 - [ ] Modelo elegido por costo/capacidad de la tarea típica.
+- [ ] Regla anti-confirmation bias activa.
+- [ ] Detractor pass definido para cierres o decisiones de riesgo.
 
 ---
 

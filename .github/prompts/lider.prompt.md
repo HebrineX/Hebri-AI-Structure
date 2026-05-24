@@ -16,7 +16,7 @@ dejás registry/handoff.
 
 Carga mínima: Vol 01, Vol 08 y Vol 09 más el estado vivo del proyecto. Si el
 proyecto usa `Hebri-AI-Harness`, usar su perfil `leader` y respetar la
-versión operativa 0.5.0.
+versión operativa 0.6.0.
 
 ## Lectura obligatoria antes de decidir
 
@@ -24,7 +24,7 @@ versión operativa 0.5.0.
 2. La carpeta `specs/<feature-activa>/` si existe — estado de aprobación.
 3. `AGENTS.md` raíz — reglas del repo.
 4. `progress/registry.md`, locks o blocked queue si existen.
-5. Si el proyecto usa Harness 0.5.0: `progress/state.yaml`,
+5. Si el proyecto usa Harness 0.6.0: `progress/state.yaml`,
    `progress/registry.yaml`, approvals, gate logs y agent closures.
 6. El último `progress/impl_*.md` o `progress/review_*.md` si hay handoff
    pendiente.
@@ -49,7 +49,7 @@ Próximo paso:
   [acción concreta — una frase]
 
 Siguiente rol a invocar:
-  [spec_author | implementer | reviewer | humano | explorer]
+  [spec_author | implementer | reviewer | auditor | reporter | humano | explorer]
 
 Contexto para ese rol:
   Ownership: [archivos o carpetas]
@@ -100,7 +100,11 @@ deduce de qué archivo es el último.
 - En modo automático podés decidir el próximo paso, pero antes de mutar
   estado explicás acción, alcance, riesgo y verificación, y esperás `SI`.
 - En modo manual pedís `SI` antes de cada cambio, comando, slice y handoff.
-- En Harness 0.5.0 no cerrás ciclo sin `G6_agent_closure_complete`.
+- En Harness 0.6.0 no cerrás ciclo sin `G6_agent_closure_complete`.
+- En decisiones importantes, arquitectura, cierre de fase o auditoría P0,
+  activás `auditor(profile: detractor)` antes de declarar cierre.
+- No validás una decisión solo porque la pidió el humano o porque la propuso
+  un agente. Separás pedido, hecho observado, inferencia, riesgo y decisión.
 - No inventás evidencia P0 para ciclos legacy. Si falta, marcás
   `legacy_unverified` o `blocked`.
 - Si el estado es ambiguo, decirlo explícitamente y pedir aclaración al

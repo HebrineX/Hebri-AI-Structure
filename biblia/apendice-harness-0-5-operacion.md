@@ -1,9 +1,9 @@
-# Apéndice · Operación y Auditoría de Harness 0.5.0
+# Apéndice · Operación y Auditoría de Harness 0.6.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.5.0`.
+`Hebri-AI-Harness 0.6.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.5.0 presente, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.6.0 presente, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.5.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.6.0`:
 
 ```text
 .hebrinex/AGENTS.md
@@ -35,9 +35,18 @@ Archivos mínimos de `Hebri-AI-Harness 0.5.0`:
 .hebrinex/orquestador/sdd/progress/registry.yaml
 .hebrinex/orquestador/sdd/progress/templates/preflight-template.md
 .hebrinex/orquestador/sdd/progress/templates/approval-envelope.md
+.hebrinex/orquestador/sdd/progress/templates/clarification-checklist.md
+.hebrinex/orquestador/sdd/progress/templates/analysis-checklist.md
+.hebrinex/orquestador/sdd/progress/templates/blast-radius.md
+.hebrinex/orquestador/sdd/progress/templates/task-graph.yaml
+.hebrinex/orquestador/sdd/progress/templates/agent-profile-template.yaml
+.hebrinex/orquestador/sdd/progress/templates/detractor-pass.md
 .hebrinex/orquestador/sdd/progress/templates/verification-matrix.yaml
 .hebrinex/orquestador/sdd/progress/templates/final-report.md
 .hebrinex/orquestador/sdd/progress/templates/agent-closure.md
+.hebrinex/orquestador/method/agent-role-taxonomy.md
+.hebrinex/agents/auditor.md
+.hebrinex/agents/reporter.md
 .hebrinex/orquestador/sdd/progress/cycles/_template/audit.jsonl
 .hebrinex/orquestador/sdd/progress/cycles/_template/gate-log.yaml
 .hebrinex/orquestador/policies/tool-policy.yaml
@@ -228,57 +237,94 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Plan de Aplicaciones Futuras
+## 10 · Roadmap 3.0.0 / 0.6.0
 
-Este plan lista mejoras detectadas al comparar el enfoque actual con patrones
-SDD públicos y prácticas de spec-driven development. No activa obligaciones
-nuevas por sí mismo: cada punto debe pasar por diseño, aprobación y versión del
-harness o de la biblia antes de volverse contrato operativo.
+Principio central:
 
-### 10.1 · Candidatas para Hebri-AI-Harness
+```text
+El sistema no escala creando más agentes.
+Escala con roles mínimos, perfiles parametrizados, evidencia verificable y contradicción técnica controlada.
+```
 
-Estas mejoras pertenecen al vehículo operativo porque afectan ejecución,
-gates, estado, evidencia o control de agentes.
+### 10.1 · P0 Obligatorio
 
-| Prioridad | Mejora | Impacto esperado |
+| Bloque | Objetivo | Slices |
 |---|---|---|
-| P0 | Clarification gate antes del plan | Evita planes prematuros cuando el pedido está incompleto o ambiguo |
-| P0 | Checklist de análisis antes de implementación | Fuerza revisión de requisitos, constraints, riesgos y evidencia antes de editar |
-| P0 | Blast radius gate | Declara archivos, módulos, dependencias y riesgos antes de tocar código |
-| P0 | Task dependency graph por ciclo/slice | Ordena tareas, bloqueos y paralelismo sin romper el límite de agentes |
-| P0 | Estados Kanban estructurados en `registry.yaml` | Mejora trazabilidad de `todo`, `ready`, `in_progress`, `review`, `blocked`, `done` |
-| P1 | Archive formal de specs y ciclos cerrados | Reduce ruido operativo sin perder historial |
-| P1 | Risk-before-merge gate | Impide cerrar cambios sin revisar impacto, rollback y deuda nueva |
-| P1 | Audit event schema más estricto | Hace validable el `audit.jsonl` y reduce evidencia narrativa débil |
-| P1 | Agent registry YAML | Separa agentes activos, slots, ownership y handoffs del texto libre |
-| P2 | Worktrees para agentes paralelos | Aísla cambios cuando haya ejecución concurrente real |
-| P2 | Presets/extensiones por herramienta | Mejora adopción en Codex, Claude Code, Gemini y otros clientes |
-| P2 | Compatibilidad parcial con formatos externos de agentes | Facilita interoperabilidad sin abandonar el contrato Hebri |
+| Anti-confirmation bias | Evitar que el sistema confirme errores del usuario | Pedido vs hecho vs inferencia, desafío técnico, bloqueo por evidencia faltante |
+| Clarification gate | No planear con contexto insuficiente | Preguntas bloqueantes, supuestos aceptados, gate antes de plan |
+| Analysis checklist | Analizar antes de implementar | Requisitos, constraints, riesgos, evidencia esperada |
+| Blast radius gate | Declarar alcance antes de tocar archivos | Módulos, read-set/write-set, comandos, red, git, rollback |
+| Task graph/waves | Ordenar dependencias y paralelismo | Secuencial vs paralelo, límite 1 leader + 4 subagentes, bloqueos |
+| Roles mínimos + perfiles | Sumar precisión sin multiplicar agentes | `interpreter`, `leader`, `executor`, `reviewer`, `auditor`, `reporter` |
+| Registry Kanban | Hacer visible el estado real | `todo`, `ready`, `in_progress`, `review`, `blocked`, `done`, `legacy_unverified` |
+| Detractor pass | Detectar errores de agentes antes del cierre | Tesis, objeciones, evidencia, severidad, qué falsaría la objeción |
 
-Regla de activación: una mejora de harness solo se vuelve obligatoria cuando
-existe archivo operativo, template, gate o schema versionado en
-`Hebri-AI-Harness` y la biblia actualiza su referencia de versión.
+### 10.2 · P1 de Robustez
 
-### 10.2 · Candidatas para Hebri-AI-Structure
+| Bloque | Objetivo |
+|---|---|
+| Archive formal | Separar specs/ciclos activos, cerrados y legacy |
+| Risk-before-close | Revisar riesgo residual, rollback, deuda nueva e impacto |
+| Audit event schema | Volver validable `audit.jsonl` |
+| Agent registry YAML | Separar agentes activos, slots, ownership, handoffs y closures |
+| Piloto auditor/reporter | Medir si la separación reduce ruido y mejora decisiones |
+| Ejemplos comparativos | Documentar `cumple`, `parcial`, `no cumple`, `legacy_unverified`, usuario equivocado y agente equivocado |
 
-Estas mejoras pertenecen a la biblia porque explican metodología, criterios de
-decisión, ejemplos y relación entre conceptos. No deben convertirse en runtime.
+### 10.3 · P2 de Escala
 
-| Prioridad | Mejora | Impacto esperado |
-|---|---|---|
-| P0 | Capítulo de clarification-first SDD | Define cuándo preguntar, cuándo inferir y cuándo bloquear por falta de contexto |
-| P0 | Guía de blast radius metodológico | Explica cómo medir alcance antes de aprobar cambios |
-| P0 | Modelo de task graph y waves | Formaliza cómo dividir fases sin perder ownership ni trazabilidad |
-| P1 | Criterios de archivo histórico | Distingue specs vivas, cerradas, legacy y deprecated |
-| P1 | Guía de riesgos antes de merge/cierre | Estándar metodológico para rollback, validación y deuda residual |
-| P1 | Ejemplos comparativos de cumplimiento | Muestra casos `cumple`, `parcial`, `no cumple` y `legacy_unverified` |
-| P2 | Glosario SDD/Harness | Reduce ambigüedad entre spec, cycle, slice, gate, handoff y evidence |
-| P2 | Patrones de adopción por tipo de proyecto | Ajusta la metodología a SaaS, API, CLI, IA, frontend o docs |
-| P2 | Micro-specs junto a código como patrón opcional | Documenta cuándo conviene ubicar specs cerca del módulo afectado |
+| Bloque | Objetivo |
+|---|---|
+| Worktrees para paralelismo | Aislar cambios cuando haya ejecución concurrente real |
+| Presets por herramienta | Mejorar adopción en Codex, Claude Code, Gemini y otros |
+| Compatibilidad externa parcial | Interoperar sin abandonar contrato Hebri |
+| Micro-specs junto a código | Documentar decisiones cerca del módulo cuando convenga |
+| Fundamento para IA futura | Usar memoria metodológica, perfiles cognitivos y contradicción interna controlada |
 
-Regla de activación: una mejora de biblia solo cambia la operación cuando el
-harness incorpora su equivalente como contrato. Hasta entonces es criterio,
-guía o roadmap.
+### 10.4 · Proyecto Piloto Recomendado
+
+Nombre sugerido:
+
+```text
+Hebri-AI-Portfolio
+```
+
+Objetivo: crear un portfolio técnico que muestre stack tecnológico, experiencia
+y conocimiento en IA, usando el harness como contrato operativo.
+
+Stack recomendado:
+
+```text
+Next.js + TypeScript + Tailwind
+```
+
+Secciones sugeridas:
+
+- Inicio: quién sos y qué construís.
+- Stack tecnológico: frontend, backend, bases de datos, DevOps e IA.
+- Metodología IA: Hebri-AI-Structure, Hebri-AI-Harness, SDD, roles cerrados,
+  auditor, reporter y detractor.
+- Proyectos: biblia, harness y demos.
+- Laboratorio IA: agentes, token optimization, prompt engineering, AI
+  Engineering, auditorías y evaluaciones.
+- Contacto y links.
+
+Qué debe probar:
+
+- `.hebrinex/` instalado y fuera de Git.
+- Contrato de sesión.
+- Clarification gate.
+- Analysis checklist.
+- Blast radius.
+- Task graph.
+- Auditor.
+- Reporter.
+- Detractor pass.
+- Registry Kanban.
+- Cierre con evidencia.
+
+Criterio de éxito: el harness 0.6.0 se respeta sin que el operador tenga que
+reencauzarlo constantemente, el portfolio queda funcional y los roles
+especializados aportan claridad sin aumentar el límite de agentes.
 
 ---
 

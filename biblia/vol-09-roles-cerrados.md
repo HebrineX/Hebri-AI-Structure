@@ -7,13 +7,14 @@ Eso alcanza para tareas chicas. Cuando hay harness con SDD y proceso de
 aprobación, hace falta una división más estricta: **el rol que produce no
 debe ser el mismo que aprueba**.
 
-Este volumen define los cuatro roles cerrados que sostienen ese principio.
+Este volumen define los roles cerrados que sostienen ese principio y la
+evolución de `3.0.0`: roles mínimos con perfiles parametrizados.
 
 ---
 
 ## Protocolo Multiagente
 
-En `Hebri-AI-Harness 0.5.0`, el chat visible actúa como **intérprete** por
+En `Hebri-AI-Harness 0.6.0`, el chat visible actúa como **intérprete** por
 defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
 coordinador operativo y debe quedar visible en conversación, registry o
 artefacto. Si el leader no está visible, no se despachan workers ni se cierran
@@ -24,7 +25,7 @@ El límite operativo recomendado es **5 agentes activos en total**:
 | Slot | Rol | Uso |
 |---|---|---|
 | 0 | leader | Orquesta, registra, decide y bloquea |
-| 1-4 | subagentes | explorer, spec_author, implementer, reviewer o worker |
+| 1-4 | subagentes | executor, reviewer, auditor, reporter, explorer, spec_author, implementer o worker |
 
 Un pedido de 30 agentes no significa 30 ejecuciones simultáneas. Significa
 30 asignaciones lógicas ciclando en tandas: un leader y hasta cuatro
@@ -60,13 +61,23 @@ Gates recomendados:
 | Gate | Criterio |
 |---|---|
 | G0_session_contract | Contrato de sesión declarado, modo definido, chat intérprete y leader visible |
-| G1_context_ready | Objetivo, modo, scope y riesgos claros |
+| G1_context_ready | Objetivo, modo, scope, aclaraciones, supuestos y riesgos claros |
 | G2_dispatch_ready | Roles, slots y ownership registrados |
 | G3_locks_acquired | Escrituras con lock válido |
 | G4_execution_complete | Artefactos y evidencia entregados |
 | G5_review_or_validation | Reviewer o leader valida contra contrato |
 | G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
 | G7_handoff_complete | Registry, gaps y próximo paso actualizados |
+
+Subgates P0 de `0.6.0`:
+
+| Subgate | Criterio |
+|---|---|
+| G1A_clarification_complete | Preguntas bloqueantes resueltas o supuestos aceptados |
+| G1B_analysis_complete | Requisitos, constraints, riesgos y evidencia esperada revisados |
+| G1C_blast_radius_declared | Read-set, write-set, comandos, red, git, rollback y riesgos declarados |
+| G2A_task_graph_ready | Dependencias, waves y paralelismo definidos |
+| G5A_detractor_pass_complete | Decisiones importantes revisadas por `auditor(profile: detractor)` |
 
 Cada gate produce `pass`, `fail` o `blocked`.
 
@@ -77,7 +88,48 @@ evidencia retroactiva.
 
 ---
 
-## Los 4 Roles
+## Roles Mínimos y Perfiles
+
+La versión `3.0.0` de la biblia cambia el eje: no se agregan roles por cada
+especialidad. Se mantienen pocos roles mínimos y se parametrizan perfiles.
+
+```text
+Rol estructural = responsabilidad estable.
+Perfil = especialización temporal.
+Tarea = objetivo concreto de ese ciclo.
+```
+
+| Rol mínimo | Responsabilidad | No puede |
+|---|---|---|
+| `interpreter` | Comunica con el operador, traduce estado y pide `SI` | Coordinar de forma invisible |
+| `leader` | Orquesta, registra, decide y bloquea o libera ciclos | Implementar |
+| `executor` | Produce cambios dentro de scope aprobado | Aprobar su propio trabajo |
+| `reviewer` | Revisa producción contra spec, diff y evidencia | Editar código |
+| `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento | Implementar o aprobar |
+| `reporter` | Comunica resultados de forma clara, humana y accionable | Cambiar veredicto o inventar evidencia |
+
+Perfiles:
+
+```yaml
+role: auditor
+profile: harness_compliance | cost | security | architecture | release | detractor
+```
+
+```yaml
+role: reporter
+profile: operator | technical | executive
+```
+
+**Regla anti-explosión:** no se crea un rol nuevo si la necesidad puede
+expresarse como perfil de un rol existente.
+
+**Regla anti-confirmation bias:** ni el pedido humano ni la conclusión de un
+agente son verdad por autoridad. Se validan por evidencia, contrato, contexto
+y riesgo.
+
+---
+
+## Roles Históricos Cerrados
 
 | Rol | Puede | NO puede |
 |---|---|---|
@@ -90,6 +142,10 @@ Entre `spec_author` e `implementer` existe una **puerta de aprobación
 humana**. Un spec puede estar muy bien escrito y resolver el problema
 equivocado. El implementer no arranca hasta que una persona acepta alcance,
 no objetivos y criterios de aceptación.
+
+En harness `0.6.0`, `spec_author` e `implementer` pueden verse como perfiles
+operativos de `executor` cuando la herramienta necesita menos roles visibles.
+La separación produce/aprueba se mantiene igual.
 
 ---
 
@@ -204,6 +260,74 @@ Causales típicas de rechazo:
 
 ---
 
+## Auditor
+
+Auditor revisa el proceso, no produce cambios. Puede auditar cumplimiento del
+harness, costo, seguridad, arquitectura, release o contradicciones internas.
+
+Salida obligatoria:
+
+```text
+Veredicto:
+Evidencia observada:
+Incumplimientos:
+Riesgos:
+Supuestos débiles:
+Plan P0/P1/P2:
+Bloqueos:
+```
+
+El perfil `detractor` cuestiona una tesis concreta:
+
+```text
+Tesis evaluada:
+Objeciones:
+Evidencia:
+Severidad:
+Qué falsaría la objeción:
+Recomendación:
+```
+
+Auditor no reemplaza reviewer. Reviewer mira si una implementación cumple una
+spec. Auditor mira si el sistema, la evidencia y el proceso sostienen el
+veredicto.
+
+---
+
+## Reporter
+
+Reporter convierte salidas técnicas en reportes claros para el operador. Su
+función es reducir ruido sin ocultar riesgos.
+
+Puede:
+
+- ordenar hallazgos por impacto;
+- separar hechos, inferencias y recomendaciones;
+- traducir auditorías densas en decisiones accionables;
+- preparar reporte técnico, ejecutivo u operativo.
+
+No puede:
+
+- inventar evidencia;
+- aprobar cambios;
+- cambiar el veredicto del auditor sin justificarlo;
+- cerrar ciclos;
+- suavizar riesgos hasta volverlos invisibles.
+
+Salida mínima:
+
+```text
+Resumen humano:
+Veredicto:
+Hallazgos principales:
+Impacto:
+Decisiones requeridas:
+Riesgos abiertos:
+Qué requiere SI:
+```
+
+---
+
 ## Contrato de Handoff
 
 Cada rol tiene entrada permitida, salida esperada y criterio de escalada.
@@ -214,6 +338,8 @@ Cada rol tiene entrada permitida, salida esperada y criterio de escalada.
 | **spec_author** | Issue, contexto, no objetivos | Requirements, design y tasks trazables | El alcance no puede cerrarse sin decisión humana |
 | **implementer** | Spec aprobada, ownership y tests esperados | Cambio acotado, archivos tocados y evidencia | Necesita tocar fuera de ownership |
 | **reviewer** | Diff, spec, tests y trace | Hallazgos, bloqueo o aprobación razonada | El resultado contradice el contrato |
+| **auditor** | Estado, registry, gates, evidencia, outputs de roles | Veredicto, incumplimientos, riesgos y plan | Falta evidencia o hay contradicción |
+| **reporter** | Hallazgos, evidencia y audiencia objetivo | Informe claro y decisiones accionables | El reporte necesita alterar veredicto |
 
 **Regla:** si un subagente devuelve algo parcial, no se lo resume para
 seguir igual. Se hace una de tres cosas — pedir aclaración, reintentar con
@@ -262,16 +388,17 @@ comando corrió ni qué evidencia dejó.
 
 ## Roles Cerrados vs Explorer/Worker
 
-| Aspecto | Par informal (Vol 02) | 4 roles cerrados (este vol) |
+| Aspecto | Par informal (Vol 02) | Roles mínimos/perfiles (este vol) |
 |---|---|---|
-| Cuándo usar | Tareas chicas, sin proceso de aprobación | Harness con SDD activo |
+| Cuándo usar | Tareas chicas, sin proceso de aprobación | Harness con SDD activo o decisiones con evidencia |
 | Separación produce/aprueba | No estricta | Estricta |
 | Salida obligatoria por archivo | Sugerida | Obligatoria |
-| Puerta humana entre roles | Opcional | Entre spec_author e implementer |
+| Puerta humana entre roles | Opcional | Entre producción, revisión, auditoría y efectos |
 | Trazabilidad | Recomendada | Requerida |
 
 Empezás con explorer/worker. Cuando el proyecto crece (más de una feature
-viva, equipo o reviewers externos), migrás a los 4 roles cerrados.
+viva, equipo, reviewers externos o necesidad de auditoría), migrás a roles
+mínimos con perfiles parametrizados.
 
 ---
 
@@ -285,6 +412,8 @@ viva, equipo o reviewers externos), migrás a los 4 roles cerrados.
   spec_author.md
   implementer.md
   reviewer.md
+  auditor.md
+  reporter.md
 ```
 
 Cada archivo define el rol como subagente con su ownership y prompt base.
@@ -297,6 +426,8 @@ Los roles viven como prompts invocables en `.github/prompts/`:
 - `/spec-author` — invoca el spec_author.
 - `/implementer` — invoca el implementer.
 - `/reviewer` — invoca el reviewer.
+- `/auditor` — invoca auditoría de cumplimiento, riesgo o detractor pass.
+- `/reporter` — transforma hallazgos en reporte para el operador.
 
 Ver los prompts en este repo bajo `.github/prompts/`.
 
@@ -327,3 +458,15 @@ Una sola persona alterna roles manualmente, pero respetando la separación:
 
 6. **Roles cerrados sin handoff por archivo.** Vuelve el teléfono
    descompuesto. Forzar que cada rol cierre con archivo + referencia.
+
+7. **Multiplicar roles por especialidad.** `security_auditor`,
+   `cost_auditor`, `architecture_auditor` como roles permanentes genera ruido.
+   Usar `auditor(profile: security|cost|architecture)`.
+
+8. **Reporter que maquilla riesgos.** Un reporte más humano no significa
+   menos preciso. Si oculta evidencia o baja severidad sin motivo, rompe el
+   contrato.
+
+9. **Detractor infinito.** El detractor no existe para debatir todo. Se activa
+   en cierres o decisiones relevantes y debe objetar con evidencia o hipótesis
+   verificable.
