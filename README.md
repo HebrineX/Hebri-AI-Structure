@@ -98,7 +98,7 @@ escribime y lo charlamos.
 
 ## Versión y cambios
 
-Versión actual: **2.7.0**. Ver [CHANGELOG.md](./CHANGELOG.md).
+Versión actual: **2.7.1**. Ver [CHANGELOG.md](./CHANGELOG.md).
 
 ## Créditos
 

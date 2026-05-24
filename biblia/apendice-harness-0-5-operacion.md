@@ -228,7 +228,61 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Sincronización Versionada Biblia ↔ Harness
+## 10 · Plan de Aplicaciones Futuras
+
+Este plan lista mejoras detectadas al comparar el enfoque actual con patrones
+SDD públicos y prácticas de spec-driven development. No activa obligaciones
+nuevas por sí mismo: cada punto debe pasar por diseño, aprobación y versión del
+harness o de la biblia antes de volverse contrato operativo.
+
+### 10.1 · Candidatas para Hebri-AI-Harness
+
+Estas mejoras pertenecen al vehículo operativo porque afectan ejecución,
+gates, estado, evidencia o control de agentes.
+
+| Prioridad | Mejora | Impacto esperado |
+|---|---|---|
+| P0 | Clarification gate antes del plan | Evita planes prematuros cuando el pedido está incompleto o ambiguo |
+| P0 | Checklist de análisis antes de implementación | Fuerza revisión de requisitos, constraints, riesgos y evidencia antes de editar |
+| P0 | Blast radius gate | Declara archivos, módulos, dependencias y riesgos antes de tocar código |
+| P0 | Task dependency graph por ciclo/slice | Ordena tareas, bloqueos y paralelismo sin romper el límite de agentes |
+| P0 | Estados Kanban estructurados en `registry.yaml` | Mejora trazabilidad de `todo`, `ready`, `in_progress`, `review`, `blocked`, `done` |
+| P1 | Archive formal de specs y ciclos cerrados | Reduce ruido operativo sin perder historial |
+| P1 | Risk-before-merge gate | Impide cerrar cambios sin revisar impacto, rollback y deuda nueva |
+| P1 | Audit event schema más estricto | Hace validable el `audit.jsonl` y reduce evidencia narrativa débil |
+| P1 | Agent registry YAML | Separa agentes activos, slots, ownership y handoffs del texto libre |
+| P2 | Worktrees para agentes paralelos | Aísla cambios cuando haya ejecución concurrente real |
+| P2 | Presets/extensiones por herramienta | Mejora adopción en Codex, Claude Code, Gemini y otros clientes |
+| P2 | Compatibilidad parcial con formatos externos de agentes | Facilita interoperabilidad sin abandonar el contrato Hebri |
+
+Regla de activación: una mejora de harness solo se vuelve obligatoria cuando
+existe archivo operativo, template, gate o schema versionado en
+`Hebri-AI-Harness` y la biblia actualiza su referencia de versión.
+
+### 10.2 · Candidatas para Hebri-AI-Structure
+
+Estas mejoras pertenecen a la biblia porque explican metodología, criterios de
+decisión, ejemplos y relación entre conceptos. No deben convertirse en runtime.
+
+| Prioridad | Mejora | Impacto esperado |
+|---|---|---|
+| P0 | Capítulo de clarification-first SDD | Define cuándo preguntar, cuándo inferir y cuándo bloquear por falta de contexto |
+| P0 | Guía de blast radius metodológico | Explica cómo medir alcance antes de aprobar cambios |
+| P0 | Modelo de task graph y waves | Formaliza cómo dividir fases sin perder ownership ni trazabilidad |
+| P1 | Criterios de archivo histórico | Distingue specs vivas, cerradas, legacy y deprecated |
+| P1 | Guía de riesgos antes de merge/cierre | Estándar metodológico para rollback, validación y deuda residual |
+| P1 | Ejemplos comparativos de cumplimiento | Muestra casos `cumple`, `parcial`, `no cumple` y `legacy_unverified` |
+| P2 | Glosario SDD/Harness | Reduce ambigüedad entre spec, cycle, slice, gate, handoff y evidence |
+| P2 | Patrones de adopción por tipo de proyecto | Ajusta la metodología a SaaS, API, CLI, IA, frontend o docs |
+| P2 | Micro-specs junto a código como patrón opcional | Documenta cuándo conviene ubicar specs cerca del módulo afectado |
+
+Regla de activación: una mejora de biblia solo cambia la operación cuando el
+harness incorpora su equivalente como contrato. Hasta entonces es criterio,
+guía o roadmap.
+
+---
+
+## 11 · Sincronización Versionada Biblia ↔ Harness
 
 Cuando cambia el harness:
 

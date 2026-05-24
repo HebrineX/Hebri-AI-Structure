@@ -7,6 +7,16 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.7.1] — 2026-05-23
+
+### Añadido
+
+- Apéndice de operación y auditoría incorpora un plan de aplicaciones futuras
+  separado entre mejoras candidatas para `Hebri-AI-Harness` y mejoras
+  metodológicas para `Hebri-AI-Structure`.
+
+---
+
 ## [2.7.0] — 2026-05-23
 
 ### Añadido
