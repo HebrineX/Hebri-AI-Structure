@@ -274,7 +274,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.6.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.7.9`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -285,18 +285,44 @@ frase en el chat. Deben pasar por controles estructurados:
 | `secret-denylist.md` | Bloquea por defecto `.env`, llaves, tokens, certificados, backups y logs sensibles |
 | `preflight-template.md` | Estandariza qué se explica antes de ejecutar una acción con efecto |
 | `approval-envelope.md` | Convierte el `SI` humano en aprobación concreta por acción, scope y riesgo |
+| `PROJECT_BINDING.yaml` | Confirma que el harness pertenece al proyecto activo |
+| `reentry-checklist.md` | Reconstruye contrato después de compactación, cambio de cwd o cambio de proyecto |
 | `clarification-checklist.md` | Bloquea planes prematuros cuando falta información mínima |
 | `analysis-checklist.md` | Fuerza requisitos, constraints, riesgos y evidencia antes de implementar |
 | `blast-radius.md` | Declara módulos, archivos, comandos, red, git, rollback y riesgos |
 | `task-graph.yaml` | Ordena dependencias, waves y paralelismo dentro del límite de agentes |
 | `detractor-pass.md` | Revisa conclusiones de agentes buscando errores y sesgos |
+| `changelog-policy.md` + `release-history-matrix.yaml` | Evita changelogs/release notes escritos sin reconstrucción histórica |
+| `deploy-migration-policy.md` | Exige entorno, comando, evidencia, versión/ciclo y rollback en deploys o migraciones |
+| `reference-drift-policy.md` | Detecta drift entre versión, binding, README, prompts, changelog e init |
+| `ci-pipeline-policy.md` | Reconstruye iteraciones de CI/pipeline sin colapsar fallos relevantes |
+| `backlog-policy.md` | Ordena P0/P1/P2 por bloqueo, impacto, dependencia y criterio de cierre |
+| `final-report-evidence-policy.md` | Obliga a cerrar con links a gates, evidencia, closures, locks y gaps |
+| `ai-preset-policy.md` | Verifica que presets de Codex, Claude y Gemini no salteen contrato ni approvals |
+| `harness-manifest.txt` | Centraliza la estructura que `init.sh` valida para reducir drift |
 
 **Regla:** en modo automático el leader puede decidir micro-pasos, pero no
 puede editar, ejecutar comandos, usar red, hacer git, cambiar estado SDD ni
 abrir subagentes con escritura/verificación sin preflight y `SI`.
 
 Un `SI` no aprueba una sesión entera. Aprueba el action envelope declarado.
-Si cambia comando, cwd, write-set, red, git o riesgo, se pide otro `SI`.
+Si cambia comando, cwd, project root, harness path, binding, write-set, red,
+git, scope externo o riesgo, se pide otro `SI`.
+
+Después de una compactación, resumen de sesión, cambio de cwd o cambio de
+proyecto, los approvals anteriores expiran. El leader debe hacer re-entry:
+
+```text
+1. Confirmar project_root.
+2. Confirmar harness_path.
+3. Validar PROJECT_BINDING.yaml.
+4. Leer state.yaml, registry.yaml y PROGRESS.md.
+5. Reconstruir ciclo, locks, agentes abiertos y handoffs.
+6. Pedir un nuevo SI antes de cualquier acción con efecto.
+```
+
+**Regla:** ninguna autonomía sobrevive a un binding `missing` o `mismatch`.
+Si el harness no pertenece al proyecto activo, el flujo se bloquea.
 
 ---
 

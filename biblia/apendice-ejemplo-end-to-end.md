@@ -174,10 +174,10 @@ Riesgos:
 
 ---
 
-## 6.1 · Controles Harness 0.6.0
+## 6.1 · Controles Harness 0.7.9
 
 Aplicando [Vol 09](./vol-09-roles-cerrados.md) y el
-[Apéndice Harness 0.6](./apendice-harness-0-5-operacion.md), antes de que el
+[Apéndice Harness 0.7](./apendice-harness-0-5-operacion.md), antes de que el
 Worker escriba se declara preflight:
 
 ```text
@@ -185,6 +185,9 @@ Preflight:
 - Approval ID: APR-2.1-001
 - Acción propuesta: implementar Slice 2.1 según spec aprobada
 - CWD: repo TaskNotifier
+- Project root: repo TaskNotifier
+- Harness path: repo TaskNotifier/.hebrinex
+- Binding status: bound
 - Read-set:
   - specs/2.1-scheduler/
   - src/TaskNotifier.Core/Models/Task.cs
@@ -196,6 +199,7 @@ Preflight:
 - Comando/tool:
   - dotnet test --filter "FullyQualifiedName~Scheduling"
 - Red/git/externo: no
+- External write scope: none
 - Riesgo: medio
 - Verificación: tests T3/T4 verdes y build limpio
 - Evidencia esperada:

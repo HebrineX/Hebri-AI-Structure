@@ -1,9 +1,9 @@
-# Apéndice · Operación y Auditoría de Harness 0.6.0
+# Apéndice · Operación y Auditoría de Harness 0.7.9
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.6.0`.
+`Hebri-AI-Harness 0.7.9`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.6.0 presente, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.7.9 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,14 +26,27 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.6.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.7.9`:
 
 ```text
+.hebrinex/PROJECT_BINDING.yaml
 .hebrinex/AGENTS.md
+.hebrinex/orquestador/harness-manifest.txt
 .hebrinex/orquestador/method/session-contract.md
+.hebrinex/orquestador/method/harness-resolution.md
+.hebrinex/orquestador/method/evidence-reconstruction.md
+.hebrinex/orquestador/method/changelog-policy.md
+.hebrinex/orquestador/method/deploy-migration-policy.md
+.hebrinex/orquestador/method/reference-drift-policy.md
+.hebrinex/orquestador/method/ci-pipeline-policy.md
+.hebrinex/orquestador/method/backlog-policy.md
+.hebrinex/orquestador/method/audit-reporting-policy.md
+.hebrinex/orquestador/method/final-report-evidence-policy.md
+.hebrinex/orquestador/method/ai-preset-policy.md
 .hebrinex/orquestador/sdd/progress/state.yaml
 .hebrinex/orquestador/sdd/progress/registry.yaml
 .hebrinex/orquestador/sdd/progress/templates/preflight-template.md
+.hebrinex/orquestador/sdd/progress/templates/reentry-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/approval-envelope.md
 .hebrinex/orquestador/sdd/progress/templates/clarification-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/analysis-checklist.md
@@ -41,6 +54,15 @@ Archivos mínimos de `Hebri-AI-Harness 0.6.0`:
 .hebrinex/orquestador/sdd/progress/templates/task-graph.yaml
 .hebrinex/orquestador/sdd/progress/templates/agent-profile-template.yaml
 .hebrinex/orquestador/sdd/progress/templates/detractor-pass.md
+.hebrinex/orquestador/sdd/progress/templates/changelog-reconstruction-checklist.md
+.hebrinex/orquestador/sdd/progress/templates/release-history-matrix.yaml
+.hebrinex/orquestador/sdd/progress/templates/deploy-migration-checklist.md
+.hebrinex/orquestador/sdd/progress/templates/reference-drift-matrix.yaml
+.hebrinex/orquestador/sdd/progress/templates/ci-pipeline-history.yaml
+.hebrinex/orquestador/sdd/progress/templates/backlog-classification-matrix.yaml
+.hebrinex/orquestador/sdd/progress/templates/audit-report-contract.md
+.hebrinex/orquestador/sdd/progress/templates/final-report-crosslink-checklist.md
+.hebrinex/orquestador/sdd/progress/templates/ai-preset-contract.md
 .hebrinex/orquestador/sdd/progress/templates/verification-matrix.yaml
 .hebrinex/orquestador/sdd/progress/templates/final-report.md
 .hebrinex/orquestador/sdd/progress/templates/agent-closure.md
@@ -59,7 +81,12 @@ También debe cumplirse:
 
 - `.hebrinex/` está en `.gitignore`.
 - `.hebrinex/` no está trackeado por Git del proyecto consumidor.
+- `PROJECT_BINDING.yaml` está en `bound` si es proyecto consumidor.
+- `project_root` coincide con la raíz real del proyecto.
+- Un harness local externo no se usa como autoridad operativa.
 - `bash .hebrinex/init.sh` pasa o deja un bloqueo explícito.
+- `orquestador/harness-manifest.txt` existe y coincide con la estructura
+  esperada por `init.sh`.
 
 ---
 
@@ -71,6 +98,10 @@ Revisar que la sesión muestre:
 Contrato de sesión:
 - Harness detectado
 - Fuente del harness
+- Harness path
+- Project root
+- Binding
+- External write scope
 - Modo
 - Rol del chat: intérprete
 - Leader visible
@@ -83,6 +114,9 @@ Contrato de sesión:
 
 Incumplimientos típicos:
 
+- Falta `PROJECT_BINDING.yaml` o apunta a otro proyecto.
+- Se opera con un `.hebrinex` de otra carpeta.
+- Se usa una fuente `source_template` como autoridad de proyecto.
 - El chat se presenta como leader sin aprobación.
 - Se editan archivos sin preflight.
 - Se ejecutan comandos sin `SI`.
@@ -90,6 +124,31 @@ Incumplimientos típicos:
 - El implementer aprueba.
 - El reviewer edita código.
 - Se cierra un ciclo sin `G6_agent_closure_complete`.
+
+---
+
+## 3.1 · Auditoría de Binding y Re-entry
+
+En 0.7.9, antes de revisar código o progreso, validar:
+
+```text
+Binding:
+- binding_mode: bound | source_template
+- project_root: [ruta]
+- harness_path: [ruta]
+- repo_remote: [url o none]
+- harness_instance_id: [id]
+```
+
+Reglas:
+
+- `source_template` solo es válido para editar el repo fuente del harness o
+  copiarlo hacia un proyecto.
+- Un proyecto consumidor requiere `bound`.
+- Si hubo compactación, cambio de cwd o cambio de proyecto, approvals viejos
+  expiran.
+- El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
+  agentes abiertos y handoffs.
 
 ---
 
@@ -111,6 +170,25 @@ Si un ciclo histórico no tiene estos archivos:
 - no marcarlo como `done` P0;
 - marcarlo como `legacy_unverified`;
 - registrar desde qué ciclo empieza cumplimiento estricto.
+
+### 4.1 · Evidencia Condicional 0.7.x
+
+Además de la evidencia base, `0.7.9` agrega controles que solo aplican si la
+tarea toca ese tipo de decisión:
+
+| Caso | Artefacto requerido |
+|---|---|
+| Changelog, release notes o historia | `changelog-reconstruction-checklist.md` + `release-history-matrix.yaml` |
+| Deploy o migración | `deploy-migration-checklist.md` |
+| Cierre de versión o migración de harness | `reference-drift-matrix.yaml` |
+| CI/pipeline | `ci-pipeline-history.yaml` |
+| Roadmap P0/P1/P2 | `backlog-classification-matrix.yaml` |
+| Auditor + reporter | `audit-report-contract.md` |
+| Cierre de fase/ciclo | `final-report-crosslink-checklist.md` |
+| Presets Codex/Claude/Gemini | `ai-preset-contract.md` |
+
+**Regla:** si el caso aplica y el artefacto no existe, el cierre queda
+`blocked` o se declara explícitamente como no aplicable con evidencia.
 
 ---
 
@@ -164,8 +242,12 @@ Preflight P0:
 - Approval ID:
 - Acción propuesta:
 - CWD:
+- Project root:
+- Harness path:
+- Binding status:
 - Read-set:
 - Write-set:
+- External write scope:
 - Comando/tool:
 - Red/git/externo:
 - Riesgo:
@@ -182,8 +264,10 @@ Preflight P0:
 Este proyecto opera bajo Hebri-AI-Harness.
 
 Leer primero:
+- .hebrinex/PROJECT_BINDING.yaml
 - .hebrinex/AGENTS.md
 - .hebrinex/orquestador/method/session-contract.md
+- .hebrinex/orquestador/method/harness-resolution.md
 - .hebrinex/orquestador/method/operating-modes.md
 - .hebrinex/orquestador/method/multiagent-protocol.md
 
@@ -191,7 +275,8 @@ El chat es intérprete. El leader debe estar visible. Máximo 5 agentes activos:
 leader + 4 subagentes. No mezclar roles.
 
 No escribir, correr comandos, usar red, git ni cambiar estado sin preflight y
-SI. No cerrar ciclos con agentes abiertos.
+SI. No cerrar ciclos con agentes abiertos. Si falta binding o hay mismatch,
+bloquear antes de operar.
 ```
 
 ---
@@ -208,6 +293,7 @@ Roles separados.
 
 Ante logs, errores o debug:
 - declarar contrato de sesión;
+- validar PROJECT_BINDING, project_root y harness_path;
 - clasificar input;
 - separar hechos e inferencias;
 - proponer hipótesis;
@@ -222,6 +308,8 @@ Ante logs, errores o debug:
 | Concepto en la biblia | Archivo operativo en harness |
 |---|---|
 | Modelo de trabajo | `.hebrinex/AGENTS.md`, `session-contract.md` |
+| Binding de proyecto | `PROJECT_BINDING.yaml`, `harness-resolution.md` |
+| Estructura esperada | `orquestador/harness-manifest.txt`, `init.sh` |
 | Unidad mínima de contexto | `orquestador/context-profiles.md` |
 | Explorer/Worker | `agents/`, `prompts/explorar.prompt.md`, `worker.prompt.md` |
 | SDD | `orquestador/sdd/specs/`, templates SDD |
@@ -234,10 +322,17 @@ Ante logs, errores o debug:
 | Evidencia | `evidence-schema.md`, `audit.jsonl`, `gate-log.yaml` |
 | Cierre | `final-report.md`, `agent-closure.md` |
 | Gaps | `gap-library.md`, `blocked.md`, `future-p1.md` |
+| Changelog/release | `changelog-policy.md`, `release-history-matrix.yaml` |
+| Deploy/migración | `deploy-migration-policy.md`, `deploy-migration-checklist.md` |
+| Drift de referencias | `reference-drift-policy.md`, `reference-drift-matrix.yaml` |
+| CI/pipeline | `ci-pipeline-policy.md`, `ci-pipeline-history.yaml` |
+| Backlog | `backlog-policy.md`, `backlog-classification-matrix.yaml` |
+| Auditor/reporter | `audit-reporting-policy.md`, `audit-report-contract.md` |
+| Presets IA | `ai-preset-policy.md`, `preset-*.prompt.md` |
 
 ---
 
-## 10 · Roadmap 3.0.0 / 0.6.0
+## 10 · Roadmap 3.1.1 / 0.7.9
 
 Principio central:
 
@@ -250,6 +345,8 @@ Escala con roles mínimos, perfiles parametrizados, evidencia verificable y cont
 
 | Bloque | Objetivo | Slices |
 |---|---|---|
+| Binding de proyecto | Evitar que un proyecto use el harness de otro | `source_template`, `bound`, `project_root`, `harness_path`, mismatch bloqueante |
+| Re-entry post-compactación | Recuperar contrato después de compactación o cambio de cwd | Expirar approvals, validar binding, reconstruir state/registry/locks/agentes |
 | Anti-confirmation bias | Evitar que el sistema confirme errores del usuario | Pedido vs hecho vs inferencia, desafío técnico, bloqueo por evidencia faltante |
 | Clarification gate | No planear con contexto insuficiente | Preguntas bloqueantes, supuestos aceptados, gate antes de plan |
 | Analysis checklist | Analizar antes de implementar | Requisitos, constraints, riesgos, evidencia esperada |
@@ -258,6 +355,12 @@ Escala con roles mínimos, perfiles parametrizados, evidencia verificable y cont
 | Roles mínimos + perfiles | Sumar precisión sin multiplicar agentes | `interpreter`, `leader`, `executor`, `reviewer`, `auditor`, `reporter` |
 | Registry Kanban | Hacer visible el estado real | `todo`, `ready`, `in_progress`, `review`, `blocked`, `done`, `legacy_unverified` |
 | Detractor pass | Detectar errores de agentes antes del cierre | Tesis, objeciones, evidencia, severidad, qué falsaría la objeción |
+| Manifest estructural | Evitar drift entre estructura e `init.sh` | `orquestador/harness-manifest.txt` como fuente validable |
+| Evidencia histórica | Evitar changelogs o release notes incompletos | `git log`, `PROGRESS.md`, registry, matriz de eventos |
+| Deploy/migración | Documentar cambios de entorno sin omisiones | entorno, comando, evidencia, versión/ciclo, rollback |
+| Drift de referencias | Mantener coherencia de versiones | `HARNESS_VERSION`, binding, README, prompts, changelog e `init.sh` |
+| CI/pipeline | No colapsar iteraciones relevantes | historial de intentos, logs, commits y decisión final |
+| Cierre con cross-links | Evitar `done` sin rastreabilidad | gate log, audit trail, verification matrix, agent closure, locks y gaps |
 
 ### 10.2 · P1 de Robustez
 
@@ -322,7 +425,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el harness 0.6.0 se respeta sin que el operador tenga que
+Criterio de éxito: el harness 0.7.9 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 

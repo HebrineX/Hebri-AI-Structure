@@ -7,6 +7,57 @@ versión sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.1.1] — 2026-05-29
+
+### Añadido
+
+- La biblia adopta `Hebri-AI-Harness 0.7.9` como referencia operativa.
+- Vol 07 documenta `orquestador/harness-manifest.txt` como manifest
+  estructural del harness y aclara que el orquestador vigente vive en
+  `.hebrinex/orquestador/`.
+- Vol 08 incorpora los controles 0.7.x: evidencia histórica, deploy/migración,
+  drift de referencias, CI/pipeline, backlog, cierre con cross-links y presets
+  por IA.
+- Vol 09 actualiza gates, perfiles y responsabilidades de auditor/reporter
+  para incluir el perfil `pipeline` y los gates condicionales 0.7.x.
+
+### Modificado
+
+- README, índice de la biblia, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.7.9`.
+- El apéndice de operación del harness pasa de 0.7.0 a 0.7.9 y separa con más
+  claridad qué es estructura mínima, qué es manifest y qué controles son
+  condicionales por tipo de tarea.
+- Se refuerza que la biblia no reemplaza al harness: explica el criterio, pero
+  la implementación exacta vive en el repo `Hebri-AI-Harness`.
+
+---
+
+## [3.1.0] — 2026-05-29
+
+### Añadido
+
+- La biblia adopta `Hebri-AI-Harness 0.7.0` como referencia operativa.
+- Vol 07 incorpora el principio de binding de proyecto: `source_template`
+  como fuente libre copiable y `bound` como harness vinculado al proyecto.
+- Vol 08 documenta re-entry post-compactación, expiración de approvals y
+  preflight con `project_root`, `harness_path`, `binding_status` y scope
+  externo.
+- Vol 09 asigna al leader, auditor y reporter responsabilidades explícitas
+  para validar binding, evitar contaminación entre proyectos y reportar
+  mismatch sin ocultarlo.
+
+### Modificado
+
+- README, índice de la biblia, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.7.0`.
+- El apéndice de operación del harness pasa de auditoría 0.6.0 a operación
+  0.7.0, con reglas de resolución estricta, bootstrap seguro y re-entry.
+- La metodología aclara que la biblia explica el principio; la implementación
+  exacta vive en el repo `Hebri-AI-Harness`.
+
+---
+
 ## [3.0.0] — 2026-05-23
 
 ### Añadido

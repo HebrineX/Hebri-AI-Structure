@@ -73,8 +73,11 @@ harness. Se enlazan y evolucionan juntos, pero versionados por separado.
 Un harness preparado para producción no es solo una carpeta de prompts.
 Debe traer contratos operativos mínimos:
 
+- binding de proyecto para distinguir fuente libre de harness vinculado;
 - modos de operación (`manual` y `automático`);
 - contrato de sesión obligatorio;
+- resolución estricta de `.hebrinex` por proyecto;
+- re-entry obligatorio después de compactación o cambio de proyecto;
 - independencia técnica y anti-confirmation bias;
 - límite de concurrencia y registry de agentes;
 - roles mínimos con perfiles parametrizados;
@@ -91,16 +94,19 @@ Debe traer contratos operativos mínimos:
 - políticas de permisos, riesgo y recuperación;
 - guía de AI Engineering para prompts, modelos, tools, retries, validación,
   cache y observabilidad.
+- manifest estructural para que la validación no dependa de listas duplicadas
+  en scripts.
 
 **Flujo de arranque:**
 
 ```mermaid
 flowchart LR
     A[1. Tipo de proyecto] --> B[2. Elegir harness]
-    B --> C[3. Copiar template]
-    C --> D[4. Personalizar AGENTS.md]
-    D --> E[5. Completar PROGRESS.md]
-    E --> F[6. Empezar ciclo<br/>de Vol 01]
+    B --> C[3. Copiar fuente libre]
+    C --> D[4. Vincular PROJECT_BINDING]
+    D --> E[5. Personalizar AGENTS.md]
+    E --> F[6. Completar PROGRESS.md]
+    F --> G[7. Empezar ciclo<br/>de Vol 01]
 ```
 
 En el AGENTS.md del proyecto, agregar referencia:
@@ -114,20 +120,60 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 
 ---
 
+## Binding de proyecto y anti-contaminación
+
+Desde `Hebri-AI-Harness 0.7.9`, el harness ya no se trata como una carpeta
+genérica reutilizable en vivo. Cada proyecto debe operar con su propio
+`.hebrinex/` interno.
+
+Estados conceptuales:
+
+| Estado | Uso permitido | Uso prohibido |
+|---|---|---|
+| `source_template` | Fuente libre para copiar, auditar o editar el repo del harness | Operar un proyecto consumidor desde esa carpeta |
+| `bound` | Operar el proyecto cuyo `project_root` coincide | Operar otro proyecto o recibir estado ajeno |
+
+Reglas:
+
+- Si el proyecto tiene `.hebrinex/`, se valida su binding antes de operar.
+- Si no tiene `.hebrinex/`, se busca una fuente local libre y se copia al
+  proyecto.
+- Si no existe fuente local libre, se baja el repo del harness y se vincula.
+- Un harness externo nunca es autoridad operativa del proyecto activo.
+- Specs, registry, locks, gates y reportes viven solo en el `.hebrinex/`
+  vinculado al proyecto.
+
+Esto evita que una sesión compactada o un cambio de carpeta escriba estado de
+un proyecto dentro del harness de otro.
+
+---
+
 ## Harness mínimo recomendado
 
 ```text
 .hebrinex/
+  PROJECT_BINDING.yaml
   AGENTS.md
   PROGRESS.md
   init.sh
   prompts/
   agents/
   orquestador/
+    harness-manifest.txt
     context-profiles.md
     context/
     method/
       session-contract.md
+      harness-resolution.md
+      evidence-reconstruction.md
+      changelog-policy.md
+      deploy-migration-policy.md
+      reference-drift-policy.md
+      ci-pipeline-policy.md
+      backlog-policy.md
+      audit-reporting-policy.md
+      final-report-evidence-policy.md
+      ai-preset-policy.md
       operating-modes.md
       multiagent-protocol.md
       agent-role-taxonomy.md
@@ -153,20 +199,31 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
         templates/
           approval-envelope.md
           preflight-template.md
+          reentry-checklist.md
           clarification-checklist.md
           analysis-checklist.md
           blast-radius.md
           task-graph.yaml
           agent-profile-template.yaml
           detractor-pass.md
+          changelog-reconstruction-checklist.md
+          release-history-matrix.yaml
+          deploy-migration-checklist.md
+          reference-drift-matrix.yaml
+          ci-pipeline-history.yaml
+          backlog-classification-matrix.yaml
+          audit-report-contract.md
+          final-report-crosslink-checklist.md
+          ai-preset-contract.md
           verification-matrix.yaml
           final-report.md
           agent-closure.md
 ```
 
-La ruta exacta puede variar por herramienta (`.github/orquestador/`,
-`.claude/`, `.hebrinex/`), pero la responsabilidad no: una sola fuente de
-verdad para specs, progreso, permisos y handoffs.
+En la implementación vigente del harness, el orquestador operativo vive en
+`.hebrinex/orquestador/`. Las carpetas de herramienta como `.github/` o
+`.claude/` pueden contener prompts o adaptadores, pero no reemplazan esa fuente
+de verdad para specs, progreso, permisos y handoffs.
 
 ---
 
@@ -197,18 +254,21 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.6.0`, que agrega contrato de sesión, controles P0
+`Hebri-AI-Harness 0.7.9`, que agrega binding de proyecto, resolución estricta
+del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
 anti-confirmation bias, roles mínimos con perfiles parametrizados, auditor,
-reporter, detractor pass, clarification gate, analysis checklist, blast radius
-y task graph.
+reporter, detractor pass, clarification gate, analysis checklist, blast radius,
+task graph, gates de evidencia histórica, deploy/migración, drift de
+referencias, CI/pipeline, backlog, cierre con cross-links, presets por IA y
+manifest estructural.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.6.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.7.9.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -216,4 +276,4 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.6.0 (pendiente de validación en proyecto piloto `Hebri-AI-Portfolio`).
+0.7.9 (pendiente de validación en proyecto piloto `Hebri-AI-Portfolio`).

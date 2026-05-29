@@ -13,8 +13,8 @@ humano. Si no lo está, parar inmediatamente y reportar.
 
 Carga mínima: spec activa, ownership, comando de verificación, Vol 03 y
 Vol 09. Si el proyecto usa `Hebri-AI-Harness`, usar su perfil `implementer`
-y respetar controles 0.6.0: preflight, approval envelope, write-set, lock,
-state y registry estructurados.
+y respetar controles 0.7.9: binding válido, preflight, approval envelope,
+write-set, lock, state y registry estructurados.
 
 ## Entrada
 
@@ -28,7 +28,8 @@ Verificación: ${input:verificacion:Comando exacto para validar al cerrar}
 
 1. Leer `specs/<feature>/requirements.md`, `design.md`, `tasks.md`.
 2. Verificar que la spec esté aprobada. Si no lo está, parar.
-3. Si hay Harness 0.6.0, verificar approval envelope, lock y write-set.
+3. Si hay Harness 0.7.9, verificar `PROJECT_BINDING.yaml`, approval envelope,
+   lock y write-set.
 4. Ejecutar las tasks en orden. Una a la vez.
 5. Tocar **solo** los archivos bajo ownership. Nada más.
 6. Correr el comando de verificación aprobado.
@@ -62,6 +63,7 @@ Bloqueos: ninguno | [descripción]
 
 P0:
   Approval ID: <APR-XXX | legacy/no estructurado>
+  Binding: <bound | missing | mismatch>
   Write-set declarado: [lista]
   Write-set real: [lista]
   Evidence ref: [audit/gate/verification]
@@ -80,5 +82,5 @@ Implementación registrada en progress/impl_<feature>.md
 - No modificás tests para hacer pasar lógica defectuosa. Si un test falla,
   arreglás la lógica o paras y reportás.
 - Si un comando falla, mostrás el error exacto. No lo resumís.
-- Si falta approval, lock o write-set en Harness 0.6.0, bloqueás antes de
-  escribir.
+- Si falta binding, approval, lock o write-set en Harness 0.7.9, bloqueás
+  antes de escribir.

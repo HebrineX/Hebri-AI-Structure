@@ -43,28 +43,29 @@ repo/ → + .github/instructions/ · progress/current.md · progress/history/
 
 ## La Carpeta `orquestador/`
 
-`orquestador/` (ya sea bajo `.github/` o como carpeta raíz, según la
-superficie elegida) es la **casa del sistema operativo del repo**. No es
-mágica — lo que importa es que tenga una sola responsabilidad: reunir
-contexto, SDD, políticas y catálogos que guían a humanos y agentes.
+`orquestador/` es la **casa del sistema operativo del repo**. En
+`Hebri-AI-Harness 0.7.9`, la ruta operativa canónica es
+`.hebrinex/orquestador/`. Las carpetas de herramienta (`.github/`, `.claude/`,
+etc.) pueden aportar prompts o adaptadores, pero no reemplazan esa fuente de
+verdad.
 
 Convención recomendada:
 
 ```text
-.github/orquestador/
+.hebrinex/orquestador/
   README.md         índice del sistema operativo del repo
+  harness-manifest.txt estructura validada por init.sh
   context/          contexto estable (product.md, architecture.md)
   sdd/              specs, progress y trace
-  prompts/          prompts internos si no se usan los de .github/prompts
-  pipelines/        catálogo de workflows y automatizaciones
+  method/           contrato, modos, gates y protocolo multiagente
   policies/         permisos, seguridad, criterios de riesgo
 ```
 
 **Regla:** no duplicar. Si el equipo usa GitHub Copilot, mantener
 `.github/prompts/` para compatibilidad con la herramienta y dejar
-`.github/orquestador/` para contexto y SDD. Si se usa otro agente
-(Claude Code, Cursor), agregar la capa propia de ese agente sin mover el
-contenido del orquestador.
+`.hebrinex/orquestador/` como autoridad. Si se usa otro agente
+(Claude Code, Cursor, Gemini), agregar la capa propia de ese agente sin mover
+ni copiar el contenido del orquestador.
 
 **Importante:** "orquestador" es el nombre de la **carpeta**, no del rol.
 El rol que pivotea entre subagentes se llama `leader` y está definido en
@@ -98,7 +99,7 @@ Cambiar de herramienta no mueve la verdad — solo reemplaza el conector.
 
 ```mermaid
 flowchart TD
-    A[¿PRs con equipo y bloqueos?] -->|Sí| B[GitHub-first<br/>.github/orquestador/sdd/]
+    A[¿PRs con equipo y bloqueos?] -->|Sí| B[Harness-first<br/>.hebrinex/orquestador/sdd/]
     A -->|No| C{¿Herramienta diaria<br/>es Claude?}
     C -->|Sí| D[Claude-first<br/>specs/ + AGENTS.md + .claude/]
     C -->|No| E[Portable<br/>specs/ + AGENTS.md]

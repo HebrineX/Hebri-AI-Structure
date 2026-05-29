@@ -11,7 +11,8 @@ Verificar y reportar:
 4. ¿Los gaps diferidos están registrados en PROGRESS.md con motivo?
 5. ¿La documentación refleja el estado actual?
 6. ¿El tag de versión está creado (si corresponde)?
-7. Si el proyecto usa Hebri-AI-Harness 0.6.0:
+7. Si el proyecto usa Hebri-AI-Harness 0.7.9:
+   - `PROJECT_BINDING.yaml` está en `bound` y coincide con el proyecto.
    - `state.yaml` y `registry.yaml` están coherentes.
    - Existe `gate-log.yaml`.
    - Existe `verification-matrix.yaml`.
@@ -24,4 +25,5 @@ Producir:
 - Resumen de cierre con evidencia concreta (N tests passed, build OK).
 - Lista de gaps diferidos a la siguiente fase.
 - Próximos pasos sugeridos.
-- En Harness 0.6.0, no declarar `done` si falta cualquier artefacto P0.
+- En Harness 0.7.9, no declarar `done` si falta binding válido o cualquier
+  artefacto P0.

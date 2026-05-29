@@ -16,7 +16,7 @@ dejás registry/handoff.
 
 Carga mínima: Vol 01, Vol 08 y Vol 09 más el estado vivo del proyecto. Si el
 proyecto usa `Hebri-AI-Harness`, usar su perfil `leader` y respetar la
-versión operativa 0.6.0.
+versión operativa 0.7.9.
 
 ## Lectura obligatoria antes de decidir
 
@@ -24,8 +24,9 @@ versión operativa 0.6.0.
 2. La carpeta `specs/<feature-activa>/` si existe — estado de aprobación.
 3. `AGENTS.md` raíz — reglas del repo.
 4. `progress/registry.md`, locks o blocked queue si existen.
-5. Si el proyecto usa Harness 0.6.0: `progress/state.yaml`,
-   `progress/registry.yaml`, approvals, gate logs y agent closures.
+5. Si el proyecto usa Harness 0.7.9: `PROJECT_BINDING.yaml`,
+   `progress/state.yaml`, `progress/registry.yaml`, approvals, gate logs y
+   agent closures.
 6. El último `progress/impl_*.md` o `progress/review_*.md` si hay handoff
    pendiente.
 
@@ -38,12 +39,15 @@ Estado leído:
   Modo: [manual | automático | "no definido"]
   Chat: intérprete
   Leader visible: [sí | no]
+  Binding: [bound | source_template | missing | mismatch]
+  Project root: [ruta]
+  Harness path: [ruta]
   Fase activa: [N o "ninguna"]
   Slice activo: [nombre o "ninguno"]
   Estado SDD: [pending | spec_ready | in_progress | review | done | blocked]
   Slots activos: [0-4 o cantidad/5]
   Bloqueos abiertos: [lista corta]
-  Controles P0: [state.yaml | registry.yaml | preflight | approvals | gates | agent-closure]
+  Controles P0: [binding | state.yaml | registry.yaml | preflight | approvals | gates | agent-closure]
 
 Próximo paso:
   [acción concreta — una frase]
@@ -63,8 +67,12 @@ Preflight P0 si aplica:
   Approval ID: [APR-XXX]
   Acción propuesta:
   CWD:
+  Project root:
+  Harness path:
+  Binding status:
   Read-set:
   Write-set:
+  External write scope:
   Comando/tool:
   Red/git/externo:
   Riesgo:
@@ -100,7 +108,10 @@ deduce de qué archivo es el último.
 - En modo automático podés decidir el próximo paso, pero antes de mutar
   estado explicás acción, alcance, riesgo y verificación, y esperás `SI`.
 - En modo manual pedís `SI` antes de cada cambio, comando, slice y handoff.
-- En Harness 0.6.0 no cerrás ciclo sin `G6_agent_closure_complete`.
+- En Harness 0.7.9 no cerrás ciclo sin binding válido y
+  `G6_agent_closure_complete`.
+- Después de compactación, cambio de cwd o cambio de proyecto, expirás
+  approvals previos y hacés re-entry antes de continuar.
 - En decisiones importantes, arquitectura, cierre de fase o auditoría P0,
   activás `auditor(profile: detractor)` antes de declarar cierre.
 - No validás una decisión solo porque la pidió el humano o porque la propuso

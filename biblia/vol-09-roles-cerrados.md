@@ -14,11 +14,21 @@ evolución de `3.0.0`: roles mínimos con perfiles parametrizados.
 
 ## Protocolo Multiagente
 
-En `Hebri-AI-Harness 0.6.0`, el chat visible actúa como **intérprete** por
+En `Hebri-AI-Harness 0.7.9`, el chat visible actúa como **intérprete** por
 defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
 coordinador operativo y debe quedar visible en conversación, registry o
 artefacto. Si el leader no está visible, no se despachan workers ni se cierran
 fases.
+
+Antes de coordinar, el leader valida el binding del harness:
+
+```text
+- project_root confirmado;
+- harness_path confirmado;
+- PROJECT_BINDING.yaml válido;
+- binding `bound` si es proyecto consumidor;
+- `source_template` solo si se está editando el repo fuente del harness.
+```
 
 El límite operativo recomendado es **5 agentes activos en total**:
 
@@ -36,6 +46,7 @@ Artefactos mínimos:
 
 ```text
 progress/
+  PROJECT_BINDING.yaml
   state.yaml
   registry.yaml
   registry.md
@@ -69,7 +80,7 @@ Gates recomendados:
 | G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
 | G7_handoff_complete | Registry, gaps y próximo paso actualizados |
 
-Subgates P0 de `0.6.0`:
+Subgates P0 y condicionales de `0.7.9`:
 
 | Subgate | Criterio |
 |---|---|
@@ -78,6 +89,13 @@ Subgates P0 de `0.6.0`:
 | G1C_blast_radius_declared | Read-set, write-set, comandos, red, git, rollback y riesgos declarados |
 | G2A_task_graph_ready | Dependencias, waves y paralelismo definidos |
 | G5A_detractor_pass_complete | Decisiones importantes revisadas por `auditor(profile: detractor)` |
+| G5B_release_reconstruction_complete | Changelog, release notes o docs históricas revisadas contra matriz de evidencia |
+| G5C_deploy_migration_complete | Deploy/migración con entorno, comando, evidencia y rollback cuando aplica |
+| G5D_reference_drift_complete | Versión y referencias operativas sin drift |
+| G5E_ci_pipeline_history_complete | Iteraciones de CI/pipeline mapeadas si fueron parte del cambio |
+| G5F_backlog_classification_complete | P0/P1/P2 justificados por impacto, bloqueo y dependencia |
+| G5G_audit_report_contract_complete | Auditor y reporter separados sin cambiar veredicto |
+| G5H_final_report_crosslink_complete | Final report conectado con gates, evidencia, closures, locks y gaps |
 
 Cada gate produce `pass`, `fail` o `blocked`.
 
@@ -108,11 +126,24 @@ Tarea = objetivo concreto de ese ciclo.
 | `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento | Implementar o aprobar |
 | `reporter` | Comunica resultados de forma clara, humana y accionable | Cambiar veredicto o inventar evidencia |
 
+Responsabilidades nuevas de `0.7.9`:
+
+- `leader`: valida binding, project root y harness path antes de despachar.
+- `auditor(profile: harness_compliance)`: verifica que no haya contaminación
+  entre proyectos, que no se use un harness externo como autoridad y que haya
+  re-entry post-compactación.
+- `auditor(profile: release)`: valida changelog, release notes y documentación
+  histórica contra evidencia.
+- `auditor(profile: pipeline)`: audita CI, deploy, migraciones, drift de
+  referencias y cierre de versión.
+- `reporter`: comunica `missing`, `mismatch`, approvals expirados y bloqueos
+  sin suavizar el veredicto.
+
 Perfiles:
 
 ```yaml
 role: auditor
-profile: harness_compliance | cost | security | architecture | release | detractor
+profile: harness_compliance | cost | security | architecture | release | pipeline | detractor
 ```
 
 ```yaml
@@ -143,7 +174,7 @@ humana**. Un spec puede estar muy bien escrito y resolver el problema
 equivocado. El implementer no arranca hasta que una persona acepta alcance,
 no objetivos y criterios de aceptación.
 
-En harness `0.6.0`, `spec_author` e `implementer` pueden verse como perfiles
+En harness `0.7.9`, `spec_author` e `implementer` pueden verse como perfiles
 operativos de `executor` cuando la herramienta necesita menos roles visibles.
 La separación produce/aprueba se mantiene igual.
 
