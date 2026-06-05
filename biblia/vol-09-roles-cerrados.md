@@ -14,7 +14,7 @@ evolución de `3.0.0`: roles mínimos con perfiles parametrizados.
 
 ## Protocolo Multiagente
 
-En `Hebri-AI-Harness 0.7.9`, el chat visible actúa como **intérprete** por
+En `Hebri-AI-Harness 0.8.0`, el chat visible actúa como **intérprete** por
 defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
 coordinador operativo y debe quedar visible en conversación, registry o
 artefacto. Si el leader no está visible, no se despachan workers ni se cierran
@@ -72,7 +72,7 @@ Gates recomendados:
 | Gate | Criterio |
 |---|---|
 | G0_session_contract | Contrato de sesión declarado, modo definido, chat intérprete y leader visible |
-| G1_context_ready | Objetivo, modo, scope, aclaraciones, supuestos y riesgos claros |
+| G0A_memory_registry_loaded | Session pin, memory registry y routing cargados según entrypoint || G1_context_ready | Objetivo, modo, scope, aclaraciones, supuestos y riesgos claros |
 | G2_dispatch_ready | Roles, slots y ownership registrados |
 | G3_locks_acquired | Escrituras con lock válido |
 | G4_execution_complete | Artefactos y evidencia entregados |
@@ -80,7 +80,7 @@ Gates recomendados:
 | G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
 | G7_handoff_complete | Registry, gaps y próximo paso actualizados |
 
-Subgates P0 y condicionales de `0.7.9`:
+Subgates P0 y condicionales de `0.8.0`:
 
 | Subgate | Criterio |
 |---|---|
@@ -96,7 +96,7 @@ Subgates P0 y condicionales de `0.7.9`:
 | G5F_backlog_classification_complete | P0/P1/P2 justificados por impacto, bloqueo y dependencia |
 | G5G_audit_report_contract_complete | Auditor y reporter separados sin cambiar veredicto |
 | G5H_final_report_crosslink_complete | Final report conectado con gates, evidencia, closures, locks y gaps |
-
+| G5I_memory_consistency_complete | Memoria activa consistente con state, registry, approvals y gates |
 Cada gate produce `pass`, `fail` o `blocked`.
 
 **Regla P0:** un ciclo no puede cerrarse si quedan agentes abiertos, locks
@@ -126,12 +126,14 @@ Tarea = objetivo concreto de ese ciclo.
 | `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento | Implementar o aprobar |
 | `reporter` | Comunica resultados de forma clara, humana y accionable | Cambiar veredicto o inventar evidencia |
 
-Responsabilidades nuevas de `0.7.9`:
+Responsabilidades nuevas de `0.8.0`:
 
 - `leader`: valida binding, project root y harness path antes de despachar.
+- `leader`: decide qué capas de memoria están activas y no permite memoria completa sin motivo.
 - `auditor(profile: harness_compliance)`: verifica que no haya contaminación
   entre proyectos, que no se use un harness externo como autoridad y que haya
   re-entry post-compactación.
+- `auditor(profile: harness_compliance)`: compara memoria local/diaria/ciclo contra state, registry, approvals y gates.
 - `auditor(profile: release)`: valida changelog, release notes y documentación
   histórica contra evidencia.
 - `auditor(profile: pipeline)`: audita CI, deploy, migraciones, drift de
@@ -174,7 +176,7 @@ humana**. Un spec puede estar muy bien escrito y resolver el problema
 equivocado. El implementer no arranca hasta que una persona acepta alcance,
 no objetivos y criterios de aceptación.
 
-En harness `0.7.9`, `spec_author` e `implementer` pueden verse como perfiles
+En harness `0.8.0`, `spec_author` e `implementer` pueden verse como perfiles
 operativos de `executor` cuando la herramienta necesita menos roles visibles.
 La separación produce/aprueba se mantiene igual.
 
@@ -196,7 +198,7 @@ una dificultad. Si eso pasa, deja de mantener el hilo y nadie lo retoma.
 3. `AGENTS.md` — reglas operativas del repo.
 4. `progress/registry.md`, locks y blocked queue si existe protocolo
    multiagente.
-5. Último output de cualquier subagente que esté en handoff.
+5. `memory/local/session-pin.md` y `memory/memory-registry.yaml` para saber qué contexto cargar.5. Último output de cualquier subagente que esté en handoff.
 
 ### Qué produce el leader
 

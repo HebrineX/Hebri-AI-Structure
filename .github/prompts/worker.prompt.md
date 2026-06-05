@@ -13,7 +13,7 @@ Restricciones:
 - ${input:restricciones:Qué NO tocar / qué NO cambiar}
 - No agregar dependencias sin acordarlo antes.
 - No declarar done sin correr el comando de verificación.
-- Si el proyecto usa Hebri-AI-Harness 0.7.9, no escribir sin binding válido,
+- Si el proyecto usa Hebri-AI-Harness 0.8.0, no escribir sin binding válido,
   preflight, approval envelope, write-set y lock cuando aplique.
 - Si el pedido contradice spec, ownership, evidencia o riesgo declarado,
   bloquear y escalar al leader; no obedecer por inercia.
@@ -29,8 +29,8 @@ Salida esperada:
 2. Comando ejecutado y resultado (incluyendo número de tests).
 3. Decisiones de implementación no previstas en la spec.
 4. Gaps nuevos identificados durante el trabajo.
-5. Si hay Harness 0.7.9: binding, approval ID, write-set real, evidence ref y
-   cierre de agente.
+5. Si hay Harness 0.8.0: binding, approval ID, write-set real, evidence ref y
+   memory route activa (`session-pin.md` + `memory-registry.yaml`),   cierre de agente.
 
 Si encontrás algo ambiguo en la spec: parar y preguntar. No completar con
 criterio propio.

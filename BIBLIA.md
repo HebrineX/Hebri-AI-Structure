@@ -23,7 +23,7 @@
 | Vol 08 · MCPs y autonomía | [`biblia/vol-08-mcps-y-autonomia.md`](./biblia/vol-08-mcps-y-autonomia.md) |
 | Vol 09 · Roles cerrados de harness | [`biblia/vol-09-roles-cerrados.md`](./biblia/vol-09-roles-cerrados.md) |
 | Apéndice · Ejemplo end-to-end | [`biblia/apendice-ejemplo-end-to-end.md`](./biblia/apendice-ejemplo-end-to-end.md) |
-| Apéndice · Operación y auditoría de harness 0.7.9 | [`biblia/apendice-harness-0-5-operacion.md`](./biblia/apendice-harness-0-5-operacion.md) |
+| Apéndice · Operación y auditoría de Harness 0.8.0 | [`biblia/apendice-harness-0-5-operacion.md`](./biblia/apendice-harness-0-5-operacion.md) |
 
 ## Anchors antiguos
 

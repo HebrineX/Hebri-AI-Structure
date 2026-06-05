@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.2.0] — 2026-06-05
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.8.0` como referencia operativa.
+- Vol 07 documenta memoria estratificada gobernada por orquestador: local, diaria, ciclo, proyecto y completa.
+- Vol 08 incorpora `memory-registry.yaml`, `memory-routing.yaml`, entrypoints de reentry y adapters multi-IA como controles de autonomia/contexto.
+- Vol 09 alinea roles cerrados con memoria contractual: el leader decide capas activas, el auditor contrasta memoria contra evidencia y el reporter no altera veredictos.
+- El apendice de operacion del harness pasa a 0.8.0 e incluye estructura `orquestador/memory/`, `orquestador/entrypoints/` y `orquestador/adapters/`.
+
+### Changed
+- `HARNESS_VERSION`, README, AGENTS, BIBLIA, indice interno y prompts operativos quedan alineados a `Hebri-AI-Harness 0.8.0`.
+- La recuperacion post-compactacion deja de depender de reentry manual largo y pasa a cargar `session-pin`, registry/routing de memoria y entrypoint correspondiente.
+
+### Rationale
+- La memoria de una IA no es deterministica ni portable. La biblia formaliza que la memoria valida vive en archivos del harness y que el orquestador, no el modelo, decide que capas se cargan.
 Todos los cambios notables a esta metodología se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y la

@@ -96,7 +96,9 @@ Debe traer contratos operativos mínimos:
   cache y observabilidad.
 - manifest estructural para que la validación no dependa de listas duplicadas
   en scripts.
-
+- memoria estratificada local, diaria, de ciclo, de proyecto y completa;
+- entrypoints de primer mensaje, re-entry liviano/completo, debug-log intake y recuperación post-compactación;
+- adapters por IA para Codex, Claude Code, Gemini, Qwen, DeepSeek, Cursor, Copilot y herramientas genéricas.
 **Flujo de arranque:**
 
 ```mermaid
@@ -122,7 +124,7 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 
 ## Binding de proyecto y anti-contaminación
 
-Desde `Hebri-AI-Harness 0.7.9`, el harness ya no se trata como una carpeta
+Desde `Hebri-AI-Harness 0.8.0`, el harness ya no se trata como una carpeta
 genérica reutilizable en vivo. Cada proyecto debe operar con su propio
 `.hebrinex/` interno.
 
@@ -148,6 +150,29 @@ un proyecto dentro del harness de otro.
 
 ---
 
+## Memoria estratificada gobernada por orquestador
+
+Desde `Hebri-AI-Harness 0.8.0`, el problema de foco no se resuelve confiando
+en la memoria interna de cada IA. Se resuelve con memoria externa en archivos,
+marcada por el orquestador.
+
+| Capa | Uso | Carga por defecto |
+|---|---|---:|
+| `local` | contrato activo, session pin, foco actual | sí |
+| `daily` | decisiones y errores del día | sí, si aplica |
+| `cycle` | fase/slice, roles, locks, approvals y gates | si hay ciclo activo |
+| `project` | hechos estables, arquitectura y decisiones vigentes | por perfil |
+| `complete` | auditoría global, migración o reconstrucción histórica | no |
+
+Regla: el modelo no decide libremente qué recordar. Lee
+`memory-registry.yaml`, aplica `memory-routing.yaml` y carga sólo las capas
+habilitadas por el orquestador.
+
+La memoria completa requiere motivo, alcance y aprobación cuando implica
+lectura amplia o un cierre derivado de historia.
+
+---
+
 ## Harness mínimo recomendado
 
 ```text
@@ -162,6 +187,27 @@ un proyecto dentro del harness de otro.
     harness-manifest.txt
     context-profiles.md
     context/
+    memory/
+      memory-registry.yaml
+      memory-routing.yaml
+      local/session-pin.md
+      daily/
+      cycle/
+      project/
+      complete/
+    entrypoints/
+      first-message.md
+      reentry-light.md
+      reentry-full.md
+      debug-log-intake.md
+      compactation-recovery.md
+    adapters/
+      generic-ai.md
+      codex.md
+      claude-code.md
+      gemini.md
+      qwen.md
+      deepseek.md
     method/
       session-contract.md
       harness-resolution.md
@@ -174,6 +220,9 @@ un proyecto dentro del harness de otro.
       audit-reporting-policy.md
       final-report-evidence-policy.md
       ai-preset-policy.md
+      memory-layer-policy.md
+      adapter-contract.md
+      context-loading-policy.md
       operating-modes.md
       multiagent-protocol.md
       agent-role-taxonomy.md
@@ -254,21 +303,20 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.7.9`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.8.0`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
 anti-confirmation bias, roles mínimos con perfiles parametrizados, auditor,
 reporter, detractor pass, clarification gate, analysis checklist, blast radius,
 task graph, gates de evidencia histórica, deploy/migración, drift de
-referencias, CI/pipeline, backlog, cierre con cross-links, presets por IA y
-manifest estructural.
+referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA, entrypoints de re-entry, memoria estratificada gobernada por orquestador y manifest estructural.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.7.9.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.8.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -276,4 +324,4 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.7.9 (pendiente de validación en proyecto piloto `Hebri-AI-Portfolio`).
+0.8.0 (pendiente de validación en proyecto piloto `Hebri-AI-Portfolio`).

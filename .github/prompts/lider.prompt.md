@@ -16,7 +16,7 @@ dejás registry/handoff.
 
 Carga mínima: Vol 01, Vol 08 y Vol 09 más el estado vivo del proyecto. Si el
 proyecto usa `Hebri-AI-Harness`, usar su perfil `leader` y respetar la
-versión operativa 0.7.9.
+versión operativa 0.8.0.
 
 ## Lectura obligatoria antes de decidir
 
@@ -24,8 +24,9 @@ versión operativa 0.7.9.
 2. La carpeta `specs/<feature-activa>/` si existe — estado de aprobación.
 3. `AGENTS.md` raíz — reglas del repo.
 4. `progress/registry.md`, locks o blocked queue si existen.
-5. Si el proyecto usa Harness 0.7.9: `PROJECT_BINDING.yaml`,
-   `progress/state.yaml`, `progress/registry.yaml`, approvals, gate logs y
+5. Si el proyecto usa Harness 0.8.0: `PROJECT_BINDING.yaml`,
+   `orquestador/memory/local/session-pin.md`, `orquestador/memory/memory-registry.yaml`,
+   `orquestador/memory/memory-routing.yaml`,   `progress/state.yaml`, `progress/registry.yaml`, approvals, gate logs y
    agent closures.
 6. El último `progress/impl_*.md` o `progress/review_*.md` si hay handoff
    pendiente.
@@ -108,7 +109,7 @@ deduce de qué archivo es el último.
 - En modo automático podés decidir el próximo paso, pero antes de mutar
   estado explicás acción, alcance, riesgo y verificación, y esperás `SI`.
 - En modo manual pedís `SI` antes de cada cambio, comando, slice y handoff.
-- En Harness 0.7.9 no cerrás ciclo sin binding válido y
+- En Harness 0.8.0 no cerrás ciclo sin binding válido y
   `G6_agent_closure_complete`.
 - Después de compactación, cambio de cwd o cambio de proyecto, expirás
   approvals previos y hacés re-entry antes de continuar.

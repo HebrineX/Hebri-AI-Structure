@@ -1,9 +1,9 @@
-# Apéndice · Operación y Auditoría de Harness 0.7.9
+# Apéndice · Operación y Auditoría de Harness 0.8.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.7.9`.
+`Hebri-AI-Harness 0.8.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.7.9 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.8.0 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.7.9`:
+Archivos mínimos de `Hebri-AI-Harness 0.8.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
@@ -43,6 +43,23 @@ Archivos mínimos de `Hebri-AI-Harness 0.7.9`:
 .hebrinex/orquestador/method/audit-reporting-policy.md
 .hebrinex/orquestador/method/final-report-evidence-policy.md
 .hebrinex/orquestador/method/ai-preset-policy.md
+.hebrinex/orquestador/method/memory-layer-policy.md
+.hebrinex/orquestador/method/adapter-contract.md
+.hebrinex/orquestador/method/context-loading-policy.md
+.hebrinex/orquestador/memory/memory-registry.yaml
+.hebrinex/orquestador/memory/memory-routing.yaml
+.hebrinex/orquestador/memory/local/session-pin.md
+.hebrinex/orquestador/entrypoints/first-message.md
+.hebrinex/orquestador/entrypoints/reentry-light.md
+.hebrinex/orquestador/entrypoints/reentry-full.md
+.hebrinex/orquestador/entrypoints/debug-log-intake.md
+.hebrinex/orquestador/entrypoints/compactation-recovery.md
+.hebrinex/orquestador/adapters/generic-ai.md
+.hebrinex/orquestador/adapters/codex.md
+.hebrinex/orquestador/adapters/claude-code.md
+.hebrinex/orquestador/adapters/gemini.md
+.hebrinex/orquestador/adapters/qwen.md
+.hebrinex/orquestador/adapters/deepseek.md
 .hebrinex/orquestador/sdd/progress/state.yaml
 .hebrinex/orquestador/sdd/progress/registry.yaml
 .hebrinex/orquestador/sdd/progress/templates/preflight-template.md
@@ -87,6 +104,10 @@ También debe cumplirse:
 - `bash .hebrinex/init.sh` pasa o deja un bloqueo explícito.
 - `orquestador/harness-manifest.txt` existe y coincide con la estructura
   esperada por `init.sh`.
+- `orquestador/memory/memory-registry.yaml` existe y declara capas activas.
+- `orquestador/memory/local/session-pin.md` existe y permite re-entry liviano.
+- `orquestador/entrypoints/` existe para primer mensaje, re-entry y debug logs.
+- `orquestador/adapters/` existe para IAs especificas y fallback generico.
 
 ---
 
@@ -129,7 +150,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.7.9, antes de revisar código o progreso, validar:
+En 0.8.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -149,6 +170,8 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
+- En 0.8.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
 
@@ -171,9 +194,9 @@ Si un ciclo histórico no tiene estos archivos:
 - marcarlo como `legacy_unverified`;
 - registrar desde qué ciclo empieza cumplimiento estricto.
 
-### 4.1 · Evidencia Condicional 0.7.x
+### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.7.9` agrega controles que solo aplican si la
+Además de la evidencia base, `0.8.0` agrega controles que solo aplican si la
 tarea toca ese tipo de decisión:
 
 | Caso | Artefacto requerido |
@@ -186,6 +209,8 @@ tarea toca ese tipo de decisión:
 | Auditor + reporter | `audit-report-contract.md` |
 | Cierre de fase/ciclo | `final-report-crosslink-checklist.md` |
 | Presets Codex/Claude/Gemini | `ai-preset-contract.md` |
+| Memoria/re-entry | `memory-registry.yaml`, `memory-routing.yaml`, `session-pin.md` |
+| Adapters IA | `orquestador/adapters/<tool>.md` o `generic-ai.md` |
 
 **Regla:** si el caso aplica y el artefacto no existe, el cierre queda
 `blocked` o se declara explícitamente como no aplicable con evidencia.
@@ -328,11 +353,11 @@ Ante logs, errores o debug:
 | CI/pipeline | `ci-pipeline-policy.md`, `ci-pipeline-history.yaml` |
 | Backlog | `backlog-policy.md`, `backlog-classification-matrix.yaml` |
 | Auditor/reporter | `audit-reporting-policy.md`, `audit-report-contract.md` |
-| Presets IA | `ai-preset-policy.md`, `preset-*.prompt.md` |
+| Adapters IA | `ai-preset-policy.md`, `adapter-contract.md`, `orquestador/adapters/` |
 
 ---
 
-## 10 · Roadmap 3.1.1 / 0.7.9
+## 10 · Roadmap 3.2.0 / 0.8.0
 
 Principio central:
 
@@ -356,7 +381,9 @@ Escala con roles mínimos, perfiles parametrizados, evidencia verificable y cont
 | Registry Kanban | Hacer visible el estado real | `todo`, `ready`, `in_progress`, `review`, `blocked`, `done`, `legacy_unverified` |
 | Detractor pass | Detectar errores de agentes antes del cierre | Tesis, objeciones, evidencia, severidad, qué falsaría la objeción |
 | Manifest estructural | Evitar drift entre estructura e `init.sh` | `orquestador/harness-manifest.txt` como fuente validable |
-| Evidencia histórica | Evitar changelogs o release notes incompletos | `git log`, `PROGRESS.md`, registry, matriz de eventos |
+| Memoria estratificada | Evitar re-entry manual constante | `memory-registry.yaml`, routing y capas local/diaria/ciclo/proyecto/completa |
+| Entry/re-entry | Volver al contrato sin leer todo | `first-message`, `reentry-light`, `reentry-full`, `debug-log-intake` |
+| Adapters multi-IA | Hacer portable el contrato | Codex, Claude, Gemini, Qwen, DeepSeek, Cursor, Copilot y Generic AI || Evidencia histórica | Evitar changelogs o release notes incompletos | `git log`, `PROGRESS.md`, registry, matriz de eventos |
 | Deploy/migración | Documentar cambios de entorno sin omisiones | entorno, comando, evidencia, versión/ciclo, rollback |
 | Drift de referencias | Mantener coherencia de versiones | `HARNESS_VERSION`, binding, README, prompts, changelog e `init.sh` |
 | CI/pipeline | No colapsar iteraciones relevantes | historial de intentos, logs, commits y decisión final |
@@ -425,7 +452,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el harness 0.7.9 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.8.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 

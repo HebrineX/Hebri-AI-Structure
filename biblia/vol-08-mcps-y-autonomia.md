@@ -253,6 +253,35 @@ irrelevantes con el contrato activo.
 
 ---
 
+### Memoria por capas
+
+El harness no debe depender de la memoria de Codex, Claude, Gemini, Qwen,
+DeepSeek ni ninguna otra herramienta. Cada una puede resumir, compactar o
+perder contexto de forma distinta.
+
+El patrón correcto es:
+
+```text
+memoria conversacional = accidental
+memoria del harness = contractual
+orquestador = decide capas activas
+```
+
+Capas recomendadas:
+
+| Capa | Propósito | Cuándo cargar |
+|---|---|---|
+| local | session pin, contrato activo y foco | siempre al iniciar o reentrar |
+| daily | trabajo fresco del día | por defecto si coincide el día operativo |
+| cycle | fase/slice, roles, locks, approvals y gates | si hay ciclo activo |
+| project | arquitectura y decisiones estables | por perfil de contexto |
+| complete | historia profunda y auditoría global | sólo con motivo y aprobación |
+
+Esto reduce tokens porque el agente no carga todo el harness para cada error,
+y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
+
+---
+
 ## Permisos por archivo y por comando
 
 Ownership de archivos ([Vol 02](./vol-02-subagentes.md)) y autonomía
@@ -274,7 +303,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.7.9`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.8.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -287,6 +316,11 @@ frase en el chat. Deben pasar por controles estructurados:
 | `approval-envelope.md` | Convierte el `SI` humano en aprobación concreta por acción, scope y riesgo |
 | `PROJECT_BINDING.yaml` | Confirma que el harness pertenece al proyecto activo |
 | `reentry-checklist.md` | Reconstruye contrato después de compactación, cambio de cwd o cambio de proyecto |
+| `memory-registry.yaml` | Declara qué capas de memoria están activas |
+| `memory-routing.yaml` | Define qué memoria carga cada entrypoint |
+| `session-pin.md` | Contrato mínimo para rehidratar sin leer todo |
+| `entrypoints/` | Primer mensaje, reentry light/full, debug logs y compactación |
+| `adapters/` | Traduce el contrato a Codex, Claude, Gemini, Qwen, DeepSeek y otras IAs |
 | `clarification-checklist.md` | Bloquea planes prematuros cuando falta información mínima |
 | `analysis-checklist.md` | Fuerza requisitos, constraints, riesgos y evidencia antes de implementar |
 | `blast-radius.md` | Declara módulos, archivos, comandos, red, git, rollback y riesgos |
@@ -298,7 +332,7 @@ frase en el chat. Deben pasar por controles estructurados:
 | `ci-pipeline-policy.md` | Reconstruye iteraciones de CI/pipeline sin colapsar fallos relevantes |
 | `backlog-policy.md` | Ordena P0/P1/P2 por bloqueo, impacto, dependencia y criterio de cierre |
 | `final-report-evidence-policy.md` | Obliga a cerrar con links a gates, evidencia, closures, locks y gaps |
-| `ai-preset-policy.md` | Verifica que presets de Codex, Claude y Gemini no salteen contrato ni approvals |
+| `ai-preset-policy.md` | Verifica que presets/adapters de IA no salteen contrato, memoria ni approvals |
 | `harness-manifest.txt` | Centraliza la estructura que `init.sh` valida para reducir drift |
 
 **Regla:** en modo automático el leader puede decidir micro-pasos, pero no
@@ -316,7 +350,7 @@ proyecto, los approvals anteriores expiran. El leader debe hacer re-entry:
 1. Confirmar project_root.
 2. Confirmar harness_path.
 3. Validar PROJECT_BINDING.yaml.
-4. Leer state.yaml, registry.yaml y PROGRESS.md.
+4. Leer session-pin.md, memory-registry.yaml, memory-routing.yaml, state.yaml, registry.yaml y PROGRESS.md.
 5. Reconstruir ciclo, locks, agentes abiertos y handoffs.
 6. Pedir un nuevo SI antes de cualquier acción con efecto.
 ```
