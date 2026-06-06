@@ -1,9 +1,9 @@
-# Apéndice · Operación y Auditoría de Harness 0.8.0
+# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.2
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.8.0`.
+`Hebri-AI-Harness 0.8.2`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.8.0 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.8.2 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,12 +26,14 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.8.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.8.2`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
 .hebrinex/AGENTS.md
+.hebrinex/scripts/validate-harness.ps1
 .hebrinex/orquestador/harness-manifest.txt
+.hebrinex/orquestador/context-budget.yaml
 .hebrinex/orquestador/method/session-contract.md
 .hebrinex/orquestador/method/harness-resolution.md
 .hebrinex/orquestador/method/evidence-reconstruction.md
@@ -80,6 +82,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.8.0`:
 .hebrinex/orquestador/sdd/progress/templates/audit-report-contract.md
 .hebrinex/orquestador/sdd/progress/templates/final-report-crosslink-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/ai-preset-contract.md
+.hebrinex/orquestador/sdd/progress/templates/memory-closure-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/verification-matrix.yaml
 .hebrinex/orquestador/sdd/progress/templates/final-report.md
 .hebrinex/orquestador/sdd/progress/templates/agent-closure.md
@@ -92,6 +95,10 @@ Archivos mínimos de `Hebri-AI-Harness 0.8.0`:
 .hebrinex/orquestador/policies/command-taxonomy.md
 .hebrinex/orquestador/policies/write-set-policy.md
 .hebrinex/orquestador/policies/secret-denylist.md
+.hebrinex/orquestador/policies/schemas/project-binding.schema.yaml
+.hebrinex/orquestador/policies/schemas/context-budget.schema.yaml
+.hebrinex/orquestador/policies/schemas/memory-registry.schema.yaml
+.hebrinex/orquestador/policies/schemas/registry.schema.yaml
 ```
 
 También debe cumplirse:
@@ -108,6 +115,12 @@ También debe cumplirse:
 - `orquestador/memory/local/session-pin.md` existe y permite re-entry liviano.
 - `orquestador/entrypoints/` existe para primer mensaje, re-entry y debug logs.
 - `orquestador/adapters/` existe para IAs especificas y fallback generico.
+- `orquestador/context-budget.yaml` existe y los entrypoints respetan sus
+  límites.
+- `scripts/validate-harness.ps1 -RunNegativeTests` pasa antes de cerrar una
+  migración o release del harness.
+- `infoHebri.md` no existe dentro de `.hebrinex/`, no aparece en el manifest y
+  no se usa como contexto operativo.
 
 ---
 
@@ -150,7 +163,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.8.0, antes de revisar código o progreso, validar:
+En 0.8.2, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -170,7 +183,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.8.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.8.2, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -196,7 +209,7 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.8.0` agrega controles que solo aplican si la
+Además de la evidencia base, `0.8.2` agrega controles que solo aplican si la
 tarea toca ese tipo de decisión:
 
 | Caso | Artefacto requerido |
@@ -208,8 +221,10 @@ tarea toca ese tipo de decisión:
 | Roadmap P0/P1/P2 | `backlog-classification-matrix.yaml` |
 | Auditor + reporter | `audit-report-contract.md` |
 | Cierre de fase/ciclo | `final-report-crosslink-checklist.md` |
+| Cierre de memoria | `memory-closure-checklist.md` |
 | Presets Codex/Claude/Gemini | `ai-preset-contract.md` |
 | Memoria/re-entry | `memory-registry.yaml`, `memory-routing.yaml`, `session-pin.md` |
+| Presupuesto de contexto | `context-budget.yaml` + salida del validador |
 | Adapters IA | `orquestador/adapters/<tool>.md` o `generic-ai.md` |
 
 **Regla:** si el caso aplica y el artefacto no existe, el cierre queda
@@ -357,7 +372,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.2.0 / 0.8.0
+## 10 · Roadmap 3.2.0 / 0.8.2
 
 Principio central:
 
@@ -452,7 +467,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.8.0 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.8.2 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 

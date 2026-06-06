@@ -96,9 +96,16 @@ Debe traer contratos operativos mínimos:
   cache y observabilidad.
 - manifest estructural para que la validación no dependa de listas duplicadas
   en scripts.
+- presupuestos explícitos de contexto para que el ahorro de tokens sea
+  verificable y no aspiracional;
+- validador local con pruebas negativas para detectar drift antes de migrar o
+  cerrar versión;
 - memoria estratificada local, diaria, de ciclo, de proyecto y completa;
 - entrypoints de primer mensaje, re-entry liviano/completo, debug-log intake y recuperación post-compactación;
 - adapters por IA para Codex, Claude Code, Gemini, Qwen, DeepSeek, Cursor, Copilot y herramientas genéricas.
+- exclusión material de documentación personal (`infoHebri.md`) del harness
+  operativo y de las copias `bound`.
+
 **Flujo de arranque:**
 
 ```mermaid
@@ -124,7 +131,7 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 
 ## Binding de proyecto y anti-contaminación
 
-Desde `Hebri-AI-Harness 0.8.0`, el harness ya no se trata como una carpeta
+Desde `Hebri-AI-Harness 0.8.2`, el harness ya no se trata como una carpeta
 genérica reutilizable en vivo. Cada proyecto debe operar con su propio
 `.hebrinex/` interno.
 
@@ -142,6 +149,9 @@ Reglas:
   proyecto.
 - Si no existe fuente local libre, se baja el repo del harness y se vincula.
 - Un harness externo nunca es autoridad operativa del proyecto activo.
+- La copia hacia un proyecto excluye `infoHebri.md`, `.git/` y temporales.
+- `scripts/validate-harness.ps1 -RunNegativeTests` debe pasar antes de dar por
+  sana una migración.
 - Specs, registry, locks, gates y reportes viven solo en el `.hebrinex/`
   vinculado al proyecto.
 
@@ -152,7 +162,7 @@ un proyecto dentro del harness de otro.
 
 ## Memoria estratificada gobernada por orquestador
 
-Desde `Hebri-AI-Harness 0.8.0`, el problema de foco no se resuelve confiando
+Desde `Hebri-AI-Harness 0.8.2`, el problema de foco no se resuelve confiando
 en la memoria interna de cada IA. Se resuelve con memoria externa en archivos,
 marcada por el orquestador.
 
@@ -171,6 +181,12 @@ habilitadas por el orquestador.
 La memoria completa requiere motivo, alcance y aprobación cuando implica
 lectura amplia o un cierre derivado de historia.
 
+El presupuesto de contexto vive en `orquestador/context-budget.yaml`. Si un
+entrypoint supera su presupuesto (`memory_bootstrap`, `first_message`,
+`debug_log_intake`, `leader_light`, etc.), el agente debe detenerse, declarar
+el exceso y pedir un brief más acotado o aprobación explícita para contexto
+completo.
+
 ---
 
 ## Harness mínimo recomendado
@@ -181,10 +197,13 @@ lectura amplia o un cierre derivado de historia.
   AGENTS.md
   PROGRESS.md
   init.sh
+  scripts/
+    validate-harness.ps1
   prompts/
   agents/
   orquestador/
     harness-manifest.txt
+    context-budget.yaml
     context-profiles.md
     context/
     memory/
@@ -232,6 +251,11 @@ lectura amplia o un cierre derivado de historia.
       command-taxonomy.md
       write-set-policy.md
       secret-denylist.md
+      schemas/
+        project-binding.schema.yaml
+        context-budget.schema.yaml
+        memory-registry.schema.yaml
+        registry.schema.yaml
     sdd/
       specs/
       progress/
@@ -264,6 +288,7 @@ lectura amplia o un cierre derivado de historia.
           audit-report-contract.md
           final-report-crosslink-checklist.md
           ai-preset-contract.md
+          memory-closure-checklist.md
           verification-matrix.yaml
           final-report.md
           agent-closure.md
@@ -303,20 +328,22 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.8.0`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.8.2`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
 anti-confirmation bias, roles mínimos con perfiles parametrizados, auditor,
 reporter, detractor pass, clarification gate, analysis checklist, blast radius,
 task graph, gates de evidencia histórica, deploy/migración, drift de
-referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA, entrypoints de re-entry, memoria estratificada gobernada por orquestador y manifest estructural.
+referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA,
+entrypoints de re-entry, memoria estratificada gobernada por orquestador,
+manifest estructural, presupuestos de contexto y validador local.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.8.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.8.2.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -324,4 +351,5 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.8.0 (pendiente de validación en proyecto piloto `Hebri-AI-Portfolio`).
+0.8.2 (pendiente de validación continua en proyecto piloto
+`Hebri-AI-Portfolio`).

@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.2.1] — 2026-06-06
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.8.2` como referencia operativa.
+- Vol 07 documenta `context-budget.yaml`, `scripts/validate-harness.ps1`,
+  schemas livianos, `memory-closure-checklist.md` y exclusión material de
+  `infoHebri.md` del harness operativo.
+- Vol 08 incorpora presupuestos de contexto, pruebas negativas y regla de no
+  cargar memoria completa ni documentación personal sin aprobación explícita.
+- Vol 09 asigna al leader y al auditor de costo responsabilidad sobre
+  presupuesto de contexto, memoria activa y cierre de memoria.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.8.2`.
+- El apéndice de operación pasa a cubrir operación, presupuesto y auditoría de
+  Harness 0.8.2.
+
+### Fixed
+- Se corrigen filas y líneas pegadas en gates y prompts operativos que podían
+  inducir lecturas ambiguas del contrato.
+
 ## [3.2.0] — 2026-06-05
 
 ### Added

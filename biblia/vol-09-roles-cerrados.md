@@ -14,7 +14,7 @@ evolución de `3.0.0`: roles mínimos con perfiles parametrizados.
 
 ## Protocolo Multiagente
 
-En `Hebri-AI-Harness 0.8.0`, el chat visible actúa como **intérprete** por
+En `Hebri-AI-Harness 0.8.2`, el chat visible actúa como **intérprete** por
 defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
 coordinador operativo y debe quedar visible en conversación, registry o
 artefacto. Si el leader no está visible, no se despachan workers ni se cierran
@@ -72,7 +72,8 @@ Gates recomendados:
 | Gate | Criterio |
 |---|---|
 | G0_session_contract | Contrato de sesión declarado, modo definido, chat intérprete y leader visible |
-| G0A_memory_registry_loaded | Session pin, memory registry y routing cargados según entrypoint || G1_context_ready | Objetivo, modo, scope, aclaraciones, supuestos y riesgos claros |
+| G0A_memory_registry_loaded | Session pin, memory registry y routing cargados según entrypoint |
+| G1_context_ready | Objetivo, modo, scope, aclaraciones, supuestos y riesgos claros |
 | G2_dispatch_ready | Roles, slots y ownership registrados |
 | G3_locks_acquired | Escrituras con lock válido |
 | G4_execution_complete | Artefactos y evidencia entregados |
@@ -80,7 +81,7 @@ Gates recomendados:
 | G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
 | G7_handoff_complete | Registry, gaps y próximo paso actualizados |
 
-Subgates P0 y condicionales de `0.8.0`:
+Subgates P0 y condicionales de `0.8.2`:
 
 | Subgate | Criterio |
 |---|---|
@@ -126,14 +127,18 @@ Tarea = objetivo concreto de ese ciclo.
 | `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento | Implementar o aprobar |
 | `reporter` | Comunica resultados de forma clara, humana y accionable | Cambiar veredicto o inventar evidencia |
 
-Responsabilidades nuevas de `0.8.0`:
+Responsabilidades nuevas de `0.8.2`:
 
 - `leader`: valida binding, project root y harness path antes de despachar.
+- `leader`: valida `context-budget.yaml` y bloquea rutas que exceden
+  presupuesto sin aprobación.
 - `leader`: decide qué capas de memoria están activas y no permite memoria completa sin motivo.
 - `auditor(profile: harness_compliance)`: verifica que no haya contaminación
   entre proyectos, que no se use un harness externo como autoridad y que haya
   re-entry post-compactación.
 - `auditor(profile: harness_compliance)`: compara memoria local/diaria/ciclo contra state, registry, approvals y gates.
+- `auditor(profile: cost)`: verifica que los entrypoints respeten presupuesto
+  y que no se cargue `infoHebri.md` ni memoria completa por defecto.
 - `auditor(profile: release)`: valida changelog, release notes y documentación
   histórica contra evidencia.
 - `auditor(profile: pipeline)`: audita CI, deploy, migraciones, drift de
@@ -176,7 +181,7 @@ humana**. Un spec puede estar muy bien escrito y resolver el problema
 equivocado. El implementer no arranca hasta que una persona acepta alcance,
 no objetivos y criterios de aceptación.
 
-En harness `0.8.0`, `spec_author` e `implementer` pueden verse como perfiles
+En harness `0.8.2`, `spec_author` e `implementer` pueden verse como perfiles
 operativos de `executor` cuando la herramienta necesita menos roles visibles.
 La separación produce/aprueba se mantiene igual.
 
@@ -198,7 +203,10 @@ una dificultad. Si eso pasa, deja de mantener el hilo y nadie lo retoma.
 3. `AGENTS.md` — reglas operativas del repo.
 4. `progress/registry.md`, locks y blocked queue si existe protocolo
    multiagente.
-5. `memory/local/session-pin.md` y `memory/memory-registry.yaml` para saber qué contexto cargar.5. Último output de cualquier subagente que esté en handoff.
+5. `memory/local/session-pin.md`, `memory/memory-registry.yaml`,
+   `memory/memory-routing.yaml` y `context-budget.yaml` para saber qué
+   contexto cargar.
+6. Último output de cualquier subagente que esté en handoff.
 
 ### Qué produce el leader
 

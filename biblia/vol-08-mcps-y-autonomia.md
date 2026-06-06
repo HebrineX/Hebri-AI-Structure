@@ -280,6 +280,16 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
+En `Hebri-AI-Harness 0.8.2`, el ahorro de contexto se valida como contrato:
+`context-budget.yaml` define límites por ruta (`memory_bootstrap`,
+`first_message`, `debug_log_intake`, `leader_light`) y el validador local
+falla si una ruta supera el presupuesto. Si un agente necesita `leader_full` o
+memoria `complete/`, debe declarar motivo, scope y pedir aprobación.
+
+`infoHebri.md` queda fuera de la operación: puede existir como documentación
+personal del usuario, pero no se carga, no se copia a `.hebrinex/` consumidor,
+no entra al manifest y no se usa como evidencia.
+
 ---
 
 ## Permisos por archivo y por comando
@@ -303,7 +313,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.8.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.8.2`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -319,8 +329,11 @@ frase en el chat. Deben pasar por controles estructurados:
 | `memory-registry.yaml` | Declara qué capas de memoria están activas |
 | `memory-routing.yaml` | Define qué memoria carga cada entrypoint |
 | `session-pin.md` | Contrato mínimo para rehidratar sin leer todo |
+| `context-budget.yaml` | Define presupuestos por entrypoint y bloquea cargas excesivas |
 | `entrypoints/` | Primer mensaje, reentry light/full, debug logs y compactación |
 | `adapters/` | Traduce el contrato a Codex, Claude, Gemini, Qwen, DeepSeek y otras IAs |
+| `scripts/validate-harness.ps1` | Valida manifest, schemas, presupuestos, copia `bound` simulada y pruebas negativas |
+| `memory-closure-checklist.md` | Cierra consistencia de memoria antes de declarar `done` |
 | `clarification-checklist.md` | Bloquea planes prematuros cuando falta información mínima |
 | `analysis-checklist.md` | Fuerza requisitos, constraints, riesgos y evidencia antes de implementar |
 | `blast-radius.md` | Declara módulos, archivos, comandos, red, git, rollback y riesgos |
@@ -350,7 +363,8 @@ proyecto, los approvals anteriores expiran. El leader debe hacer re-entry:
 1. Confirmar project_root.
 2. Confirmar harness_path.
 3. Validar PROJECT_BINDING.yaml.
-4. Leer session-pin.md, memory-registry.yaml, memory-routing.yaml, state.yaml, registry.yaml y PROGRESS.md.
+4. Leer session-pin.md, memory-registry.yaml, memory-routing.yaml,
+   context-budget.yaml, state.yaml, registry.yaml y PROGRESS.md.
 5. Reconstruir ciclo, locks, agentes abiertos y handoffs.
 6. Pedir un nuevo SI antes de cualquier acción con efecto.
 ```
