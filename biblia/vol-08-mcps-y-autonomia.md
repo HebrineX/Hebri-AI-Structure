@@ -280,7 +280,7 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.8.2`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.8.7`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
 falla si una ruta supera el presupuesto. Si un agente necesita `leader_full` o
@@ -313,7 +313,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.8.2`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.8.7`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -499,3 +499,11 @@ o sistema central). El chat es efímero.
 6. **Mezclar tool use con razonamiento** — El agente ejecuta y razona en la
    misma frase, sin pausa para verificar. Patrón sano: ejecutar → leer
    resultado → razonar → siguiente acción.
+
+---
+
+## Autonomia con Runtime 0.8.7
+
+Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness manual`, `/harness automatico` y `/harness audit` son controles de bajo costo. No reemplazan aprobación humana ni evidencia.
+
+El runtime reduce tokens porque consulta primero estado compacto. Si necesita contexto completo, debe declarar read-set, budget y pedir `SI`.

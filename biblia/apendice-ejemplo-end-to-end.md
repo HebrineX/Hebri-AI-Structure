@@ -174,7 +174,7 @@ Riesgos:
 
 ---
 
-## 6.1 · Controles Harness 0.8.2
+## 6.1 · Controles Harness 0.8.7
 
 Aplicando [Vol 09](./vol-09-roles-cerrados.md) y el
 [Apéndice Harness 0.8](./apendice-harness-0-5-operacion.md), antes de que el

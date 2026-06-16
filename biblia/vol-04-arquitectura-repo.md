@@ -44,7 +44,7 @@ repo/ → + .github/instructions/ · progress/current.md · progress/history/
 ## La Carpeta `orquestador/`
 
 `orquestador/` es la **casa del sistema operativo del repo**. En
-`Hebri-AI-Harness 0.8.2`, la ruta operativa canónica es
+`Hebri-AI-Harness 0.8.7`, la ruta operativa canónica es
 `.hebrinex/orquestador/`. Las carpetas de herramienta (`.github/`, `.claude/`,
 etc.) pueden aportar prompts o adaptadores, pero no reemplazan esa fuente de
 verdad.

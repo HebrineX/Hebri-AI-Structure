@@ -1,9 +1,9 @@
-# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.2
+# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.7
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.8.2`.
+`Hebri-AI-Harness 0.8.7`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.8.2 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.8.7 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.8.2`:
+Archivos mínimos de `Hebri-AI-Harness 0.8.7`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
@@ -163,7 +163,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.8.2, antes de revisar código o progreso, validar:
+En 0.8.7, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -183,7 +183,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.8.2, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.8.7, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -209,7 +209,7 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.8.2` agrega controles que solo aplican si la
+Además de la evidencia base, `0.8.7` agrega controles que solo aplican si la
 tarea toca ese tipo de decisión:
 
 | Caso | Artefacto requerido |
@@ -372,7 +372,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.2.0 / 0.8.2
+## 10 · Roadmap 3.3.0 / 0.8.7
 
 Principio central:
 
@@ -467,7 +467,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.8.2 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.8.7 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -489,3 +489,19 @@ Cuando cambia el harness:
 
 Regla: si el harness evoluciona y la biblia no refleja el cambio, el repo está
 desfasado aunque los índices pasen.
+
+---
+
+## 11 · Controles 0.8.3 a 0.8.7
+
+Además de los controles base, la versión 0.8.7 exige revisar:
+
+| Versión | Control | Evidencia esperada |
+|---|---|---|
+| 0.8.3 | `detractor-senior` pre-implementación | checklist/veredicto aceptar, simplificar, bloquear o pedir evidencia |
+| 0.8.4 | adapters declarativos multi-IA | `adapter-matrix.yaml` + `check-adapter-drift.ps1` |
+| 0.8.5 | runtime `/harness` | `active-session` no autoritativo + budgets runtime |
+| 0.8.6 | Claude reentry | brief generado, hooks en warn/enforce y estado no autoritativo |
+| 0.8.7 | instruction builder/drift | `build-instructions.ps1` y `validate-drift.ps1 -RunNegativeTests` |
+
+Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.

@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.3.0] — 2026-06-16
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.8.7` como referencia operativa.
+- Vol 07 documenta la linea 0.8.3-0.8.7: detractor senior, adapters portables, runtime `/harness`, Claude reentry e instruction builder.
+- Vol 08 incorpora runtime/budget como control de autonomia y ahorro de contexto.
+- Vol 09 separa `detractor-senior` y `reporter` como perfiles/roles con limites claros.
+- El apendice de operacion suma matriz de controles 0.8.3 a 0.8.7.
+
+### Changed
+- README, indice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.8.7`.
+- La referencia metodologica pasa de economia de contexto 0.8.2 a runtime y drift validator 0.8.7.
+
+### Rationale
+- El harness debe ser vehiculo completo y portable entre IAs, sin depender de memoria conversacional ni de presets divergentes.
+
 ## [3.2.1] — 2026-06-06
 
 ### Added

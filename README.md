@@ -41,7 +41,7 @@ La metodología vive en [`biblia/`](./biblia/), un volumen por archivo.
 - **Configurar acceso a herramientas** → [Vol 08 · MCPs y autonomía](./biblia/vol-08-mcps-y-autonomia.md)
 - **Orquestar entre roles (leader, spec_author, implementer, reviewer)** → [Vol 09 · Roles cerrados](./biblia/vol-09-roles-cerrados.md)
 - **Configurar ciclos multiagente con límite operativo** → [Vol 09 · Protocolo multiagente](./biblia/vol-09-roles-cerrados.md#protocolo-multiagente)
-- **Auditar cumplimiento del Harness 0.8.2** → [Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.2](./biblia/apendice-harness-0-5-operacion.md)
+- **Auditar cumplimiento del Harness 0.8.7** → [Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.7](./biblia/apendice-harness-0-5-operacion.md)
 - **Ver un caso completo** → [Apéndice · Ejemplo end-to-end](./biblia/apendice-ejemplo-end-to-end.md)
 
 ---
@@ -60,15 +60,15 @@ gaps y economía de contexto.
 El harness operativo vive aparte:
 **[Hebri-AI-Harness](https://github.com/HebrineX/Hebri-AI-Harness)**.
 
-Referencia operativa actual: **Hebri-AI-Harness 0.8.2**, con contrato de
+Referencia operativa actual: **Hebri-AI-Harness 0.8.7**, con contrato de
 sesión, binding de proyecto, resolución estricta del `.hebrinex`, re-entry
 post-compactación, controles P0 estructurados, preflight, approvals, tool
 policy, state, registry, audit trail, gate logs, cierre explícito de agentes,
 anti-confirmation bias, roles mínimos con perfiles parametrizados, auditor,
 reporter, detractor pass, gates de evidencia histórica, deploy/migración,
-drift de referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA, entrypoints de re-entry, memoria estratificada gobernada por orquestador y manifest estructural del harness.
+drift de referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA, entrypoints de re-entry, memoria estratificada gobernada por orquestador y manifest estructural del harness, runtime `/harness`, integración Claude reentry e instruction builder.
 
-En 0.8.2 se agregan controles de economía de contexto: `context-budget.yaml`,
+En 0.8.7 se consolidan controles de economía de contexto, runtime, portabilidad multi-IA y drift de instrucciones: `context-budget.yaml`,
 kernel liviano de sesión, `memory-closure-checklist.md`, validador local
 `scripts/validate-harness.ps1` y pruebas negativas para impedir que
 documentación personal como `infoHebri.md` entre en el harness operativo.
@@ -94,7 +94,7 @@ No cargues toda la biblia por defecto. Elegí la ruta mínima:
 | Mejorar prompts | Vol 05 |
 | Registrar gaps | Vol 06 |
 | Configurar tools/autonomía/modelos | Vol 08 |
-| Auditar, presupuestar o regularizar Harness 0.8.2 | Apéndice Harness 0.8 |
+| Auditar, presupuestar o regularizar Harness 0.8.7 | Apéndice Harness 0.8 |
 | Validar un flujo completo | Apéndice |
 
 ---
@@ -107,7 +107,7 @@ escribime y lo charlamos.
 
 ## Versión y cambios
 
-Versión actual: **3.2.1**. Ver [CHANGELOG.md](./CHANGELOG.md).
+Versión actual: **3.3.0**. Ver [CHANGELOG.md](./CHANGELOG.md).
 
 ## Créditos
 
