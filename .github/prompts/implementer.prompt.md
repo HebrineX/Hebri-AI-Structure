@@ -13,7 +13,7 @@ humano. Si no lo está, parar inmediatamente y reportar.
 
 Carga mínima: spec activa, ownership, comando de verificación, Vol 03 y
 Vol 09. Si el proyecto usa `Hebri-AI-Harness`, usar su perfil `implementer`
-y respetar controles 0.8.8: binding válido, preflight, approval envelope,
+y respetar controles 0.8.9: binding válido, preflight, approval envelope,
 write-set, lock, state y registry estructurados.
 
 ## Entrada
@@ -28,7 +28,7 @@ Verificación: ${input:verificacion:Comando exacto para validar al cerrar}
 
 1. Leer `specs/<feature>/requirements.md`, `design.md`, `tasks.md`.
 2. Verificar que la spec esté aprobada. Si no lo está, parar.
-3. Si hay Harness 0.8.8, verificar `PROJECT_BINDING.yaml`, approval envelope,
+3. Si hay Harness 0.8.9, verificar `PROJECT_BINDING.yaml`, approval envelope,
    `session-pin.md`, `memory-registry.yaml`, `memory-routing.yaml`,
    `context-budget.yaml`, lock y write-set.
 4. Ejecutar las tasks en orden. Una a la vez.
@@ -83,5 +83,5 @@ Implementación registrada en progress/impl_<feature>.md
 - No modificás tests para hacer pasar lógica defectuosa. Si un test falla,
   arreglás la lógica o paras y reportás.
 - Si un comando falla, mostrás el error exacto. No lo resumís.
-- Si falta binding, approval, lock o write-set en Harness 0.8.8, bloqueás
+- Si falta binding, approval, lock o write-set en Harness 0.8.9, bloqueás
   antes de escribir.

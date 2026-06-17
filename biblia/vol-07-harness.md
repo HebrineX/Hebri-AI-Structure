@@ -131,7 +131,7 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 
 ## Binding de proyecto y anti-contaminación
 
-Desde `Hebri-AI-Harness 0.8.8`, el harness ya no se trata como una carpeta
+Desde `Hebri-AI-Harness 0.8.9`, el harness ya no se trata como una carpeta
 genérica reutilizable en vivo. Cada proyecto debe operar con su propio
 `.hebrinex/` interno.
 
@@ -162,7 +162,7 @@ un proyecto dentro del harness de otro.
 
 ## Memoria estratificada gobernada por orquestador
 
-Desde `Hebri-AI-Harness 0.8.8`, el problema de foco no se resuelve confiando
+Desde `Hebri-AI-Harness 0.8.9`, el problema de foco no se resuelve confiando
 en la memoria interna de cada IA. Se resuelve con memoria externa en archivos,
 marcada por el orquestador.
 
@@ -328,7 +328,7 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.8.8`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.8.9`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
@@ -340,12 +340,15 @@ entrypoints de re-entry, memoria estratificada gobernada por orquestador,
 manifest estructural, presupuestos de contexto, validador local,
 compatibilidad PowerShell 5.1 para el builder de instrucciones y
 regularizadores de migración para `state.yaml` y `registry.yaml`.
+En 0.8.9 esos controles se endurecen para soportar listas YAML multilínea,
+historia legítima de versiones anteriores y presupuestos livianos con margen
+operativo.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.8.8.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.8.9.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -353,14 +356,14 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.8.8 (pendiente de validación continua en proyecto piloto
+0.8.9 (pendiente de validación continua en proyecto piloto
 `Hebri-AI-Portfolio`).
 
 ---
 
-## Harness 0.8.8 - Runtime, Portabilidad, Drift y Regularización
+## Harness 0.8.9 - Runtime, Portabilidad, Drift y Regularización
 
-La referencia operativa actual es `Hebri-AI-Harness 0.8.8`. La línea 0.8.3-0.8.8 agrega controles que la biblia trata como criterio metodológico:
+La referencia operativa actual es `Hebri-AI-Harness 0.8.9`. La línea 0.8.3-0.8.9 agrega controles que la biblia trata como criterio metodológico:
 
 - 0.8.3: `detractor-senior` antes de implementar cambios relevantes.
 - 0.8.4: core portable + adapters declarativos por IA.
@@ -368,5 +371,6 @@ La referencia operativa actual es `Hebri-AI-Harness 0.8.8`. La línea 0.8.3-0.8.
 - 0.8.6: Claude reentry persistente mediante brief y hooks recomendados.
 - 0.8.7: instruction builder y drift validator fuerte.
 - 0.8.8: compatibilidad PowerShell 5.1 y regularizadores check-only/apply para migrar `state.yaml` y `registry.yaml` preservados.
+- 0.8.9: regularizer robusto para `required_gates`, drift operativo sin falsos positivos históricos y budgets livianos con margen controlado.
 
 Regla conceptual: el harness puede generar o resumir contexto, pero la autoridad sigue en binding, state, registry, gates, evidencia y locks.

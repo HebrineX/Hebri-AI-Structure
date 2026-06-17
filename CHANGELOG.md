@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.3.2] — 2026-06-17
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.8.9` como referencia operativa.
+- El apéndice documenta el hardening 0.8.9: regularizer robusto para
+  `required_gates`, drift operativo sin falsos positivos históricos y
+  presupuestos con margen controlado.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.8.9`.
+- Vol 07 diferencia 0.8.8 como regularización inicial y 0.8.9 como
+  endurecimiento contra fallas de migración repetibles.
+
+### Fixed
+- Se explicita que `init.sh` no debe bloquear historia válida en `PROGRESS.md`,
+  APRs, roadmap o notas de migración.
+- Se documenta que los presupuestos livianos deben tener margen operativo
+  suficiente para metadatos mínimos sin abandonar el objetivo de ahorro.
+
 ## [3.3.1] — 2026-06-17
 
 ### Added
