@@ -14,7 +14,7 @@ evolución de `3.0.0`: roles mínimos con perfiles parametrizados.
 
 ## Protocolo Multiagente
 
-En `Hebri-AI-Harness 0.8.7`, el chat visible actúa como **intérprete** por
+En `Hebri-AI-Harness 0.8.8`, el chat visible actúa como **intérprete** por
 defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
 coordinador operativo y debe quedar visible en conversación, registry o
 artefacto. Si el leader no está visible, no se despachan workers ni se cierran
@@ -81,7 +81,7 @@ Gates recomendados:
 | G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
 | G7_handoff_complete | Registry, gaps y próximo paso actualizados |
 
-Subgates P0 y condicionales de `0.8.7`:
+Subgates P0 y condicionales de `0.8.8`:
 
 | Subgate | Criterio |
 |---|---|
@@ -127,7 +127,7 @@ Tarea = objetivo concreto de ese ciclo.
 | `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento | Implementar o aprobar |
 | `reporter` | Comunica resultados de forma clara, humana y accionable | Cambiar veredicto o inventar evidencia |
 
-Responsabilidades nuevas de `0.8.7`:
+Responsabilidades nuevas de `0.8.8`:
 
 - `leader`: valida binding, project root y harness path antes de despachar.
 - `leader`: valida `context-budget.yaml` y bloquea rutas que exceden
@@ -181,7 +181,7 @@ humana**. Un spec puede estar muy bien escrito y resolver el problema
 equivocado. El implementer no arranca hasta que una persona acepta alcance,
 no objetivos y criterios de aceptación.
 
-En harness `0.8.7`, `spec_author` e `implementer` pueden verse como perfiles
+En harness `0.8.8`, `spec_author` e `implementer` pueden verse como perfiles
 operativos de `executor` cuando la herramienta necesita menos roles visibles.
 La separación produce/aprueba se mantiene igual.
 
@@ -514,7 +514,7 @@ Una sola persona alterna roles manualmente, pero respetando la separación:
 
 ---
 
-## Detractor Senior y Reporter en 0.8.7
+## Detractor Senior y Reporter en 0.8.8
 
 `detractor-senior` es un perfil previo a implementación. Su salida puede bloquear, simplificar o pedir evidencia. No implementa y no aprueba.
 

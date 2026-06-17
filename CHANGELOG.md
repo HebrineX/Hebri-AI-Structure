@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.3.1] — 2026-06-17
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.8.8` como referencia operativa.
+- El apéndice de operación documenta `regularize-state.ps1` y
+  `regularize-registry.ps1` para corregir schema drift durante migraciones
+  preservando estado local.
+- Vol 07 incorpora 0.8.8 como capa de regularización de migraciones y
+  compatibilidad PowerShell 5.1.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.8.8`.
+- La matriz 0.8.x diferencia 0.8.7 como instruction builder/drift y 0.8.8
+  como regularización check-only/apply para `state.yaml` y `registry.yaml`.
+
+### Fixed
+- Se documenta que el builder de instrucciones no debe depender de APIs
+  incompatibles con PowerShell 5.1.
+- Se explicita que migrar `state.yaml`/`registry.yaml` no implica regenerar ni
+  sobrescribir historia del proyecto: primero check-only, luego `SI`, luego
+  `-Apply` con backup.
+
 ## [3.3.0] — 2026-06-16
 
 ### Added

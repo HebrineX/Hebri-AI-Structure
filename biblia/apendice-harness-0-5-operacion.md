@@ -1,9 +1,9 @@
-# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.7
+# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.8
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.8.7`.
+`Hebri-AI-Harness 0.8.8`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.8.7 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.8.8 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,12 +26,14 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.8.7`:
+Archivos mínimos de `Hebri-AI-Harness 0.8.8`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
 .hebrinex/AGENTS.md
 .hebrinex/scripts/validate-harness.ps1
+.hebrinex/scripts/regularize-state.ps1
+.hebrinex/scripts/regularize-registry.ps1
 .hebrinex/orquestador/harness-manifest.txt
 .hebrinex/orquestador/context-budget.yaml
 .hebrinex/orquestador/method/session-contract.md
@@ -163,7 +165,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.8.7, antes de revisar código o progreso, validar:
+En 0.8.8, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -183,7 +185,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.8.7, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.8.8, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -209,7 +211,7 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.8.7` agrega controles que solo aplican si la
+Además de la evidencia base, `0.8.8` agrega controles que solo aplican si la
 tarea toca ese tipo de decisión:
 
 | Caso | Artefacto requerido |
@@ -372,7 +374,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.3.0 / 0.8.7
+## 10 · Roadmap 3.3.x / 0.8.8
 
 Principio central:
 
@@ -398,7 +400,8 @@ Escala con roles mínimos, perfiles parametrizados, evidencia verificable y cont
 | Manifest estructural | Evitar drift entre estructura e `init.sh` | `orquestador/harness-manifest.txt` como fuente validable |
 | Memoria estratificada | Evitar re-entry manual constante | `memory-registry.yaml`, routing y capas local/diaria/ciclo/proyecto/completa |
 | Entry/re-entry | Volver al contrato sin leer todo | `first-message`, `reentry-light`, `reentry-full`, `debug-log-intake` |
-| Adapters multi-IA | Hacer portable el contrato | Codex, Claude, Gemini, Qwen, DeepSeek, Cursor, Copilot y Generic AI || Evidencia histórica | Evitar changelogs o release notes incompletos | `git log`, `PROGRESS.md`, registry, matriz de eventos |
+| Adapters multi-IA | Hacer portable el contrato | Codex, Claude, Gemini, Qwen, DeepSeek, Cursor, Copilot y Generic AI |
+| Evidencia histórica | Evitar changelogs o release notes incompletos | `git log`, `PROGRESS.md`, registry, matriz de eventos |
 | Deploy/migración | Documentar cambios de entorno sin omisiones | entorno, comando, evidencia, versión/ciclo, rollback |
 | Drift de referencias | Mantener coherencia de versiones | `HARNESS_VERSION`, binding, README, prompts, changelog e `init.sh` |
 | CI/pipeline | No colapsar iteraciones relevantes | historial de intentos, logs, commits y decisión final |
@@ -467,7 +470,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.8.7 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.8.8 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -492,9 +495,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 11 · Controles 0.8.3 a 0.8.7
+## 12 · Controles 0.8.3 a 0.8.8
 
-Además de los controles base, la versión 0.8.7 exige revisar:
+Además de los controles base, la versión 0.8.8 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -503,5 +506,62 @@ Además de los controles base, la versión 0.8.7 exige revisar:
 | 0.8.5 | runtime `/harness` | `active-session` no autoritativo + budgets runtime |
 | 0.8.6 | Claude reentry | brief generado, hooks en warn/enforce y estado no autoritativo |
 | 0.8.7 | instruction builder/drift | `build-instructions.ps1` y `validate-drift.ps1 -RunNegativeTests` |
+| 0.8.8 | regularización de migraciones | `regularize-state.ps1`, `regularize-registry.ps1`, backups `.bak` y builder compatible PowerShell 5.1 |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
+
+---
+
+## 13 · Corrección 0.8.8: Regularización de Migraciones
+
+`Hebri-AI-Harness 0.8.8` existe para resolver dos fallas prácticas detectadas
+en migraciones reales:
+
+- `build-instructions.ps1` no puede depender de APIs modernas como
+  `HashData` o `ToHexString`, porque PowerShell 5.1 en Windows usa .NET
+  Framework 4.8.
+- Proyectos que preservan `state.yaml` y `registry.yaml` de 0.8.2 pueden
+  quedar con schema drift frente al validador 0.8.7+.
+
+La solución metodológica no es regenerar estado a ciegas. El orden correcto es:
+
+1. Preservar archivos locales de proyecto: `PROGRESS.md`, contexto, specs,
+   ciclos, approvals, locks, `state.yaml`, `registry.yaml` y `registry.md`.
+2. Actualizar infraestructura del harness desde el repo oficial.
+3. Ejecutar regularizadores en modo check-only.
+4. Mostrar diferencias propuestas y pedir `SI`.
+5. Aplicar con backup `.bak`.
+6. Validar harness, drift, adapters, builder e `init.sh`.
+
+Comandos esperados desde la raíz del proyecto consumidor:
+
+```powershell
+.\.hebrinex\scripts\regularize-state.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\regularize-registry.ps1 -Root .\.hebrinex
+```
+
+Si el reporte es correcto:
+
+```powershell
+.\.hebrinex\scripts\regularize-state.ps1 -Root .\.hebrinex -Apply
+.\.hebrinex\scripts\regularize-registry.ps1 -Root .\.hebrinex -Apply
+```
+
+Validación mínima posterior:
+
+```powershell
+.\.hebrinex\scripts\validate-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\check-adapter-drift.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\build-instructions.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-drift.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+Después:
+
+```bash
+bash .hebrinex/init.sh
+```
+
+Regla de cierre: si `state.yaml` y `registry.yaml` cuentan historias
+distintas, el proyecto queda `parcial` o `blocked` hasta reconciliar ciclo
+activo, roles, gates, locks y evidencia.
