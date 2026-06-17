@@ -280,11 +280,12 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.8.9`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.8.10`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
-falla si una ruta supera el presupuesto. Si un agente necesita `leader_full` o
-memoria `complete/`, debe declarar motivo, scope y pedir aprobación.
+registra warning cuando una ruta supera el presupuesto recomendado. Solo
+bloquea si supera 2x el límite declarado. Si un agente necesita `leader_full`
+o memoria `complete/`, debe declarar motivo, scope y pedir aprobación.
 
 `infoHebri.md` queda fuera de la operación: puede existir como documentación
 personal del usuario, pero no se carga, no se copia a `.hebrinex/` consumidor,
@@ -313,7 +314,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.8.9`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.8.10`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -502,7 +503,7 @@ o sistema central). El chat es efímero.
 
 ---
 
-## Autonomia con Runtime 0.8.9
+## Autonomia con Runtime 0.8.10
 
 Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness manual`, `/harness automatico` y `/harness audit` son controles de bajo costo. No reemplazan aprobación humana ni evidencia.
 

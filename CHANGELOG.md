@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.3.3] — 2026-06-17
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.8.10` como referencia operativa.
+- El apéndice documenta budgets suaves: exceder el presupuesto registra
+  warning/evidencia y solo bloquea sobre 2x del límite declarado.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.8.10`.
+- Vol 07 separa presupuesto recomendado de límite duro para evitar
+  migraciones bloqueadas por metadatos o prompts apenas mayores.
+
+### Fixed
+- Se explicita que `init.sh` debe tener fallback `pwsh -> powershell.exe ->
+  powershell` para Windows sin PowerShell Core.
+
 ## [3.3.2] — 2026-06-17
 
 ### Added
