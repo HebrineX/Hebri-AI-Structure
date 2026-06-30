@@ -131,7 +131,7 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 
 ## Binding de proyecto y anti-contaminación
 
-Desde `Hebri-AI-Harness 0.8.10`, el harness ya no se trata como una carpeta
+Desde `Hebri-AI-Harness 0.9.0`, el harness ya no se trata como una carpeta
 genérica reutilizable en vivo. Cada proyecto debe operar con su propio
 `.hebrinex/` interno.
 
@@ -162,7 +162,7 @@ un proyecto dentro del harness de otro.
 
 ## Memoria estratificada gobernada por orquestador
 
-Desde `Hebri-AI-Harness 0.8.10`, el problema de foco no se resuelve confiando
+Desde `Hebri-AI-Harness 0.9.0`, el problema de foco no se resuelve confiando
 en la memoria interna de cada IA. Se resuelve con memoria externa en archivos,
 marcada por el orquestador.
 
@@ -328,7 +328,7 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.8.10`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.9.0`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
@@ -338,17 +338,19 @@ task graph, gates de evidencia histórica, deploy/migración, drift de
 referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA,
 entrypoints de re-entry, memoria estratificada gobernada por orquestador,
 manifest estructural, presupuestos de contexto, validador local,
-compatibilidad PowerShell 5.1 para el builder de instrucciones y
-regularizadores de migración para `state.yaml` y `registry.yaml`.
-En 0.8.10 esos controles se endurecen para soportar listas YAML multilínea,
-historia legítima de versiones anteriores y presupuestos livianos con margen
-operativo.
+compatibilidad PowerShell 5.1 para el builder de instrucciones,
+regularizadores de migración para `state.yaml` y `registry.yaml`, prompts
+ordenados por responsabilidad, registries canónicos del orquestador e índice
+de registries.
+En 0.9.0 esos controles quedan organizados para que la autoridad operativa no
+dependa de prompts sueltos: cada prompt, adapter, política, gate, template y
+perfil de contexto debe estar registrado o ser explícitamente legacy.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.8.10.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.9.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -356,14 +358,15 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.8.10 (pendiente de validación continua en proyecto piloto
+0.9.0 (pendiente de validación continua en proyecto piloto
 `Hebri-AI-Portfolio`).
 
 ---
 
-## Harness 0.8.10 - Runtime, Portabilidad, Drift y Regularización
+## Harness 0.9.0 - Prompts, Registries y Migración desde 0.8.10
 
-La referencia operativa actual es `Hebri-AI-Harness 0.8.10`. La línea 0.8.3-0.8.10 agrega controles que la biblia trata como criterio metodológico:
+La referencia operativa actual es `Hebri-AI-Harness 0.9.0`. La línea
+0.8.3-0.9.0 agrega controles que la biblia trata como criterio metodológico:
 
 - 0.8.3: `detractor-senior` antes de implementar cambios relevantes.
 - 0.8.4: core portable + adapters declarativos por IA.
@@ -373,5 +376,21 @@ La referencia operativa actual es `Hebri-AI-Harness 0.8.10`. La línea 0.8.3-0.8
 - 0.8.8: compatibilidad PowerShell 5.1 y regularizadores check-only/apply para migrar `state.yaml` y `registry.yaml` preservados.
 - 0.8.9: regularizer robusto para `required_gates`, drift operativo sin falsos positivos históricos y budgets livianos con margen controlado.
 - 0.8.10: context budgets como warning registrado hasta 2x y fallback `pwsh -> powershell.exe -> powershell` en `init.sh`.
+- 0.9.0: prompts separados por responsabilidad, `prompt-registry.yaml`,
+  `registry-index.yaml`, registries canónicos de adapters, contexto, gates,
+  policies y templates, y prompt de migración `0.8.10 -> 0.9.0`.
 
 Regla conceptual: el harness puede generar o resumir contexto, pero la autoridad sigue en binding, state, registry, gates, evidencia y locks.
+
+La mejora metodológica de 0.9.0 no es agregar más instrucciones, sino ordenar
+qué instrucción gobierna cada cosa:
+
+- los prompts son entrypoints o ayudas operativas, no fuente de verdad;
+- los registries explican qué existe, dónde vive y cómo se valida;
+- el manifest y los validadores reducen drift entre estructura real y contrato;
+- la migración desde 0.8.10 preserva `state.yaml`, `registry.yaml`, ciclos,
+  locks, approvals, memoria local/proyecto y evidencia.
+
+Regla de adopción: si un proyecto está en 0.8.10, primero migra a 0.9.0 y
+valida referencias. La arquitectura 0.10.0 se diseña y aplica después, con su
+propio contrato de migración.

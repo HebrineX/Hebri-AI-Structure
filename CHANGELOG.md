@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.3.4] — 2026-06-30
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.9.0` como referencia operativa antes
+  de cualquier documentación de `0.10.0`.
+- Vol 07 y el apéndice documentan 0.9.0 como ordenamiento de prompts,
+  registries canónicos del orquestador, índice de registries y ruta de
+  migración desde 0.8.10.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.9.0`.
+- Vol 08 y Vol 09 tratan 0.9.0 como contrato operativo vigente para
+  autonomía, tool use, roles cerrados, gates y cierre de agentes.
+
+### Rationale
+- La biblia no debe saltear la versión 0.9.0: primero registra el estado
+  estable del harness y después puede documentar la migración estructural a
+  0.10.0.
+
 ## [3.3.3] — 2026-06-17
 
 ### Added

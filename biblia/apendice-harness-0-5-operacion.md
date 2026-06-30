@@ -1,9 +1,9 @@
-# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.8.10
+# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.9.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.8.10`.
+`Hebri-AI-Harness 0.9.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.8.10 presente, binding correcto, contrato declarado, state/registry coherentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.9.0 presente, binding correcto, contrato declarado, state/registry coherentes, registries canónicos presentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,16 +26,24 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.8.10`:
+Archivos mínimos de `Hebri-AI-Harness 0.9.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
 .hebrinex/AGENTS.md
+.hebrinex/prompts/migration/migrar-harness-0-8-10-a-0-9-0.prompt.md
 .hebrinex/scripts/validate-harness.ps1
 .hebrinex/scripts/regularize-state.ps1
 .hebrinex/scripts/regularize-registry.ps1
 .hebrinex/orquestador/harness-manifest.txt
 .hebrinex/orquestador/context-budget.yaml
+.hebrinex/orquestador/prompt-registry.yaml
+.hebrinex/orquestador/registry-index.yaml
+.hebrinex/orquestador/adapter-registry.yaml
+.hebrinex/orquestador/context-profile-registry.yaml
+.hebrinex/orquestador/gate-registry.yaml
+.hebrinex/orquestador/policy-registry.yaml
+.hebrinex/orquestador/template-registry.yaml
 .hebrinex/orquestador/method/session-contract.md
 .hebrinex/orquestador/method/harness-resolution.md
 .hebrinex/orquestador/method/evidence-reconstruction.md
@@ -113,6 +121,12 @@ También debe cumplirse:
 - `bash .hebrinex/init.sh` pasa o deja un bloqueo explícito.
 - `orquestador/harness-manifest.txt` existe y coincide con la estructura
   esperada por `init.sh`.
+- `orquestador/registry-index.yaml` enumera los registries canónicos.
+- `orquestador/prompt-registry.yaml` declara los prompts oficiales y no deja
+  prompts operativos sueltos sin clasificación.
+- `orquestador/adapter-registry.yaml`, `context-profile-registry.yaml`,
+  `gate-registry.yaml`, `policy-registry.yaml` y `template-registry.yaml`
+  existen o el proyecto declara explícitamente que está en migración parcial.
 - `orquestador/memory/memory-registry.yaml` existe y declara capas activas.
 - `orquestador/memory/local/session-pin.md` existe y permite re-entry liviano.
 - `orquestador/entrypoints/` existe para primer mensaje, re-entry y debug logs.
@@ -165,7 +179,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.8.10, antes de revisar código o progreso, validar:
+En 0.9.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -185,7 +199,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.8.10, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.9.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -211,8 +225,8 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.8.10` agrega controles que solo aplican si la
-tarea toca ese tipo de decisión:
+Además de la evidencia base, `0.9.0` conserva los controles 0.8.x y agrega
+verificación de prompts/registries si la tarea toca ese tipo de decisión:
 
 | Caso | Artefacto requerido |
 |---|---|
@@ -228,6 +242,8 @@ tarea toca ese tipo de decisión:
 | Memoria/re-entry | `memory-registry.yaml`, `memory-routing.yaml`, `session-pin.md` |
 | Presupuesto de contexto | `context-budget.yaml` + salida del validador |
 | Adapters IA | `orquestador/adapters/<tool>.md` o `generic-ai.md` |
+| Prompts oficiales | `prompt-registry.yaml` + ruta real del prompt |
+| Registries del orquestador | `registry-index.yaml` + registry específico |
 
 **Regla:** si el caso aplica y el artefacto no existe, el cierre queda
 `blocked` o se declara explícitamente como no aplicable con evidencia.
@@ -374,7 +390,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.3.x / 0.8.10
+## 10 · Roadmap 3.3.x / 0.9.0
 
 Principio central:
 
@@ -470,7 +486,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.8.10 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.9.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -495,9 +511,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 12 · Controles 0.8.3 a 0.8.10
+## 12 · Controles 0.8.3 a 0.9.0
 
-Además de los controles base, la versión 0.8.10 exige revisar:
+Además de los controles base, la versión operativa 0.9.0 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -509,6 +525,7 @@ Además de los controles base, la versión 0.8.10 exige revisar:
 | 0.8.8 | regularización de migraciones | `regularize-state.ps1`, `regularize-registry.ps1`, backups `.bak` y builder compatible PowerShell 5.1 |
 | 0.8.9 | hardening de migración | regularizer para listas inline/multilínea/ausentes, drift operativo sin historia falsa y budgets con margen |
 | 0.8.10 | budget soft gates | warnings/evidencia hasta 2x, bloqueo sobre hard limit y fallback PowerShell en `init.sh` |
+| 0.9.0 | orden de prompts y registries | `prompt-registry.yaml`, `registry-index.yaml`, registries canónicos y prompt de migración `0.8.10 -> 0.9.0` |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
 
@@ -619,3 +636,35 @@ Regla operativa:
 - Registrar el warning en el reporte de migración o gate log.
 - Si supera 2x, detenerse y reducir contexto, prompt o archivos cargados.
 - `init.sh` debe poder correr con `pwsh`, `powershell.exe` o `powershell`.
+
+---
+
+## 16 · Actualización 0.9.0: Orden de Prompts y Registries
+
+`Hebri-AI-Harness 0.9.0` no cambia el principio de operación: binding,
+state, registry, gates, locks y evidencia siguen siendo autoridad. La mejora
+principal es reducir desorden y drift:
+
+- prompts separados por responsabilidad (`roles`, `workflows`, `session`,
+  `migration`, `audit`, `adapters`, `runtime`, `bootstrap`);
+- `prompt-registry.yaml` como índice de prompts oficiales;
+- `registry-index.yaml` como índice de registries canónicos;
+- registries explícitos para adapters, perfiles de contexto, gates, policies
+  y templates;
+- prompt de migración `migrar-harness-0-8-10-a-0-9-0.prompt.md`;
+- validación local para evitar que un prompt suelto gobierne por encima del
+  contrato del harness.
+
+La migración correcta desde 0.8.10:
+
+1. Preservar `state.yaml`, `registry.yaml`, ciclos, locks, approvals,
+   memoria local/proyecto y evidencia.
+2. Agregar la nueva estructura de prompts y registries.
+3. Correr validadores locales.
+4. Revisar drift de referencias.
+5. Cerrar con reporte de migración y evidencia.
+
+Regla: 0.9.0 ordena el harness estable. La estructura de Agent Contract
+System y autoridad `harness_only` pertenece a la migración 0.10.0 y no debe
+declararse aplicada por este apéndice hasta que exista su contrato de
+migración propio.

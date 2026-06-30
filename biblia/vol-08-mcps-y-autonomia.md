@@ -280,7 +280,7 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.8.10`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.9.0`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
 registra warning cuando una ruta supera el presupuesto recomendado. Solo
@@ -314,7 +314,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.8.10`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.9.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -348,6 +348,23 @@ frase en el chat. Deben pasar por controles estructurados:
 | `final-report-evidence-policy.md` | Obliga a cerrar con links a gates, evidencia, closures, locks y gaps |
 | `ai-preset-policy.md` | Verifica que presets/adapters de IA no salteen contrato, memoria ni approvals |
 | `harness-manifest.txt` | Centraliza la estructura que `init.sh` valida para reducir drift |
+
+En 0.9.0, estos controles se vuelven más trazables porque el orquestador
+incorpora registries explícitos:
+
+| Registry | Para qué existe |
+|---|---|
+| `prompt-registry.yaml` | Declara prompts oficiales, categoría y uso permitido |
+| `registry-index.yaml` | Lista registries canónicos y evita fuentes duplicadas |
+| `adapter-registry.yaml` | Hace auditables los adapters por IA |
+| `context-profile-registry.yaml` | Vincula perfiles de contexto con rutas cargables |
+| `gate-registry.yaml` | Declara gates/subgates y evita cierres por texto informal |
+| `policy-registry.yaml` | Ordena políticas operativas y de permisos |
+| `template-registry.yaml` | Declara templates SDD/progreso como contrato verificable |
+
+Regla: un prompt puede guiar una acción, pero no crear autoridad nueva. La
+autoridad sale del binding, registries, policies, state, registry, gates,
+locks y evidencia.
 
 **Regla:** en modo automático el leader puede decidir micro-pasos, pero no
 puede editar, ejecutar comandos, usar red, hacer git, cambiar estado SDD ni
@@ -503,7 +520,7 @@ o sistema central). El chat es efímero.
 
 ---
 
-## Autonomia con Runtime 0.8.10
+## Autonomia con Runtime 0.9.0
 
 Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness manual`, `/harness automatico` y `/harness audit` son controles de bajo costo. No reemplazan aprobación humana ni evidencia.
 
