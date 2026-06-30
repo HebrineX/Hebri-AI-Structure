@@ -179,7 +179,8 @@ Responsabilidades vigentes desde 0.8.10 y consolidadas en `0.10.0`:
   re-entry post-compactación.
 - `auditor(profile: harness_compliance)`: compara memoria local/diaria/ciclo contra state, registry, approvals y gates.
 - `auditor(profile: cost)`: verifica que los entrypoints respeten presupuesto
-  y que no se cargue `infoHebri.md` ni memoria completa por defecto.
+  y que no se cargue documentacion personal/local ni memoria completa por
+  defecto.
 - `auditor(profile: release)`: valida changelog, release notes y documentación
   histórica contra evidencia.
 - `auditor(profile: pipeline)`: audita CI, deploy, migraciones, drift de

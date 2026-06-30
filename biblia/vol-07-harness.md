@@ -103,8 +103,8 @@ Debe traer contratos operativos mínimos:
 - memoria estratificada local, diaria, de ciclo, de proyecto y completa;
 - entrypoints de primer mensaje, re-entry liviano/completo, debug-log intake y recuperación post-compactación;
 - adapters por IA para Codex, Claude Code, Gemini, Qwen, DeepSeek, Cursor, Copilot y herramientas genéricas.
-- exclusión material de documentación personal (`infoHebri.md`) del harness
-  operativo y de las copias `bound`.
+- exclusion material de documentacion personal/local del harness operativo y
+  de las copias `bound`.
 - Agent Contract System para que los agentes existan por contrato verificable,
   no por prompt;
 - runtime enablement por rol: perfiles runtime, context packs, tool packs,
@@ -158,7 +158,8 @@ Reglas:
   proyecto.
 - Si no existe fuente local libre, se baja el repo del harness y se vincula.
 - Un harness externo nunca es autoridad operativa del proyecto activo.
-- La copia hacia un proyecto excluye `infoHebri.md`, `.git/` y temporales.
+- La copia hacia un proyecto excluye documentacion personal/local, `.git/` y
+  temporales.
 - `scripts/validate-harness.ps1 -RunNegativeTests` debe pasar antes de dar por
   sana una migración.
 - Specs, registry, locks, gates y reportes viven solo en el `.hebrinex/`

@@ -287,9 +287,9 @@ registra warning cuando una ruta supera el presupuesto recomendado. Solo
 bloquea si supera 2x el límite declarado. Si un agente necesita `leader_full`
 o memoria `complete/`, debe declarar motivo, scope y pedir aprobación.
 
-`infoHebri.md` queda fuera de la operación: puede existir como documentación
-personal del usuario, pero no se carga, no se copia a `.hebrinex/` consumidor,
-no entra al manifest y no se usa como evidencia.
+La documentacion personal/local queda fuera de la operacion: puede existir en
+el proyecto o en el entorno del usuario, pero no se carga, no se copia a
+`.hebrinex/` consumidor, no entra al manifest y no se usa como evidencia.
 
 ---
 

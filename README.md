@@ -81,8 +81,8 @@ portabilidad multi-IA, drift de instrucciones y regularización de migraciones:
 `memory-closure-checklist.md`, validador local
 `scripts/validate-harness.ps1`, regularizadores de `state.yaml` y
 `registry.yaml`, compatibilidad PowerShell 5.1 en el builder de instrucciones
-y pruebas negativas para impedir que documentación personal como
-`infoHebri.md` entre en el harness operativo.
+y pruebas negativas para impedir que documentacion personal/local entre en el
+harness operativo.
 
 Regla de separación:
 

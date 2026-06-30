@@ -186,8 +186,8 @@ También debe cumplirse:
   límites.
 - `scripts/validate-harness.ps1 -RunNegativeTests` pasa antes de cerrar una
   migración o release del harness.
-- `infoHebri.md` no existe dentro de `.hebrinex/`, no aparece en el manifest y
-  no se usa como contexto operativo.
+- La documentacion personal/local no existe dentro de `.hebrinex/`, no aparece
+  en el manifest y no se usa como contexto operativo.
 
 ---
 

@@ -126,7 +126,7 @@
 - La biblia adopta `Hebri-AI-Harness 0.8.2` como referencia operativa.
 - Vol 07 documenta `context-budget.yaml`, `scripts/validate-harness.ps1`,
   schemas livianos, `memory-closure-checklist.md` y exclusión material de
-  `infoHebri.md` del harness operativo.
+  documentacion personal/local del harness operativo.
 - Vol 08 incorpora presupuestos de contexto, pruebas negativas y regla de no
   cargar memoria completa ni documentación personal sin aprobación explícita.
 - Vol 09 asigna al leader y al auditor de costo responsabilidad sobre
