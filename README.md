@@ -24,7 +24,7 @@ La metodología vive en [`biblia/`](./biblia/), un volumen por archivo.
 | [Vol 08](./biblia/vol-08-mcps-y-autonomia.md) | MCPs, tool use y autonomía | Antes de dar acceso a herramientas |
 | [Vol 09](./biblia/vol-09-roles-cerrados.md) | Roles cerrados de harness | Al pasar a SDD con aprobación |
 | [Apéndice](./biblia/apendice-ejemplo-end-to-end.md) | Ejemplo end-to-end | Onboarding o duda práctica |
-| [Apéndice Harness 0.9](./biblia/apendice-harness-0-5-operacion.md) | Operación, auditoría y roadmap de harness | Auditar cumplimiento, regularizar P0 o configurar presets |
+| [Apéndice Harness 0.10](./biblia/apendice-harness-0-5-operacion.md) | Operación, auditoría y roadmap de harness | Auditar cumplimiento, agentes, seguridad, migración o presets |
 
 > El archivo monolito original `BIBLIA.md` se conserva como redirección por
 > compatibilidad con links externos viejos.
@@ -41,7 +41,7 @@ La metodología vive en [`biblia/`](./biblia/), un volumen por archivo.
 - **Configurar acceso a herramientas** → [Vol 08 · MCPs y autonomía](./biblia/vol-08-mcps-y-autonomia.md)
 - **Orquestar entre roles (leader, spec_author, implementer, reviewer)** → [Vol 09 · Roles cerrados](./biblia/vol-09-roles-cerrados.md)
 - **Configurar ciclos multiagente con límite operativo** → [Vol 09 · Protocolo multiagente](./biblia/vol-09-roles-cerrados.md#protocolo-multiagente)
-- **Auditar cumplimiento del Harness 0.9.0** → [Apéndice · Operación, Presupuesto y Auditoría de Harness 0.9.0](./biblia/apendice-harness-0-5-operacion.md)
+- **Auditar cumplimiento del Harness 0.10.0** → [Apéndice · Operación, Seguridad y Auditoría de Harness 0.10.0](./biblia/apendice-harness-0-5-operacion.md)
 - **Ver un caso completo** → [Apéndice · Ejemplo end-to-end](./biblia/apendice-ejemplo-end-to-end.md)
 
 ---
@@ -60,7 +60,7 @@ gaps y economía de contexto.
 El harness operativo vive aparte:
 **[Hebri-AI-Harness](https://github.com/HebrineX/Hebri-AI-Harness)**.
 
-Referencia operativa actual: **Hebri-AI-Harness 0.9.0**, con contrato de
+Referencia operativa actual: **Hebri-AI-Harness 0.10.0**, con contrato de
 sesión, binding de proyecto, resolución estricta del `.hebrinex`, re-entry
 post-compactación, controles P0 estructurados, preflight, approvals, tool
 policy, state, registry, audit trail, gate logs, cierre explícito de agentes,
@@ -68,11 +68,15 @@ anti-confirmation bias, roles mínimos con perfiles parametrizados, auditor,
 reporter, detractor pass, gates de evidencia histórica, deploy/migración,
 drift de referencias, CI/pipeline, backlog, cierre con cross-links, adapters multi-IA, entrypoints de re-entry, memoria estratificada gobernada por orquestador y manifest estructural del harness, runtime `/harness`, integración Claude reentry e instruction builder.
 
-En 0.9.0 se consolida el orden operativo del harness: prompts separados por
-responsabilidad, registries canónicos del orquestador, índice de registries y
-ruta explícita de migración desde 0.8.10. También conserva los controles de
-economía de contexto, runtime, portabilidad multi-IA, drift de instrucciones y
-regularización de migraciones:
+En 0.10.0 el harness deja de tratar a los agentes como prompts sueltos y los
+gobierna por contratos verificables: Agent Contract System, autoridad
+`harness_only`, runtime profiles, context packs, tool packs, playbooks,
+failure modes, rubrics, security profiles, handoff contracts y lifecycle
+registry. También suma seguridad informática verificable, migrador
+CheckOnly/Apply, backup obligatorio, contrato post-migración aplicado y
+validadores específicos para agentes, seguridad y migración. Conserva el orden
+0.9.0 de prompts/registries y los controles de economía de contexto, runtime,
+portabilidad multi-IA, drift de instrucciones y regularización de migraciones:
 `context-budget.yaml`, kernel liviano de sesión,
 `memory-closure-checklist.md`, validador local
 `scripts/validate-harness.ps1`, regularizadores de `state.yaml` y
@@ -101,7 +105,7 @@ No cargues toda la biblia por defecto. Elegí la ruta mínima:
 | Mejorar prompts | Vol 05 |
 | Registrar gaps | Vol 06 |
 | Configurar tools/autonomía/modelos | Vol 08 |
-| Auditar, presupuestar o regularizar Harness 0.9.0 | Apéndice Harness 0.9 |
+| Auditar, presupuestar o regularizar Harness 0.10.0 | Apéndice Harness 0.10 |
 | Validar un flujo completo | Apéndice |
 
 ---
@@ -114,7 +118,7 @@ escribime y lo charlamos.
 
 ## Versión y cambios
 
-Versión actual: **3.3.4**. Ver [CHANGELOG.md](./CHANGELOG.md).
+Versión actual: **3.3.5**. Ver [CHANGELOG.md](./CHANGELOG.md).
 
 ## Créditos
 

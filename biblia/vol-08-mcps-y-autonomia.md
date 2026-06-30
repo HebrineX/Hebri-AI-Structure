@@ -280,7 +280,7 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.9.0`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.10.0`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
 registra warning cuando una ruta supera el presupuesto recomendado. Solo
@@ -314,7 +314,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.9.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.10.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -349,7 +349,7 @@ frase en el chat. Deben pasar por controles estructurados:
 | `ai-preset-policy.md` | Verifica que presets/adapters de IA no salteen contrato, memoria ni approvals |
 | `harness-manifest.txt` | Centraliza la estructura que `init.sh` valida para reducir drift |
 
-En 0.9.0, estos controles se vuelven más trazables porque el orquestador
+Desde 0.9.0, estos controles se vuelven más trazables porque el orquestador
 incorpora registries explícitos:
 
 | Registry | Para qué existe |
@@ -365,6 +365,32 @@ incorpora registries explícitos:
 Regla: un prompt puede guiar una acción, pero no crear autoridad nueva. La
 autoridad sale del binding, registries, policies, state, registry, gates,
 locks y evidencia.
+
+En 0.10.0, la seguridad informática se expresa como registries y policies
+verificables. El objetivo no es solo evitar que la IA "se pase de rol", sino
+reducir superficie de ataque real del harness:
+
+| Registro/política | Control |
+|---|---|
+| `permission-registry.yaml` | Permisos por rol, denies explícitos y bloqueo si falta capability |
+| `command-risk-registry.yaml` | Clasifica lectura, validación local, escritura, destructivo, red, git remoto, secretos y privilegios |
+| `write-scope-registry.yaml` | Limita escrituras a scope aprobado y bloquea path traversal/symlink escape |
+| `network-policy.yaml` | Red deny-by-default, con endpoint, propósito, evidencia y expiración |
+| `secrets-policy.yaml` | Deny-by-default para secretos, patrones de detección y redacción obligatoria |
+| `supply-chain-policy.yaml` | Instalaciones con preflight, lockfile/checksum cuando exista y prohibición de ejecutar código remoto |
+| `logging-policy.yaml` | Reportes sin secretos y backups auditables |
+| `escalation-policy.yaml` | Elevaciones explícitas, temporales y con evidencia |
+| `threat-model.yaml` | Amenazas esperadas: autoridad por prompt, command injection, path traversal, secretos, red, git remoto y supply chain |
+
+Defaults de 0.10.0:
+
+- permiso desconocido: bloqueado;
+- comando desconocido: bloqueado;
+- red: denegada salvo allowlist/aprobación;
+- secretos: denegados y redactados antes de chat/reporte;
+- dependencia nueva: preflight, `SI`, propósito y procedencia;
+- código remoto descargado y ejecutado: denegado;
+- salida con secreto: bloqueo y redacción.
 
 **Regla:** en modo automático el leader puede decidir micro-pasos, pero no
 puede editar, ejecutar comandos, usar red, hacer git, cambiar estado SDD ni
@@ -520,7 +546,7 @@ o sistema central). El chat es efímero.
 
 ---
 
-## Autonomia con Runtime 0.9.0
+## Autonomia con Runtime 0.10.0
 
 Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness manual`, `/harness automatico` y `/harness audit` son controles de bajo costo. No reemplazan aprobación humana ni evidencia.
 

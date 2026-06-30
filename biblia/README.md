@@ -14,7 +14,7 @@ Metodología de trabajo con IA aplicada a proyectos de software.
 | [Vol 08](./vol-08-mcps-y-autonomia.md) | MCPs, tool use y niveles de autonomía | Antes de dar acceso a herramientas |
 | [Vol 09](./vol-09-roles-cerrados.md) | Roles cerrados de harness (leader, spec_author, implementer, reviewer) | Al pasar de explorer/worker a SDD con aprobación |
 | [Apéndice](./apendice-ejemplo-end-to-end.md) | Ejemplo end-to-end trabajado | Onboarding o duda práctica |
-| [Apéndice Harness 0.9](./apendice-harness-0-5-operacion.md) | Operación, presupuesto y auditoría de Harness 0.9.0 | Auditar cumplimiento, regularizar P0 o configurar presets |
+| [Apéndice Harness 0.10](./apendice-harness-0-5-operacion.md) | Operación, seguridad y auditoría de Harness 0.10.0 | Auditar cumplimiento, agentes, seguridad, migración o presets |
 
 ---
 
@@ -32,7 +32,7 @@ Metodología de trabajo con IA aplicada a proyectos de software.
 | Escribir o refactorizar prompts | Vol 05 |
 | Registrar deuda o faltantes | Vol 06 |
 | Dar tools, modelos o autonomía | Vol 08 |
-| Auditar o regularizar Harness 0.9.0 | Apéndice Harness 0.9 |
+| Auditar o regularizar Harness 0.10.0 | Apéndice Harness 0.10 |
 | Ver un recorrido completo | Apéndice |
 
 No cargues todos los volúmenes salvo auditoría metodológica completa. La

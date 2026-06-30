@@ -1,9 +1,9 @@
-# Apéndice · Operación, Presupuesto y Auditoría de Harness 0.9.0
+# Apéndice · Operación, Seguridad y Auditoría de Harness 0.10.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.9.0`.
+`Hebri-AI-Harness 0.10.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.9.0 presente, binding correcto, contrato declarado, state/registry coherentes, registries canónicos presentes, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.10.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, seguridad deny-by-default, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,13 +26,17 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.9.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.10.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
 .hebrinex/AGENTS.md
 .hebrinex/prompts/migration/migrar-harness-0-8-10-a-0-9-0.prompt.md
 .hebrinex/scripts/validate-harness.ps1
+.hebrinex/scripts/validate-agent-contracts.ps1
+.hebrinex/scripts/validate-security-policy.ps1
+.hebrinex/scripts/validate-migration.ps1
+.hebrinex/scripts/audit-harness.ps1
 .hebrinex/scripts/regularize-state.ps1
 .hebrinex/scripts/regularize-registry.ps1
 .hebrinex/orquestador/harness-manifest.txt
@@ -44,6 +48,42 @@ Archivos mínimos de `Hebri-AI-Harness 0.9.0`:
 .hebrinex/orquestador/gate-registry.yaml
 .hebrinex/orquestador/policy-registry.yaml
 .hebrinex/orquestador/template-registry.yaml
+.hebrinex/orquestador/agents/agent-registry.yaml
+.hebrinex/orquestador/agents/capability-registry.yaml
+.hebrinex/orquestador/agents/lifecycle-registry.yaml
+.hebrinex/orquestador/agents/model-adapter-profiles.yaml
+.hebrinex/orquestador/agents/role-contracts/leader.yaml
+.hebrinex/orquestador/agents/role-contracts/implementer.yaml
+.hebrinex/orquestador/agents/role-contracts/reviewer.yaml
+.hebrinex/orquestador/agents/role-contracts/auditor.yaml
+.hebrinex/orquestador/agents/role-contracts/reporter.yaml
+.hebrinex/orquestador/agents/role-contracts/spec-author.yaml
+.hebrinex/orquestador/agents/role-contracts/worker.yaml
+.hebrinex/orquestador/agents/security-profiles/read-only.yaml
+.hebrinex/orquestador/agents/security-profiles/write-scoped.yaml
+.hebrinex/orquestador/agents/security-profiles/reviewer-readonly.yaml
+.hebrinex/orquestador/agents/security-profiles/auditor-blocking.yaml
+.hebrinex/orquestador/agents/runtime-profiles/
+.hebrinex/orquestador/agents/context-packs/
+.hebrinex/orquestador/agents/tool-packs/
+.hebrinex/orquestador/agents/playbooks/
+.hebrinex/orquestador/agents/failure-modes/
+.hebrinex/orquestador/agents/evaluation-rubrics/
+.hebrinex/orquestador/agents/handoff-contracts/
+.hebrinex/orquestador/security/permission-registry.yaml
+.hebrinex/orquestador/security/command-risk-registry.yaml
+.hebrinex/orquestador/security/write-scope-registry.yaml
+.hebrinex/orquestador/security/network-policy.yaml
+.hebrinex/orquestador/security/secrets-policy.yaml
+.hebrinex/orquestador/security/supply-chain-policy.yaml
+.hebrinex/orquestador/security/escalation-policy.yaml
+.hebrinex/orquestador/security/logging-policy.yaml
+.hebrinex/orquestador/security/threat-model.yaml
+.hebrinex/orquestador/migration/migration-registry.yaml
+.hebrinex/orquestador/migration/versions/0.9.0-to-0.10.0.yaml
+.hebrinex/orquestador/migration/versions/0.8.10-to-0.10.0.yaml
+.hebrinex/orquestador/migration/contracts/post-migration-contract.yaml
+.hebrinex/orquestador/migration/reports/migration-report.template.yaml
 .hebrinex/orquestador/method/session-contract.md
 .hebrinex/orquestador/method/harness-resolution.md
 .hebrinex/orquestador/method/evidence-reconstruction.md
@@ -127,6 +167,17 @@ También debe cumplirse:
 - `orquestador/adapter-registry.yaml`, `context-profile-registry.yaml`,
   `gate-registry.yaml`, `policy-registry.yaml` y `template-registry.yaml`
   existen o el proyecto declara explícitamente que está en migración parcial.
+- `orquestador/agents/agent-registry.yaml` existe, declara
+  `agent_definition_authority: harness_only` y bloquea roles faltantes.
+- Cada rol registrado tiene role contract, security profile, runtime profile,
+  context pack, tool pack, playbook, failure modes, evaluation rubric y
+  handoff esperado.
+- `orquestador/security/` existe y aplica defaults deny-by-default para red,
+  secretos, supply chain, comandos destructivos, git remoto y privilegios.
+- `orquestador/migration/migration-registry.yaml` existe y sólo declara rutas
+  oficiales de migración del harness.
+- Una migración aplicada tiene backup, reporte y
+  `post-migration-contract.yaml` activo; si no, queda `partial` o `blocked`.
 - `orquestador/memory/memory-registry.yaml` existe y declara capas activas.
 - `orquestador/memory/local/session-pin.md` existe y permite re-entry liviano.
 - `orquestador/entrypoints/` existe para primer mensaje, re-entry y debug logs.
@@ -179,7 +230,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.9.0, antes de revisar código o progreso, validar:
+En 0.10.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -199,7 +250,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.9.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.10.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -225,8 +276,9 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.9.0` conserva los controles 0.8.x y agrega
-verificación de prompts/registries si la tarea toca ese tipo de decisión:
+Además de la evidencia base, `0.10.0` conserva los controles 0.8.x/0.9.x y
+agrega verificación de agentes, seguridad y migración si la tarea toca ese
+tipo de decisión:
 
 | Caso | Artefacto requerido |
 |---|---|
@@ -244,6 +296,10 @@ verificación de prompts/registries si la tarea toca ese tipo de decisión:
 | Adapters IA | `orquestador/adapters/<tool>.md` o `generic-ai.md` |
 | Prompts oficiales | `prompt-registry.yaml` + ruta real del prompt |
 | Registries del orquestador | `registry-index.yaml` + registry específico |
+| Agentes/roles | `agent-registry.yaml` + `role-contracts/<rol>.yaml` |
+| Capabilities | `capability-registry.yaml` + security/runtime profile |
+| Seguridad informática | `orquestador/security/*.yaml` + `validate-security-policy.ps1` |
+| Migración 0.10.0 | `migration-registry.yaml`, route file, backup, reporte y contrato post-migración |
 
 **Regla:** si el caso aplica y el artefacto no existe, el cierre queda
 `blocked` o se declara explícitamente como no aplicable con evidencia.
@@ -390,7 +446,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.3.x / 0.9.0
+## 10 · Roadmap 3.3.x / 0.10.0
 
 Principio central:
 
@@ -486,7 +542,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.9.0 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.10.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -511,9 +567,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 12 · Controles 0.8.3 a 0.9.0
+## 12 · Controles 0.8.3 a 0.10.0
 
-Además de los controles base, la versión operativa 0.9.0 exige revisar:
+Además de los controles base, la versión operativa 0.10.0 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -526,6 +582,7 @@ Además de los controles base, la versión operativa 0.9.0 exige revisar:
 | 0.8.9 | hardening de migración | regularizer para listas inline/multilínea/ausentes, drift operativo sin historia falsa y budgets con margen |
 | 0.8.10 | budget soft gates | warnings/evidencia hasta 2x, bloqueo sobre hard limit y fallback PowerShell en `init.sh` |
 | 0.9.0 | orden de prompts y registries | `prompt-registry.yaml`, `registry-index.yaml`, registries canónicos y prompt de migración `0.8.10 -> 0.9.0` |
+| 0.10.0 | agentes, seguridad y migración aplicada | `agent-registry.yaml`, `capability-registry.yaml`, `orquestador/security/`, migrador, backup, contrato post-migración y validadores |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
 
@@ -665,6 +722,82 @@ La migración correcta desde 0.8.10:
 5. Cerrar con reporte de migración y evidencia.
 
 Regla: 0.9.0 ordena el harness estable. La estructura de Agent Contract
-System y autoridad `harness_only` pertenece a la migración 0.10.0 y no debe
-declararse aplicada por este apéndice hasta que exista su contrato de
-migración propio.
+System y autoridad `harness_only` pertenece a 0.10.0 y se audita en la sección
+siguiente, junto con su contrato de migración propio.
+
+---
+
+## 17 · Actualización 0.10.0: Agent Contract System y Seguridad
+
+`Hebri-AI-Harness 0.10.0` convierte los agentes en contratos gobernados por el
+harness. La IA no define agentes, roles, permisos, capabilities ni
+escalaciones.
+
+Estructura mínima:
+
+```text
+orquestador/agents/
+  agent-registry.yaml
+  capability-registry.yaml
+  lifecycle-registry.yaml
+  role-contracts/
+  security-profiles/
+  runtime-profiles/
+  context-packs/
+  tool-packs/
+  playbooks/
+  failure-modes/
+  evaluation-rubrics/
+  handoff-contracts/
+orquestador/security/
+  permission-registry.yaml
+  command-risk-registry.yaml
+  write-scope-registry.yaml
+  network-policy.yaml
+  secrets-policy.yaml
+  supply-chain-policy.yaml
+  escalation-policy.yaml
+  logging-policy.yaml
+  threat-model.yaml
+orquestador/migration/
+  migration-registry.yaml
+  versions/
+  contracts/post-migration-contract.yaml
+  reports/
+```
+
+Reglas duras:
+
+- `agent_definition_authority: harness_only`;
+- `ai_may_define_agents: false`;
+- `prompt_may_define_roles: false`;
+- rol ausente en `agent-registry.yaml` = bloqueo;
+- contrato de rol ausente = bloqueo;
+- security/runtime profile ausente = bloqueo;
+- prompt o documentación en conflicto = gana el registry;
+- capability desconocida = bloqueo;
+- red, secretos, supply chain, git remoto, destructivo y privilegiado =
+  deny-by-default.
+
+Validación mínima:
+
+```powershell
+.\.hebrinex\scripts\validate-agent-contracts.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-security-policy.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-migration.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\audit-harness.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+Migración:
+
+- CheckOnly no escribe.
+- Apply requiere backup verificado antes del primer write.
+- Se preservan `state.yaml`, `registry.yaml`, ciclos, locks, approvals,
+  memoria local/proyecto y evidencia.
+- El cierre requiere `post-migration-contract.yaml` activo, reporte escrito y
+  validadores OK.
+
+Regla conceptual final: el harness no se comporta como agente. El harness
+define, limita, migra y audita agentes. Los agentes ejecutan su rol con
+autosuficiencia estructural, pero sin autoridad para redefinirse.

@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.3.5] — 2026-06-30
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.10.0` como referencia operativa.
+- Vol 07 documenta Agent Contract System, autoridad `harness_only`, runtime
+  enablement de agentes, handoffs, lifecycle y migración 0.9.0/0.8.10 hacia
+  0.10.0.
+- Vol 08 incorpora seguridad informática verificable: permisos, riesgo de
+  comandos, write-scope, red, secretos, supply chain, logging, threat model y
+  escalaciones.
+- Vol 09 define que la IA no crea agentes, roles ni capabilities: sólo puede
+  operar contratos definidos por el harness.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.10.0`.
+- El apéndice pasa de auditoría 0.9.0 a operación, seguridad, migración y
+  auditoría 0.10.0, incluyendo validadores de agentes, seguridad y migración.
+
+### Rationale
+- 0.10.0 separa con más fuerza harness y agentes: el harness gobierna,
+  limita y audita; los agentes ejecutan roles autosuficientes dentro de
+  contratos verificables y seguridad deny-by-default.
+
 ## [3.3.4] — 2026-06-30
 
 ### Added

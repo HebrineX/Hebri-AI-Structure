@@ -105,6 +105,15 @@ Debe traer contratos operativos mínimos:
 - adapters por IA para Codex, Claude Code, Gemini, Qwen, DeepSeek, Cursor, Copilot y herramientas genéricas.
 - exclusión material de documentación personal (`infoHebri.md`) del harness
   operativo y de las copias `bound`.
+- Agent Contract System para que los agentes existan por contrato verificable,
+  no por prompt;
+- runtime enablement por rol: perfiles runtime, context packs, tool packs,
+  playbooks, failure modes y rubrics;
+- seguridad informática verificable: permisos, command risk, write scope,
+  red, secretos, supply chain, logging, threat model y escalación;
+- servicio de migración con rutas `0.9.0 -> 0.10.0` y `0.8.10 -> 0.10.0`,
+  modo CheckOnly sin escrituras, Apply con backup y contrato post-migración
+  aplicado.
 
 **Flujo de arranque:**
 
@@ -131,7 +140,7 @@ No copiar el contenido de la biblia al proyecto — referenciarla.
 
 ## Binding de proyecto y anti-contaminación
 
-Desde `Hebri-AI-Harness 0.9.0`, el harness ya no se trata como una carpeta
+Desde `Hebri-AI-Harness 0.10.0`, el harness ya no se trata como una carpeta
 genérica reutilizable en vivo. Cada proyecto debe operar con su propio
 `.hebrinex/` interno.
 
@@ -162,7 +171,7 @@ un proyecto dentro del harness de otro.
 
 ## Memoria estratificada gobernada por orquestador
 
-Desde `Hebri-AI-Harness 0.9.0`, el problema de foco no se resuelve confiando
+Desde `Hebri-AI-Harness 0.10.0`, el problema de foco no se resuelve confiando
 en la memoria interna de cada IA. Se resuelve con memoria externa en archivos,
 marcada por el orquestador.
 
@@ -227,6 +236,35 @@ completo.
       gemini.md
       qwen.md
       deepseek.md
+    agents/
+      agent-registry.yaml
+      capability-registry.yaml
+      lifecycle-registry.yaml
+      model-adapter-profiles.yaml
+      role-contracts/
+      security-profiles/
+      runtime-profiles/
+      context-packs/
+      tool-packs/
+      playbooks/
+      failure-modes/
+      evaluation-rubrics/
+      handoff-contracts/
+    security/
+      permission-registry.yaml
+      command-risk-registry.yaml
+      write-scope-registry.yaml
+      network-policy.yaml
+      secrets-policy.yaml
+      supply-chain-policy.yaml
+      escalation-policy.yaml
+      logging-policy.yaml
+      threat-model.yaml
+    migration/
+      migration-registry.yaml
+      versions/
+      contracts/
+      reports/
     method/
       session-contract.md
       harness-resolution.md
@@ -328,7 +366,7 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.9.0`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.10.0`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
@@ -340,17 +378,17 @@ entrypoints de re-entry, memoria estratificada gobernada por orquestador,
 manifest estructural, presupuestos de contexto, validador local,
 compatibilidad PowerShell 5.1 para el builder de instrucciones,
 regularizadores de migración para `state.yaml` y `registry.yaml`, prompts
-ordenados por responsabilidad, registries canónicos del orquestador e índice
-de registries.
-En 0.9.0 esos controles quedan organizados para que la autoridad operativa no
-dependa de prompts sueltos: cada prompt, adapter, política, gate, template y
-perfil de contexto debe estar registrado o ser explícitamente legacy.
+ordenados por responsabilidad, registries canónicos del orquestador, índice
+de registries, Agent Contract System, seguridad informática verificable y
+servicio de migración con contrato post-migración aplicado.
+En 0.10.0 esos controles separan definitivamente harness y agente: el harness
+define, limita y audita; los agentes ejecutan contratos registrados por rol.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.9.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.10.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -358,15 +396,15 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.9.0 (pendiente de validación continua en proyecto piloto
+0.10.0 (pendiente de validación continua en proyecto piloto
 `Hebri-AI-Portfolio`).
 
 ---
 
-## Harness 0.9.0 - Prompts, Registries y Migración desde 0.8.10
+## Harness 0.10.0 - Agent Contract System, Seguridad y Migración
 
-La referencia operativa actual es `Hebri-AI-Harness 0.9.0`. La línea
-0.8.3-0.9.0 agrega controles que la biblia trata como criterio metodológico:
+La referencia operativa actual es `Hebri-AI-Harness 0.10.0`. La línea
+0.8.3-0.10.0 agrega controles que la biblia trata como criterio metodológico:
 
 - 0.8.3: `detractor-senior` antes de implementar cambios relevantes.
 - 0.8.4: core portable + adapters declarativos por IA.
@@ -379,18 +417,53 @@ La referencia operativa actual es `Hebri-AI-Harness 0.9.0`. La línea
 - 0.9.0: prompts separados por responsabilidad, `prompt-registry.yaml`,
   `registry-index.yaml`, registries canónicos de adapters, contexto, gates,
   policies y templates, y prompt de migración `0.8.10 -> 0.9.0`.
+- 0.10.0: Agent Contract System, autoridad `harness_only`, runtime
+  enablement de agentes, seguridad AppSec verificable, migrador CheckOnly/
+  Apply y contrato post-migración aplicado.
 
 Regla conceptual: el harness puede generar o resumir contexto, pero la autoridad sigue en binding, state, registry, gates, evidencia y locks.
 
-La mejora metodológica de 0.9.0 no es agregar más instrucciones, sino ordenar
-qué instrucción gobierna cada cosa:
+La mejora metodológica de 0.10.0 no es agregar más instrucciones, sino mover
+autoridad desde texto hacia contratos verificables:
 
-- los prompts son entrypoints o ayudas operativas, no fuente de verdad;
-- los registries explican qué existe, dónde vive y cómo se valida;
-- el manifest y los validadores reducen drift entre estructura real y contrato;
-- la migración desde 0.8.10 preserva `state.yaml`, `registry.yaml`, ciclos,
-  locks, approvals, memoria local/proyecto y evidencia.
+- `agent-registry.yaml` define los agentes existentes;
+- `capability-registry.yaml` define qué puede hacer cada rol;
+- `role-contracts/` define propósito, permisos, prohibiciones, inputs,
+  outputs, ownership, evidencia, handoff y cierre;
+- `security-profiles/` y `orquestador/security/` aplican seguridad
+  deny-by-default para red, secretos, supply chain, git remoto, comandos
+  destructivos y ejecución privilegiada;
+- `runtime-profiles/`, `context-packs/`, `tool-packs/`, `playbooks/`,
+  `failure-modes/` y `evaluation-rubrics/` hacen que cada agente sea más
+  autosuficiente dentro de su rol;
+- `handoff-contracts/` y `lifecycle-registry.yaml` evitan cierres sin handoff,
+  locks resueltos y evidencia mínima;
+- `migration-registry.yaml` define rutas oficiales; la IA no inventa rutas de
+  migración;
+- `post-migration-contract.yaml` exige que la migración quede aplicada, no solo
+  declarada.
 
-Regla de adopción: si un proyecto está en 0.8.10, primero migra a 0.9.0 y
-valida referencias. La arquitectura 0.10.0 se diseña y aplica después, con su
-propio contrato de migración.
+Regla madre:
+
+```text
+La IA no define agentes, roles, permisos ni escalaciones.
+Sólo el harness define contratos de agente.
+```
+
+Consecuencias operativas:
+
+- si el rol no está en `agent-registry.yaml`, no existe;
+- si falta contrato YAML, el agente no se instancia;
+- si falta security/runtime profile, se bloquea;
+- si un agente quiere escribir sin capability, write scope, lock, preflight y
+  `SI`, se bloquea;
+- reviewer no edita;
+- implementer no aprueba;
+- leader no implementa;
+- reporter comunica evidencia, no cambia veredictos.
+
+Regla de adopción: desde 0.9.0 se migra por la ruta `0.9.0-to-0.10.0`; desde
+0.8.10 existe ruta directa `0.8.10-to-0.10.0`. En ambos casos CheckOnly no
+escribe, Apply requiere backup, se preservan `state.yaml`, `registry.yaml`,
+ciclos, locks, approvals, memoria local/proyecto y evidencia, y el cierre solo
+vale si los validadores pasan y el contrato post-migración queda activo.
