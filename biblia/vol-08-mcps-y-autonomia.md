@@ -280,7 +280,7 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.10.0`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.12.0`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
 registra warning cuando una ruta supera el presupuesto recomendado. Solo
@@ -314,7 +314,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.10.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.12.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -366,9 +366,20 @@ Regla: un prompt puede guiar una acción, pero no crear autoridad nueva. La
 autoridad sale del binding, registries, policies, state, registry, gates,
 locks y evidencia.
 
-En 0.10.0, la seguridad informática se expresa como registries y policies
-verificables. El objetivo no es solo evitar que la IA "se pase de rol", sino
-reducir superficie de ataque real del harness:
+En 0.12.0, la seguridad informática se expresa como registries, policies y
+enforcement ejecutable. El objetivo no es solo evitar que la IA "se pase de
+rol", sino reducir superficie de ataque real del harness:
+
+| Control ejecutable | Qué bloquea |
+|---|---|
+| `hebrinex approve` | Acciones sin envelope vigente, sin hash exacto o fuera de TTL |
+| `command-gateway.ps1 -ApprovalId` | Approval inexistente, vencido, no aprobado o usado con otro comando |
+| Apply sin symlinks | Rutas contenidas en apariencia pero redirigidas por junction/symlink |
+| Timeout con kill de árbol | Procesos hijo o nietos sobreviviendo a un timeout |
+| Claude `PreToolUse` | Comandos Bash/PowerShell bloqueados por policy antes de ejecutar |
+| `status` con locks | Trabajo activo o vencido invisible para el operador |
+
+La base 0.10.0 ya expresaba seguridad como registries y policies verificables:
 
 | Registro/política | Control |
 |---|---|
@@ -382,7 +393,7 @@ reducir superficie de ataque real del harness:
 | `escalation-policy.yaml` | Elevaciones explícitas, temporales y con evidencia |
 | `threat-model.yaml` | Amenazas esperadas: autoridad por prompt, command injection, path traversal, secretos, red, git remoto y supply chain |
 
-Defaults de 0.10.0:
+Defaults de 0.12.0:
 
 - permiso desconocido: bloqueado;
 - comando desconocido: bloqueado;
@@ -551,3 +562,30 @@ o sistema central). El chat es efímero.
 Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness manual`, `/harness automatico` y `/harness audit` son controles de bajo costo. No reemplazan aprobación humana ni evidencia.
 
 El runtime reduce tokens porque consulta primero estado compacto. Si necesita contexto completo, debe declarar read-set, budget y pedir `SI`.
+
+## Autonomía con Runtime 0.12.0
+
+`0.12.0` agrega una capa práctica sobre el runtime: la autonomía no avanza sólo
+porque el chat diga "sí". El `SI` se puede materializar como approval envelope
+y el gateway lo valida contra la acción exacta.
+
+Flujo sano:
+
+```text
+1. El agente propone preflight.
+2. El operador aprueba con SI.
+3. `hebrinex approve -Apply -CommandText <accion exacta>` crea el envelope.
+4. `command-gateway.ps1 -ApprovalId <APR>` valida hash, TTL y estado.
+5. El comando se permite, pregunta o bloquea según policy.
+```
+
+Con hooks de Claude Code, el host puede hacer cumplir parte del contrato antes
+del tool call:
+
+- `SessionStart` inyecta el re-entry brief para no depender de memoria del chat.
+- `PreToolUse` permite read-only seguro, fuerza pregunta ante patrones
+  bloqueados y delega casos ambiguos al flujo normal de permisos.
+
+Regla metodológica: los hooks ayudan, pero no son evidencia. La evidencia sigue
+siendo el estado, registry, approval envelope, gate log, salida de comando y
+validadores.

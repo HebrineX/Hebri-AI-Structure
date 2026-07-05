@@ -1,5 +1,34 @@
 # Changelog
 
+## [3.4.0] — 2026-07-05
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.12.0` como referencia operativa.
+- Vol 07 documenta la línea 0.11.0/0.12.0: runtime enforcement, state
+  machine, agent runtime, approval store ejecutable, Command Gateway con
+  `ApprovalId` verificable, hooks reales de Claude Code y adapters
+  condensados en `_shared-core.md`.
+- Vol 08 incorpora controles de seguridad ejecutables para approvals, gateway,
+  symlinks/junctions, timeout de árbol de procesos, hooks `SessionStart` /
+  `PreToolUse` y reporte de locks.
+- Vol 09 define responsabilidades por rol ante approvals ejecutables: leader
+  materializa el `SI`, implementer/worker no reutilizan approvals, reviewer
+  valida TTL/hash/estado y auditor revisa gateway/hooks sin tratarlos como
+  evidencia suficiente por sí solos.
+- El apéndice suma secciones de auditoría para `0.11.0` Enforcement Release y
+  `0.12.0` Approval Store, Gateway y Hooks.
+
+### Changed
+- README, índice, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.12.0`.
+- El apéndice de operación pasa de referencia activa 0.10.0 a 0.12.0,
+  conservando 0.10.0 como hito histórico de Agent Contract System.
+
+### Rationale
+- 0.12.0 reduce la brecha entre aprobación conversacional y enforcement real:
+  el `SI` puede persistirse como envelope verificable y el gateway puede
+  bloquear acciones falsas, vencidas, mismatched o riesgosas antes de ejecutar.
+
 ## [3.3.5] — 2026-06-30
 
 ### Added

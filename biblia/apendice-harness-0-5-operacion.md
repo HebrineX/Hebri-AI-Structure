@@ -1,9 +1,9 @@
-# Apéndice · Operación, Seguridad y Auditoría de Harness 0.10.0
+# Apéndice · Operación, Seguridad y Auditoría de Harness 0.12.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.10.0`.
+`Hebri-AI-Harness 0.12.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.10.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, seguridad deny-by-default, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.12.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks aplicados si corresponden, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.10.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.12.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
@@ -36,9 +36,18 @@ Archivos mínimos de `Hebri-AI-Harness 0.10.0`:
 .hebrinex/scripts/validate-agent-contracts.ps1
 .hebrinex/scripts/validate-security-policy.ps1
 .hebrinex/scripts/validate-migration.ps1
+.hebrinex/scripts/validate-state-machine.ps1
+.hebrinex/scripts/validate-agent-runtime.ps1
+.hebrinex/scripts/validate-command-gateway.ps1
 .hebrinex/scripts/audit-harness.ps1
 .hebrinex/scripts/regularize-state.ps1
 .hebrinex/scripts/regularize-registry.ps1
+.hebrinex/scripts/state-machine.ps1
+.hebrinex/scripts/agent-runtime.ps1
+.hebrinex/scripts/command-gateway.ps1
+.hebrinex/scripts/claude-pretooluse-hook.ps1
+.hebrinex/scripts/install-claude-hooks.ps1
+.hebrinex/scripts/lib/hebri-common.psm1
 .hebrinex/orquestador/harness-manifest.txt
 .hebrinex/orquestador/context-budget.yaml
 .hebrinex/orquestador/prompt-registry.yaml
@@ -82,6 +91,8 @@ Archivos mínimos de `Hebri-AI-Harness 0.10.0`:
 .hebrinex/orquestador/migration/migration-registry.yaml
 .hebrinex/orquestador/migration/versions/0.9.0-to-0.10.0.yaml
 .hebrinex/orquestador/migration/versions/0.8.10-to-0.10.0.yaml
+.hebrinex/orquestador/migration/versions/0.10.11-to-0.11.0.yaml
+.hebrinex/orquestador/migration/versions/0.11.0-to-0.12.0.yaml
 .hebrinex/orquestador/migration/contracts/post-migration-contract.yaml
 .hebrinex/orquestador/migration/reports/migration-report.template.yaml
 .hebrinex/orquestador/method/session-contract.md
@@ -107,6 +118,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.10.0`:
 .hebrinex/orquestador/entrypoints/debug-log-intake.md
 .hebrinex/orquestador/entrypoints/compactation-recovery.md
 .hebrinex/orquestador/adapters/generic-ai.md
+.hebrinex/orquestador/adapters/_shared-core.md
 .hebrinex/orquestador/adapters/codex.md
 .hebrinex/orquestador/adapters/claude-code.md
 .hebrinex/orquestador/adapters/gemini.md
@@ -117,6 +129,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.10.0`:
 .hebrinex/orquestador/sdd/progress/templates/preflight-template.md
 .hebrinex/orquestador/sdd/progress/templates/reentry-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/approval-envelope.md
+.hebrinex/orquestador/sdd/progress/approvals/
 .hebrinex/orquestador/sdd/progress/templates/clarification-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/analysis-checklist.md
 .hebrinex/orquestador/sdd/progress/templates/blast-radius.md
@@ -230,7 +243,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.10.0, antes de revisar código o progreso, validar:
+En 0.12.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -250,7 +263,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.10.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.12.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -276,9 +289,9 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.10.0` conserva los controles 0.8.x/0.9.x y
-agrega verificación de agentes, seguridad y migración si la tarea toca ese
-tipo de decisión:
+Además de la evidencia base, `0.12.0` conserva los controles 0.8.x/0.9.x/0.10.x
+y agrega verificación de runtime, approvals, gateway y hooks si la tarea toca
+ese tipo de decisión:
 
 | Caso | Artefacto requerido |
 |---|---|
@@ -299,7 +312,10 @@ tipo de decisión:
 | Agentes/roles | `agent-registry.yaml` + `role-contracts/<rol>.yaml` |
 | Capabilities | `capability-registry.yaml` + security/runtime profile |
 | Seguridad informática | `orquestador/security/*.yaml` + `validate-security-policy.ps1` |
-| Migración 0.10.0 | `migration-registry.yaml`, route file, backup, reporte y contrato post-migración |
+| Migración 0.10.0+ | `migration-registry.yaml`, route file, backup, reporte y contrato post-migración |
+| Runtime enforcement 0.11.0 | `validate-state-machine.ps1`, `validate-agent-runtime.ps1`, fixtures positivas/negativas |
+| Approval/Gateway 0.12.0 | approval envelope real, `validate-command-gateway.ps1`, resultado con `approval_status` |
+| Hooks Claude 0.12.0 | `settings.template.json`, `install-claude-hooks.ps1`, `claude-pretooluse-hook.ps1` y policy de hooks |
 
 **Regla:** si el caso aplica y el artefacto no existe, el cierre queda
 `blocked` o se declara explícitamente como no aplicable con evidencia.
@@ -446,7 +462,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.3.x / 0.10.0
+## 10 · Roadmap 3.4.x / 0.12.0
 
 Principio central:
 
@@ -542,7 +558,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.10.0 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.12.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -567,9 +583,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 12 · Controles 0.8.3 a 0.10.0
+## 12 · Controles 0.8.3 a 0.12.0
 
-Además de los controles base, la versión operativa 0.10.0 exige revisar:
+Además de los controles base, la versión operativa 0.12.0 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -583,6 +599,8 @@ Además de los controles base, la versión operativa 0.10.0 exige revisar:
 | 0.8.10 | budget soft gates | warnings/evidencia hasta 2x, bloqueo sobre hard limit y fallback PowerShell en `init.sh` |
 | 0.9.0 | orden de prompts y registries | `prompt-registry.yaml`, `registry-index.yaml`, registries canónicos y prompt de migración `0.8.10 -> 0.9.0` |
 | 0.10.0 | agentes, seguridad y migración aplicada | `agent-registry.yaml`, `capability-registry.yaml`, `orquestador/security/`, migrador, backup, contrato post-migración y validadores |
+| 0.11.0 | runtime enforcement | `state-machine.ps1`, `agent-runtime.ps1`, schemas/templates runtime y validadores negativos |
+| 0.12.0 | approvals, gateway y hooks reales | `hebrinex approve`, approval store, Command Gateway v0.4, hooks Claude, shared core de adapters y ruta `0.11.0 -> 0.12.0` |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
 
@@ -801,3 +819,119 @@ Migración:
 Regla conceptual final: el harness no se comporta como agente. El harness
 define, limita, migra y audita agentes. Los agentes ejecutan su rol con
 autosuficiencia estructural, pero sin autoridad para redefinirse.
+
+---
+
+## 18 · Actualización 0.11.0: Enforcement Release
+
+`Hebri-AI-Harness 0.11.0` convierte contratos ya definidos en decisiones
+ejecutables. La regla deja de ser sólo documental: el harness puede responder
+allow/block ante estados, roles y capabilities.
+
+Componentes:
+
+```text
+scripts/state-machine.ps1
+scripts/agent-runtime.ps1
+scripts/validate-state-machine.ps1
+scripts/validate-agent-runtime.ps1
+orquestador/runtime/schemas/state-machine-decision.schema.json
+orquestador/runtime/schemas/agent-runtime-decision.schema.json
+orquestador/runtime/templates/state-machine-decision.template.json
+orquestador/runtime/templates/agent-runtime-decision.template.json
+orquestador/testing/fixtures/positive/runtime-implementer-write.yaml
+orquestador/testing/fixtures/negative/runtime-reviewer-write.yaml
+orquestador/testing/fixtures/negative/state-active-to-closed.yaml
+orquestador/migration/versions/0.10.11-to-0.11.0.yaml
+```
+
+Criterios de auditoría:
+
+- `state-machine` permite transiciones registradas y bloquea transiciones
+  inválidas o terminales.
+- `agent-runtime` valida que el rol exista, tenga contrato y pueda ejercer la
+  capability pedida.
+- Reviewer no escribe, implementer no aprueba y rol desconocido bloquea.
+- CI y `validate-harness.ps1 -RunNegativeTests` invocan validadores de runtime.
+- La migración `0.10.11 -> 0.11.0` preserva state, registry, ciclos, locks,
+  approvals, memoria local/proyecto y evidencia.
+
+Comandos mínimos:
+
+```powershell
+.\.hebrinex\scripts\validate-state-machine.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-agent-runtime.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+---
+
+## 19 · Actualización 0.12.0: Approval Store, Gateway y Hooks
+
+`Hebri-AI-Harness 0.12.0` materializa la aprobación humana y endurece la
+ejecución de comandos. El `SI` del operador ya no debe quedar sólo en el chat
+cuando el harness puede persistirlo.
+
+Componentes:
+
+```text
+scripts/hebrinex.ps1                    # cli_contract_version=0.3, comando approve
+scripts/command-gateway.ps1             # result schema 0.4, approval_status
+scripts/lib/hebri-common.psm1           # YAML, redacción, approvals, locks
+scripts/claude-reentry.ps1
+scripts/claude-pretooluse-hook.ps1
+scripts/install-claude-hooks.ps1
+orquestador/integrations/claude/hooks-policy.md
+orquestador/integrations/claude/settings.template.json
+orquestador/adapters/_shared-core.md
+orquestador/migration/versions/0.11.0-to-0.12.0.yaml
+```
+
+Flujo de aprobación:
+
+```text
+1. Preflight declara acción exacta.
+2. Operador responde SI.
+3. `hebrinex approve -Apply -CommandText <accion exacta>` crea APR-*.yaml.
+4. `command-gateway.ps1 -ApprovalId <APR>` valida estado, TTL y SHA256.
+5. Si el comando no coincide, expiró o no existe, se bloquea.
+```
+
+Bloqueos esperados:
+
+- `approval_not_found`: el ID no existe.
+- `approval_expired`: el TTL venció.
+- `approval_not_approved`: el envelope no está aprobado.
+- `approval_command_mismatch`: el hash de la acción no coincide.
+- `symlink_not_allowed_in_apply`: Apply detectó reparse point bajo el root.
+
+Hooks Claude:
+
+- `SessionStart` ejecuta `claude-reentry.ps1` y genera brief liviano con
+  binding, contrato, ciclo activo y locks.
+- `PreToolUse` para Bash/PowerShell ejecuta `claude-pretooluse-hook.ps1`.
+- Si el gateway permite read-only seguro, el hook responde `allow`.
+- Si detecta patrón bloqueado, responde `ask` y fuerza decisión explícita.
+- Si el caso es ambiguo, no decide y deja actuar al flujo normal del host.
+
+Reglas de seguridad:
+
+- Los hooks no reemplazan al harness. Sólo acercan el contrato al host.
+- Un hook no es evidencia; la evidencia es el approval envelope, salida del
+  gateway, logs, state/registry, gate log y validadores.
+- Apply nunca debe atravesar symlinks/junctions.
+- Un timeout debe matar el árbol completo de procesos.
+- Un `ApprovalId` no se reutiliza para otro comando.
+
+Validación mínima:
+
+```powershell
+.\.hebrinex\scripts\validate-command-gateway.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-cli.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-migration.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+Criterio de cierre: 0.12.0 está aplicado sólo si el harness puede crear un
+approval real, el gateway lo valida, los casos negativos bloquean, los hooks
+son instalables y la ruta `0.11.0-to-0.12.0` aparece en el migration registry.

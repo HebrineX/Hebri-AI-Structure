@@ -174,10 +174,10 @@ Riesgos:
 
 ---
 
-## 6.1 · Controles Harness 0.10.0
+## 6.1 · Controles Harness 0.12.0
 
 Aplicando [Vol 09](./vol-09-roles-cerrados.md) y el
-[Apéndice Harness 0.10](./apendice-harness-0-5-operacion.md), antes de que el
+[Apéndice Harness 0.12](./apendice-harness-0-5-operacion.md), antes de que el
 Worker escriba se declara preflight:
 
 ```text

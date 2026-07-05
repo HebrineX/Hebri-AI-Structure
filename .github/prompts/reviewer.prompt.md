@@ -13,9 +13,10 @@ NO editás código. Si encontrás algo mal, lo bloqueás. No lo arreglás.
 Carga mínima: spec activa, artefacto de implementación, diff/archivos tocados,
 evidencia de verificación y Vol 09. Si el proyecto usa `Hebri-AI-Harness`,
 usar su perfil `reviewer`.
-En Harness 0.10.0 también validar binding, agent contract, capability,
+En Harness 0.12.0 también validar binding, agent contract, capability,
 security profile, state, registry, approvals, gate logs, verification matrix,
-final report y agent closure.
+final report, agent closure, runtime enforcement y gateway/approval status
+cuando aplique.
 Si el cierre depende de una conclusión no demostrada, pedir auditoría o
 detractor pass; no aprobar por confianza en el agente anterior.
 
@@ -31,11 +32,12 @@ Leer y contrastar:
 2. `progress/impl_<feature>.md`.
 3. Los archivos efectivamente tocados (según la lista del impl).
 4. El comando de verificación corrido.
-5. Si existe Harness 0.10.0: `PROJECT_BINDING.yaml`, `agent-registry.yaml`,
+5. Si existe Harness 0.12.0: `PROJECT_BINDING.yaml`, `agent-registry.yaml`,
    `capability-registry.yaml`, security profile, `state.yaml`,
    `memory-registry.yaml`, `memory-routing.yaml`, `session-pin.md`,
    `context-budget.yaml`, `registry.yaml`, `approval-envelope`, `gate-log.yaml`,
-   `verification-matrix.yaml`, `final-report.md` y `agent-closure.md`.
+   `verification-matrix.yaml`, `final-report.md`, `agent-closure.md`,
+   runtime enforcement y salida del gateway si hubo comando con efecto.
 
 ## Causales típicas de rechazo
 

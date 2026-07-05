@@ -111,9 +111,11 @@ Debe traer contratos operativos mínimos:
   playbooks, failure modes y rubrics;
 - seguridad informática verificable: permisos, command risk, write scope,
   red, secretos, supply chain, logging, threat model y escalación;
-- servicio de migración con rutas `0.9.0 -> 0.10.0` y `0.8.10 -> 0.10.0`,
-  modo CheckOnly sin escrituras, Apply con backup y contrato post-migración
-  aplicado.
+- servicio de migración con rutas `0.9.0 -> 0.10.0`, `0.8.10 -> 0.10.0`,
+  `0.10.11 -> 0.11.0` y `0.11.0 -> 0.12.0`, modo CheckOnly sin escrituras,
+  Apply con backup y contrato post-migración aplicado;
+- enforcement ejecutable para state machine, agent runtime, approval store,
+  Command Gateway y hooks reales del host cuando la herramienta los soporte.
 
 **Flujo de arranque:**
 
@@ -367,7 +369,7 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.10.0`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.12.0`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
@@ -380,16 +382,20 @@ manifest estructural, presupuestos de contexto, validador local,
 compatibilidad PowerShell 5.1 para el builder de instrucciones,
 regularizadores de migración para `state.yaml` y `registry.yaml`, prompts
 ordenados por responsabilidad, registries canónicos del orquestador, índice
-de registries, Agent Contract System, seguridad informática verificable y
-servicio de migración con contrato post-migración aplicado.
-En 0.10.0 esos controles separan definitivamente harness y agente: el harness
-define, limita y audita; los agentes ejecutan contratos registrados por rol.
+de registries, Agent Contract System, seguridad informática verificable,
+servicio de migración con contrato post-migración aplicado, enforcement de
+runtime, approval store ejecutable, Command Gateway con approval enforcement,
+hooks reales de Claude Code y adapters condensados por shared core.
+Desde 0.10.0 esos controles separan definitivamente harness y agente: el
+harness define, limita y audita; los agentes ejecutan contratos registrados
+por rol. Desde 0.12.0, además, el `SI` deja de ser sólo texto conversacional y
+se materializa como envelope verificable por el gateway.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.10.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.12.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -397,15 +403,15 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.10.0 (pendiente de validación continua en proyecto piloto
+0.12.0 (pendiente de validación continua en proyecto piloto
 `Hebri-AI-Portfolio`).
 
 ---
 
-## Harness 0.10.0 - Agent Contract System, Seguridad y Migración
+## Harness 0.12.0 - Contratos, Enforcement, Approvals y Hooks
 
-La referencia operativa actual es `Hebri-AI-Harness 0.10.0`. La línea
-0.8.3-0.10.0 agrega controles que la biblia trata como criterio metodológico:
+La referencia operativa actual es `Hebri-AI-Harness 0.12.0`. La línea
+0.8.3-0.12.0 agrega controles que la biblia trata como criterio metodológico:
 
 - 0.8.3: `detractor-senior` antes de implementar cambios relevantes.
 - 0.8.4: core portable + adapters declarativos por IA.
@@ -421,6 +427,12 @@ La referencia operativa actual es `Hebri-AI-Harness 0.10.0`. La línea
 - 0.10.0: Agent Contract System, autoridad `harness_only`, runtime
   enablement de agentes, seguridad AppSec verificable, migrador CheckOnly/
   Apply y contrato post-migración aplicado.
+- 0.11.0: state machine y agent runtime enforcement ejecutables, fixtures
+  positivas/negativas, CLI contract 0.2 y CI oficial sobre runtime.
+- 0.12.0: approval store ejecutable, Command Gateway con `ApprovalId`
+  verificable, hooks reales de Claude Code, rechazo de symlinks en Apply,
+  timeout que mata el árbol completo de procesos, `status` con locks y
+  adapters condensados en `_shared-core.md`.
 
 Regla conceptual: el harness puede generar o resumir contexto, pero la autoridad sigue en binding, state, registry, gates, evidencia y locks.
 
@@ -463,8 +475,39 @@ Consecuencias operativas:
 - leader no implementa;
 - reporter comunica evidencia, no cambia veredictos.
 
+En 0.11.0 la autoridad anterior se vuelve ejecutable. `state-machine` bloquea
+transiciones inválidas y `agent-runtime` bloquea roles o capabilities fuera de
+contrato. Es la diferencia entre "la política dice" y "el harness puede
+responder allow/block con evidencia estructurada".
+
+En 0.12.0 el `SI` humano también pasa a contrato ejecutable:
+
+- `hebrinex approve -Apply` crea un envelope en
+  `orquestador/sdd/progress/approvals/` con TTL y SHA256 de la acción exacta;
+- `command-gateway.ps1` valida `-ApprovalId` contra ese almacén y bloquea
+  `approval_not_found`, `approval_expired`, `approval_not_approved` y
+  `approval_command_mismatch`;
+- Apply no acepta symlinks/junctions bajo el root, porque podrían redirigir
+  una ruta aparentemente segura fuera del harness;
+- un timeout mata el árbol completo de procesos, no sólo el proceso padre;
+- `hebrinex status` reporta locks abiertos y vencidos;
+- `scripts/lib/hebri-common.psm1` concentra helpers compartidos de YAML,
+  redacción, approvals y locks;
+- los adapters comparten cuerpo común en `orquestador/adapters/_shared-core.md`
+  y cada host mantiene sólo notas específicas.
+
+Hooks reales de host:
+
+- Claude Code `SessionStart` ejecuta `claude-reentry.ps1` e inyecta un brief
+  liviano con binding, contrato, ciclo y locks.
+- Claude Code `PreToolUse` ejecuta `claude-pretooluse-hook.ps1` para Bash y
+  PowerShell: permite comandos read-only seguros, fuerza `ask` para patrones
+  bloqueados y delega el resto al flujo normal de permisos del host.
+
 Regla de adopción: desde 0.9.0 se migra por la ruta `0.9.0-to-0.10.0`; desde
-0.8.10 existe ruta directa `0.8.10-to-0.10.0`. En ambos casos CheckOnly no
-escribe, Apply requiere backup, se preservan `state.yaml`, `registry.yaml`,
-ciclos, locks, approvals, memoria local/proyecto y evidencia, y el cierre solo
-vale si los validadores pasan y el contrato post-migración queda activo.
+0.8.10 existe ruta directa `0.8.10-to-0.10.0`; desde 0.10.11 se migra a
+`0.11.0`; desde 0.11.0 se migra por `0.11.0-to-0.12.0`. En todos los casos
+CheckOnly no escribe, Apply requiere backup, se preservan `state.yaml`,
+`registry.yaml`, ciclos, locks, approvals, memoria local/proyecto y evidencia,
+y el cierre solo vale si los validadores pasan y el contrato post-migración
+queda activo.

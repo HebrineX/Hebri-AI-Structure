@@ -11,7 +11,7 @@ Verificar y reportar:
 4. ¿Los gaps diferidos están registrados en PROGRESS.md con motivo?
 5. ¿La documentación refleja el estado actual?
 6. ¿El tag de versión está creado (si corresponde)?
-7. Si el proyecto usa Hebri-AI-Harness 0.10.0:
+7. Si el proyecto usa Hebri-AI-Harness 0.12.0:
    - Validar `session-pin.md`, `memory-registry.yaml`, `memory-routing.yaml`
      y `context-budget.yaml`.
    - `PROJECT_BINDING.yaml` está en `bound` y coincide con el proyecto.
@@ -24,10 +24,13 @@ Verificar y reportar:
    - `G5I_memory_consistency_complete` está en `pass`.
    - `G6_agent_closure_complete` está en `pass`.
    - No quedan locks ni agentes abiertos.
+   - Runtime enforcement, gateway y approvals fueron validados si hubo
+     acciones con efecto.
 
 Producir:
 - Resumen de cierre con evidencia concreta (N tests passed, build OK).
 - Lista de gaps diferidos a la siguiente fase.
 - Próximos pasos sugeridos.
-- En Harness 0.10.0, no declarar `done` si falta binding válido, presupuesto,
-  agent contract, capability/security profile o cualquier artefacto P0.
+- En Harness 0.12.0, no declarar `done` si falta binding válido, presupuesto,
+  agent contract, capability/security profile, approval/gateway cuando aplique
+  o cualquier artefacto P0.
