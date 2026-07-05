@@ -280,7 +280,7 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.12.0`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.13.0`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
 registra warning cuando una ruta supera el presupuesto recomendado. Solo
@@ -314,7 +314,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.12.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.13.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -366,7 +366,7 @@ Regla: un prompt puede guiar una acción, pero no crear autoridad nueva. La
 autoridad sale del binding, registries, policies, state, registry, gates,
 locks y evidencia.
 
-En 0.12.0, la seguridad informática se expresa como registries, policies y
+En 0.13.0, la seguridad informática se expresa como registries, policies y
 enforcement ejecutable. El objetivo no es solo evitar que la IA "se pase de
 rol", sino reducir superficie de ataque real del harness:
 
@@ -378,6 +378,8 @@ rol", sino reducir superficie de ataque real del harness:
 | Timeout con kill de árbol | Procesos hijo o nietos sobreviviendo a un timeout |
 | Claude `PreToolUse` | Comandos Bash/PowerShell bloqueados por policy antes de ejecutar |
 | `status` con locks | Trabajo activo o vencido invisible para el operador |
+| MCP `run_command` | Ejecución por cliente MCP sin pasar por gateway |
+| MCP `close_cycle_check` | Cierres `done` sin evidencia, locks o handoffs resueltos |
 
 La base 0.10.0 ya expresaba seguridad como registries y policies verificables:
 
@@ -393,7 +395,7 @@ La base 0.10.0 ya expresaba seguridad como registries y policies verificables:
 | `escalation-policy.yaml` | Elevaciones explícitas, temporales y con evidencia |
 | `threat-model.yaml` | Amenazas esperadas: autoridad por prompt, command injection, path traversal, secretos, red, git remoto y supply chain |
 
-Defaults de 0.12.0:
+Defaults de 0.13.0:
 
 - permiso desconocido: bloqueado;
 - comando desconocido: bloqueado;
@@ -563,11 +565,13 @@ Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness
 
 El runtime reduce tokens porque consulta primero estado compacto. Si necesita contexto completo, debe declarar read-set, budget y pedir `SI`.
 
-## Autonomía con Runtime 0.12.0
+## Autonomía con Runtime 0.13.0
 
-`0.12.0` agrega una capa práctica sobre el runtime: la autonomía no avanza sólo
+`0.13.0` conserva la capa práctica de 0.12.0: la autonomía no avanza sólo
 porque el chat diga "sí". El `SI` se puede materializar como approval envelope
-y el gateway lo valida contra la acción exacta.
+y el gateway lo valida contra la acción exacta. Además, el daemon MCP
+`hebrinex` permite que clientes compatibles invoquen ese enforcement sin
+copiar reglas en prompts.
 
 Flujo sano:
 
@@ -589,3 +593,17 @@ del tool call:
 Regla metodológica: los hooks ayudan, pero no son evidencia. La evidencia sigue
 siendo el estado, registry, approval envelope, gate log, salida de comando y
 validadores.
+
+Con MCP, el flujo sano es:
+
+```text
+1. El agente pide `session_contract` o `memory_route` para rehidratar mínimo.
+2. Si necesita ejecutar, propone preflight visible al operador.
+3. Tras `SI`, `preflight_approve` crea el envelope.
+4. `run_command` ejecuta sólo por gateway y falla si la policy bloquea.
+5. Antes de `done`, `close_cycle_check` valida evidencia, locks y handoffs.
+```
+
+Regla de seguridad: un MCP del harness no amplía permisos por existir. Cada
+tool MCP debe mapear a una capacidad del harness y respetar el mismo binding,
+approval store, policies, write-scope, gates y logs que la CLI.

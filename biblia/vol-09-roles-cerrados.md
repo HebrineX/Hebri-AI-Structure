@@ -14,7 +14,7 @@ evolución de `3.0.0`: roles mínimos con perfiles parametrizados.
 
 ## Protocolo Multiagente
 
-En `Hebri-AI-Harness 0.12.0`, el chat visible actúa como **intérprete** por
+En `Hebri-AI-Harness 0.13.0`, el chat visible actúa como **intérprete** por
 defecto. Comunica estado, pedidos de aprobación y resultados. El leader es el
 coordinador operativo y debe quedar visible en conversación, registry o
 artefacto. Si el leader no está visible, no se despachan workers ni se cierran
@@ -81,7 +81,7 @@ Gates recomendados:
 | G6_agent_closure_complete | Todos los agentes tienen cierre, handoff y locks resueltos |
 | G7_handoff_complete | Registry, gaps y próximo paso actualizados |
 
-Subgates P0 y condicionales vigentes en `0.12.0`:
+Subgates P0 y condicionales vigentes en `0.13.0`:
 
 | Subgate | Criterio |
 |---|---|
@@ -105,7 +105,7 @@ sin resolver, approval pendiente o evidencia ausente. Los ciclos históricos
 sin estos artefactos se marcan como `legacy_unverified`; no se inventa
 evidencia retroactiva.
 
-### Agent Contract System 0.12.0
+### Agent Contract System 0.13.0
 
 Desde 0.10.0, un agente no existe porque un prompt lo diga. Existe si el harness
 lo define en `orquestador/agents/agent-registry.yaml` y lo conecta con
@@ -169,7 +169,7 @@ Tarea = objetivo concreto de ese ciclo.
 | `auditor` | Audita contrato, proceso, riesgos, sesgos y cumplimiento | Implementar o aprobar |
 | `reporter` | Comunica resultados de forma clara, humana y accionable | Cambiar veredicto o inventar evidencia |
 
-Responsabilidades vigentes desde 0.8.10 y consolidadas en `0.12.0`:
+Responsabilidades vigentes desde 0.8.10 y consolidadas en `0.13.0`:
 
 - `leader`: valida binding, project root y harness path antes de despachar.
 - `leader`: valida `context-budget.yaml` y bloquea rutas que exceden
@@ -239,7 +239,7 @@ humana**. Un spec puede estar muy bien escrito y resolver el problema
 equivocado. El implementer no arranca hasta que una persona acepta alcance,
 no objetivos y criterios de aceptación.
 
-En harness `0.12.0`, `spec_author` e `implementer` pueden verse como perfiles
+En harness `0.13.0`, `spec_author` e `implementer` pueden verse como perfiles
 operativos de `executor` cuando la herramienta necesita menos roles visibles.
 La separación produce/aprueba se mantiene igual.
 
@@ -572,7 +572,7 @@ Una sola persona alterna roles manualmente, pero respetando la separación:
 
 ---
 
-## Detractor Senior y Reporter en 0.12.0
+## Detractor Senior, Reporter y Roles Derivados en 0.13.0
 
 `detractor-senior` es un perfil previo a implementación. Su salida puede bloquear, simplificar o pedir evidencia. No implementa y no aprueba.
 
@@ -580,11 +580,26 @@ Una sola persona alterna roles manualmente, pero respetando la separación:
 
 La estructura mantiene mínimos roles activos: 1 leader + hasta 4 subagentes. Más perfiles no significan más agentes activos.
 
-En 0.12.0, los prompts de roles quedan subordinados al Agent Contract System.
+En 0.13.0, los prompts de roles quedan subordinados al Agent Contract System.
 Un prompt puede invocar un rol existente o pedir un handoff, pero no definir
 un agente nuevo, elevar permisos ni mezclar responsabilidades. Si el rol,
 perfil, gate, capability, lifecycle o template no está en el registro canónico
 del harness, se trata como no instanciable hasta regularizarlo.
+
+La fuente humana de cada rol es `agents/<rol>.md`. Desde ahí el harness genera
+capas derivadas:
+
+```text
+agents/<rol>.md
+  -> orquestador/agents/role-contracts/<rol>.yaml
+  -> prompts/roles/<rol>.prompt.md
+  -> role_defaults.<rol> en capability-registry.yaml
+```
+
+Los derivados no se editan a mano. Si un contrato YAML, prompt de rol o default
+de capability cambia sin modificar `agents/<rol>.md`, el drift-check del
+instruction builder debe fallar. El camino correcto es editar la fuente del rol
+y regenerar con `scripts/build-instructions.ps1 -WriteOutputs`.
 
 La autosuficiencia del agente no significa autonomía ilimitada. Significa que
 el harness le entrega el contexto, herramientas, playbook, fallos esperables,
@@ -596,3 +611,8 @@ En 0.12.0 esa estructura incluye approvals ejecutables. Un rol que recibe un
 `ApprovalId` no lo trata como palabra mágica: lo contrasta con el gateway,
 revisa TTL, estado y hash exacto del comando. Si falla, el próximo paso no es
 "probar igual"; es volver al leader con bloqueo y evidencia.
+
+En 0.13.0, si el rol opera vía MCP, aplica la misma regla: `run_command` no
+saltea permisos, `preflight_approve` sólo materializa un `SI` explícito y
+`close_cycle_check` bloquea cierres sin evidencia, locks/handoffs resueltos y
+estado coherente.

@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.5.0] — 2026-07-05
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.13.0` como referencia operativa.
+- Vol 07 documenta el daemon MCP `hebrinex`, la ruta de migración
+  `0.12.0 -> 0.13.0` y la fuente única de roles desde `agents/<rol>.md`.
+- Vol 08 incorpora el contrato MCP del harness: tools locales stdio para
+  gateway, approvals, contrato de sesión, gates, memoria y cierre de ciclo.
+- Vol 09 aclara que los contratos, prompts y defaults de capabilities son
+  derivados verificables; la autoridad narrativa está en `agents/<rol>.md`
+  bajo control del harness, no en prompts editados a mano.
+- El apéndice suma checklist y validación para `validate-mcp.ps1`, smoke MCP,
+  `.mcp.json`, `mcp/server.mjs`, `mcp/smoke.mjs` y drift de capas de roles.
+
+### Changed
+- README, índices, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.13.0`.
+- La referencia activa del apéndice pasa de 0.12.0 a 0.13.0, conservando
+  0.12.0 como hito histórico de approvals/gateway/hooks.
+
+### Fixed
+- Se documenta que el validador del manifest debe registrar faltantes como
+  failure controlado, no abortar con `Get-Item`, para que CI reporte el
+  contrato roto de forma legible.
+
 ## [3.4.0] — 2026-07-05
 
 ### Added

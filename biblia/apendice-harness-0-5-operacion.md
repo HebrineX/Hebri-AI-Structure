@@ -1,9 +1,9 @@
-# Apéndice · Operación, Seguridad y Auditoría de Harness 0.12.0
+# Apéndice · Operación, Seguridad y Auditoría de Harness 0.13.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.12.0`.
+`Hebri-AI-Harness 0.13.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.12.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks aplicados si corresponden, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.13.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks/MCP aplicados si corresponden, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.12.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.13.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
@@ -39,6 +39,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.12.0`:
 .hebrinex/scripts/validate-state-machine.ps1
 .hebrinex/scripts/validate-agent-runtime.ps1
 .hebrinex/scripts/validate-command-gateway.ps1
+.hebrinex/scripts/validate-mcp.ps1
 .hebrinex/scripts/audit-harness.ps1
 .hebrinex/scripts/regularize-state.ps1
 .hebrinex/scripts/regularize-registry.ps1
@@ -48,6 +49,13 @@ Archivos mínimos de `Hebri-AI-Harness 0.12.0`:
 .hebrinex/scripts/claude-pretooluse-hook.ps1
 .hebrinex/scripts/install-claude-hooks.ps1
 .hebrinex/scripts/lib/hebri-common.psm1
+.hebrinex/.mcp.json
+.hebrinex/mcp/package.json
+.hebrinex/mcp/package-lock.json
+.hebrinex/mcp/README.md
+.hebrinex/mcp/server.mjs
+.hebrinex/mcp/smoke.mjs
+.hebrinex/agents/worker.md
 .hebrinex/orquestador/harness-manifest.txt
 .hebrinex/orquestador/context-budget.yaml
 .hebrinex/orquestador/prompt-registry.yaml
@@ -93,6 +101,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.12.0`:
 .hebrinex/orquestador/migration/versions/0.8.10-to-0.10.0.yaml
 .hebrinex/orquestador/migration/versions/0.10.11-to-0.11.0.yaml
 .hebrinex/orquestador/migration/versions/0.11.0-to-0.12.0.yaml
+.hebrinex/orquestador/migration/versions/0.12.0-to-0.13.0.yaml
 .hebrinex/orquestador/migration/contracts/post-migration-contract.yaml
 .hebrinex/orquestador/migration/reports/migration-report.template.yaml
 .hebrinex/orquestador/method/session-contract.md
@@ -243,7 +252,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.12.0, antes de revisar código o progreso, validar:
+En 0.13.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -263,7 +272,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.12.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.13.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -289,7 +298,7 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.12.0` conserva los controles 0.8.x/0.9.x/0.10.x
+Además de la evidencia base, `0.13.0` conserva los controles 0.8.x/0.9.x/0.10.x
 y agrega verificación de runtime, approvals, gateway y hooks si la tarea toca
 ese tipo de decisión:
 
@@ -462,7 +471,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.4.x / 0.12.0
+## 10 · Roadmap 3.5.x / 0.13.0
 
 Principio central:
 
@@ -558,7 +567,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.12.0 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.13.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -583,9 +592,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 12 · Controles 0.8.3 a 0.12.0
+## 12 · Controles 0.8.3 a 0.13.0
 
-Además de los controles base, la versión operativa 0.12.0 exige revisar:
+Además de los controles base, la versión operativa 0.13.0 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -601,6 +610,7 @@ Además de los controles base, la versión operativa 0.12.0 exige revisar:
 | 0.10.0 | agentes, seguridad y migración aplicada | `agent-registry.yaml`, `capability-registry.yaml`, `orquestador/security/`, migrador, backup, contrato post-migración y validadores |
 | 0.11.0 | runtime enforcement | `state-machine.ps1`, `agent-runtime.ps1`, schemas/templates runtime y validadores negativos |
 | 0.12.0 | approvals, gateway y hooks reales | `hebrinex approve`, approval store, Command Gateway v0.4, hooks Claude, shared core de adapters y ruta `0.11.0 -> 0.12.0` |
+| 0.13.0 | daemon MCP y fuente única de roles | `.mcp.json`, `mcp/server.mjs`, `mcp/smoke.mjs`, `validate-mcp.ps1`, `agents/<rol>.md`, headers GENERATED, drift-check del builder y ruta `0.12.0 -> 0.13.0` |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
 
@@ -935,3 +945,79 @@ Validación mínima:
 Criterio de cierre: 0.12.0 está aplicado sólo si el harness puede crear un
 approval real, el gateway lo valida, los casos negativos bloquean, los hooks
 son instalables y la ruta `0.11.0-to-0.12.0` aparece en el migration registry.
+
+---
+
+## 20 · Actualización 0.13.0: Daemon MCP y Fuente Única de Roles
+
+`Hebri-AI-Harness 0.13.0` agrega una interfaz MCP local y reduce drift entre
+roles narrativos, contratos YAML, prompts y defaults de capabilities.
+
+Componentes:
+
+```text
+.mcp.json
+mcp/package.json
+mcp/package-lock.json
+mcp/README.md
+mcp/server.mjs
+mcp/smoke.mjs
+scripts/validate-mcp.ps1
+agents/worker.md
+agents/<rol>.md
+orquestador/instruction-builder/instruction-registry.yaml
+orquestador/migration/versions/0.12.0-to-0.13.0.yaml
+```
+
+Tools MCP esperadas:
+
+| Tool | Control esperado |
+|---|---|
+| `run_command` | Ejecuta sólo por Command Gateway; si bloquea, la tool falla con razón y preflight |
+| `preflight_approve` | Crea approval envelope sólo después del `SI` explícito |
+| `approval_check` | Valida id, estado, expiración y hash exacto del comando |
+| `session_contract` | Devuelve contrato mínimo sin cargar todo el harness |
+| `gate_check` | Clasifica gates G5B..G5I desde `git status/diff` read-only |
+| `memory_route` | Decide entrypoint por estado real, no por memoria conversacional |
+| `close_cycle_check` | Bloquea `done` si faltan evidencia, locks, handoffs o cierre |
+
+Fuente única de roles:
+
+```text
+agents/<rol>.md
+  -> orquestador/agents/role-contracts/<rol>.yaml
+  -> prompts/roles/<rol>.prompt.md
+  -> role_defaults.<rol> en capability-registry.yaml
+```
+
+Reglas:
+
+- editar `agents/<rol>.md`, no los derivados;
+- regenerar con `scripts/build-instructions.ps1 -WriteOutputs`;
+- validar drift con `scripts/build-instructions.ps1` sin `-WriteOutputs`;
+- los contratos y prompts derivados deben llevar aviso `GENERATED`;
+- si el builder detecta drift, el release no está listo.
+
+Validación mínima:
+
+```powershell
+.\.hebrinex\scripts\validate-mcp.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\build-instructions.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-drift.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-agent-contracts.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+Si hay Node y dependencias instaladas:
+
+```bash
+cd .hebrinex/mcp
+npm ci --no-audit --no-fund
+node smoke.mjs
+```
+
+Criterio de cierre: 0.13.0 está aplicado sólo si el daemon MCP existe,
+`validate-mcp.ps1` pasa, el smoke valida las 7 tools, el builder no detecta
+drift de roles, la ruta `0.12.0-to-0.13.0` aparece en el migration registry y
+`validate-harness.ps1 -RunNegativeTests` termina sin abortos ni falsos
+positivos por manifest.
