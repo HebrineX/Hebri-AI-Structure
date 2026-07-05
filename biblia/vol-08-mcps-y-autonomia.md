@@ -280,12 +280,15 @@ Capas recomendadas:
 Esto reduce tokens porque el agente no carga todo el harness para cada error,
 y reduce drift porque el re-entry se vuelve una lectura corta y verificable.
 
-En `Hebri-AI-Harness 0.13.0`, el ahorro de contexto se valida como contrato:
+En `Hebri-AI-Harness 0.14.0`, el ahorro de contexto se valida como contrato:
 `context-budget.yaml` define límites por ruta (`memory_bootstrap`,
 `first_message`, `debug_log_intake`, `leader_light`) y el validador local
 registra warning cuando una ruta supera el presupuesto recomendado. Solo
 bloquea si supera 2x el límite declarado. Si un agente necesita `leader_full`
 o memoria `complete/`, debe declarar motivo, scope y pedir aprobación.
+Además, `hebrinex usage` mide el kernel contra la documentacion operativa y
+permite sostener un claim conservador de ahorro medido del 90%; el release
+0.14.0 registra `savings_docs_pct=94` y `savings_pct=99`.
 
 La documentacion personal/local queda fuera de la operacion: puede existir en
 el proyecto o en el entorno del usuario, pero no se carga, no se copia a
@@ -314,7 +317,7 @@ operador.
 
 ## Controles P0 de Tool Use
 
-En `Hebri-AI-Harness 0.13.0`, las acciones con efecto no dependen solo de una
+En `Hebri-AI-Harness 0.14.0`, las acciones con efecto no dependen solo de una
 frase en el chat. Deben pasar por controles estructurados:
 
 | Control | Para qué existe |
@@ -366,7 +369,7 @@ Regla: un prompt puede guiar una acción, pero no crear autoridad nueva. La
 autoridad sale del binding, registries, policies, state, registry, gates,
 locks y evidencia.
 
-En 0.13.0, la seguridad informática se expresa como registries, policies y
+En 0.14.0, la seguridad informática se expresa como registries, policies y
 enforcement ejecutable. El objetivo no es solo evitar que la IA "se pase de
 rol", sino reducir superficie de ataque real del harness:
 
@@ -395,7 +398,7 @@ La base 0.10.0 ya expresaba seguridad como registries y policies verificables:
 | `escalation-policy.yaml` | Elevaciones explícitas, temporales y con evidencia |
 | `threat-model.yaml` | Amenazas esperadas: autoridad por prompt, command injection, path traversal, secretos, red, git remoto y supply chain |
 
-Defaults de 0.13.0:
+Defaults de 0.14.0:
 
 - permiso desconocido: bloqueado;
 - comando desconocido: bloqueado;
@@ -479,7 +482,7 @@ foco. Optimizar contexto NO es minimizar — es no cargar lo irrelevante.
 | Documentación externa | Linkearla, no copiarla |
 | Conversaciones previas | Resumen estructurado, no transcripción |
 
-**Regla del 80/20:** Si el 80% del contexto cargado es irrelevante para la
+**Regla de foco:** Si la mayoría del contexto cargado es irrelevante para la
 tarea concreta, la unidad mínima de contexto está mal definida. Volver al
 [Vol 01](./vol-01-modelo-de-trabajo.md).
 
@@ -565,13 +568,16 @@ Los comandos `/harness status`, `/harness reentry`, `/harness budget`, `/harness
 
 El runtime reduce tokens porque consulta primero estado compacto. Si necesita contexto completo, debe declarar read-set, budget y pedir `SI`.
 
-## Autonomía con Runtime 0.13.0
+## Autonomía con Runtime 0.14.0
 
-`0.13.0` conserva la capa práctica de 0.12.0: la autonomía no avanza sólo
+`0.14.0` conserva la capa práctica de 0.12.0: la autonomía no avanza sólo
 porque el chat diga "sí". El `SI` se puede materializar como approval envelope
 y el gateway lo valida contra la acción exacta. Además, el daemon MCP
 `hebrinex` permite que clientes compatibles invoquen ese enforcement sin
 copiar reglas en prompts.
+En 0.14.0 tambien expone `session_usage`: observa consumo y costo estimado con
+`mcp/model-pricing.yaml`, o falla claro si no hay transcripts/precios en vez
+de inventar datos.
 
 Flujo sano:
 

@@ -8,7 +8,7 @@ Documentación metodológica — no un harness ejecutable. Los contenidos son
 principios y patrones, no instrucciones para ejecutar.
 
 Referencia operativa actual del repo hermano:
-`Hebri-AI-Harness 0.13.0`.
+`Hebri-AI-Harness 0.14.0`.
 
 ## Stack
 
@@ -66,7 +66,7 @@ done
 | Vol 08 · MCPs y autonomía | Antes de dar acceso a herramientas |
 | Vol 09 · Roles cerrados de harness | Al pasar de explorer/worker a SDD con aprobación |
 | Apéndice · Ejemplo end-to-end | Onboarding o duda práctica |
-| Apéndice · Operación y auditoría de Harness 0.13.0 | Auditar cumplimiento, agentes, seguridad, migración, approvals, hooks o MCP |
+| Apéndice · Operación y auditoría de Harness 0.14.0 | Auditar cumplimiento, agentes, seguridad, migración, approvals, hooks, MCP o uso de tokens |
 
 ## Reglas operativas
 

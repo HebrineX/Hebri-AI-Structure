@@ -112,7 +112,8 @@ Debe traer contratos operativos mínimos:
 - seguridad informática verificable: permisos, command risk, write scope,
   red, secretos, supply chain, logging, threat model y escalación;
 - servicio de migración con rutas `0.9.0 -> 0.10.0`, `0.8.10 -> 0.10.0`,
-  `0.10.11 -> 0.11.0`, `0.11.0 -> 0.12.0` y `0.12.0 -> 0.13.0`, modo
+  `0.10.11 -> 0.11.0`, `0.11.0 -> 0.12.0`, `0.12.0 -> 0.13.0` y
+  `0.13.0 -> 0.14.0`, modo
   CheckOnly sin escrituras, Apply con backup y contrato post-migración aplicado;
 - enforcement ejecutable para state machine, agent runtime, approval store,
   Command Gateway y hooks reales del host cuando la herramienta los soporte.
@@ -369,7 +370,7 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.13.0`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.14.0`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
@@ -386,19 +387,23 @@ de registries, Agent Contract System, seguridad informática verificable,
 servicio de migración con contrato post-migración aplicado, enforcement de
 runtime, approval store ejecutable, Command Gateway con approval enforcement,
 hooks reales de Claude Code, adapters condensados por shared core, daemon MCP
-local y fuente única de roles generada desde `agents/<rol>.md`.
+local, fuente única de roles generada desde `agents/<rol>.md` y medicion
+ejecutable de uso de tokens/costo con ahorro conservador reportado del 90%.
 Desde 0.10.0 esos controles separan definitivamente harness y agente: el
 harness define, limita y audita; los agentes ejecutan contratos registrados
 por rol. Desde 0.12.0, además, el `SI` deja de ser sólo texto conversacional y
 se materializa como envelope verificable por el gateway.
 Desde 0.13.0, los clientes MCP pueden invocar el enforcement sin saltear
 gateway, approvals, gates ni cierre de ciclo.
+Desde 0.14.0, el ahorro de contexto deja de ser declarativo: `hebrinex usage`
+mide `savings_docs_pct` contra la documentacion operativa completa y
+`validate-release.ps1` bloquea drift del claim del README.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.13.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.14.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -406,15 +411,15 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.13.0 (pendiente de validación continua en proyecto piloto
+0.14.0 (pendiente de validación continua en proyecto piloto
 `Hebri-AI-Portfolio`).
 
 ---
 
-## Harness 0.13.0 - Contratos, Enforcement, MCP y Roles Derivados
+## Harness 0.14.0 - Contratos, Enforcement, MCP, Roles y Uso Medido
 
-La referencia operativa actual es `Hebri-AI-Harness 0.13.0`. La línea
-0.8.3-0.13.0 agrega controles que la biblia trata como criterio metodológico:
+La referencia operativa actual es `Hebri-AI-Harness 0.14.0`. La línea
+0.8.3-0.14.0 agrega controles que la biblia trata como criterio metodológico:
 
 - 0.8.3: `detractor-senior` antes de implementar cambios relevantes.
 - 0.8.4: core portable + adapters declarativos por IA.
@@ -439,6 +444,10 @@ La referencia operativa actual es `Hebri-AI-Harness 0.13.0`. La línea
 - 0.13.0: daemon MCP local `hebrinex`, smoke MCP real, `.mcp.json`, ruta
   `0.12.0-to-0.13.0`, `agents/<rol>.md` como fuente única y builder que
   genera contratos/prompts/defaults de roles con drift-check.
+- 0.14.0: medicion real de uso con `hebrinex usage`, baseline
+  `usage-baseline-0.14.0.yaml`, claim conservador de ahorro medido del 90%,
+  MCP `session_usage`, `mcp/model-pricing.yaml` y validacion anti-drift del
+  README contra `savings_docs_pct`.
 
 Regla conceptual: el harness puede generar o resumir contexto, pero la autoridad sigue en binding, state, registry, gates, evidencia y locks.
 
@@ -531,6 +540,17 @@ Los derivados llevan aviso `GENERATED`. Si alguien los edita a mano,
 `-WriteOutputs`. Eso mantiene el principio: el harness define agentes; los
 prompts sólo reflejan contratos derivados.
 
+En 0.14.0, el presupuesto de contexto se vuelve observable:
+
+- `hebrinex usage` emite `kernel_tokens`, `docs_tree_tokens`,
+  `savings_docs_pct`, `full_tree_tokens`, `savings_pct` y uso por perfil;
+- el README del harness declara 90% de ahorro como numero conservador y el
+  release mide 94% contra la documentacion operativa completa;
+- `validate-release.ps1` recalcula el claim y falla si deriva mas de 5 puntos;
+- `validate-cli.ps1` cubre markers y rangos de ahorro;
+- `session_usage` expone la medicion por MCP y usa `mcp/model-pricing.yaml`
+  como fuente de precios, sin inventar costos si falta evidencia.
+
 Hooks reales de host:
 
 - Claude Code `SessionStart` ejecuta `claude-reentry.ps1` e inyecta un brief
@@ -542,7 +562,8 @@ Hooks reales de host:
 Regla de adopción: desde 0.9.0 se migra por la ruta `0.9.0-to-0.10.0`; desde
 0.8.10 existe ruta directa `0.8.10-to-0.10.0`; desde 0.10.11 se migra a
 `0.11.0`; desde 0.11.0 se migra por `0.11.0-to-0.12.0`; desde 0.12.0 se migra
-por `0.12.0-to-0.13.0`. En todos los casos
+por `0.12.0-to-0.13.0`; desde 0.13.0 se migra por
+`0.13.0-to-0.14.0`. En todos los casos
 CheckOnly no escribe, Apply requiere backup, se preservan `state.yaml`,
 `registry.yaml`, ciclos, locks, approvals, memoria local/proyecto y evidencia,
 y el cierre solo vale si los validadores pasan y el contrato post-migración

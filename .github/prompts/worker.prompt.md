@@ -13,7 +13,7 @@ Restricciones:
 - ${input:restricciones:Qué NO tocar / qué NO cambiar}
 - No agregar dependencias sin acordarlo antes.
 - No declarar done sin correr el comando de verificación.
-- Si el proyecto usa Hebri-AI-Harness 0.13.0, no escribir sin binding válido,
+- Si el proyecto usa Hebri-AI-Harness 0.14.0, no escribir sin binding válido,
   agent contract, capability, security profile, preflight, approval envelope,
   write-set y lock cuando aplique. Si hay gateway, el `ApprovalId` debe
   validar contra la acción exacta.
@@ -31,7 +31,7 @@ Salida esperada:
 2. Comando ejecutado y resultado (incluyendo número de tests).
 3. Decisiones de implementación no previstas en la spec.
 4. Gaps nuevos identificados durante el trabajo.
-5. Si hay Harness 0.13.0: binding, agent contract, capability, approval ID,
+5. Si hay Harness 0.14.0: binding, agent contract, capability, approval ID,
    write-set real, evidence ref, memory route activa (`session-pin.md`,
    `memory-registry.yaml`,
    `memory-routing.yaml`, `context-budget.yaml`), gateway status si aplica y

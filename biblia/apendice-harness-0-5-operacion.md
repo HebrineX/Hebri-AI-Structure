@@ -1,9 +1,9 @@
-# Apéndice · Operación, Seguridad y Auditoría de Harness 0.13.0
+# Apéndice · Operación, Seguridad y Auditoría de Harness 0.14.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.13.0`.
+`Hebri-AI-Harness 0.14.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.13.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks/MCP aplicados si corresponden, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.14.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks/MCP aplicados si corresponden, medicion de uso disponible, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.13.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
@@ -53,6 +53,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.13.0`:
 .hebrinex/mcp/package.json
 .hebrinex/mcp/package-lock.json
 .hebrinex/mcp/README.md
+.hebrinex/mcp/model-pricing.yaml
 .hebrinex/mcp/server.mjs
 .hebrinex/mcp/smoke.mjs
 .hebrinex/agents/worker.md
@@ -102,6 +103,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.13.0`:
 .hebrinex/orquestador/migration/versions/0.10.11-to-0.11.0.yaml
 .hebrinex/orquestador/migration/versions/0.11.0-to-0.12.0.yaml
 .hebrinex/orquestador/migration/versions/0.12.0-to-0.13.0.yaml
+.hebrinex/orquestador/migration/versions/0.13.0-to-0.14.0.yaml
 .hebrinex/orquestador/migration/contracts/post-migration-contract.yaml
 .hebrinex/orquestador/migration/reports/migration-report.template.yaml
 .hebrinex/orquestador/method/session-contract.md
@@ -158,6 +160,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.13.0`:
 .hebrinex/orquestador/sdd/progress/templates/verification-matrix.yaml
 .hebrinex/orquestador/sdd/progress/templates/final-report.md
 .hebrinex/orquestador/sdd/progress/templates/agent-closure.md
+.hebrinex/orquestador/sdd/progress/evidence/usage-baseline-0.14.0.yaml
 .hebrinex/orquestador/method/agent-role-taxonomy.md
 .hebrinex/agents/auditor.md
 .hebrinex/agents/reporter.md
@@ -252,7 +255,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.13.0, antes de revisar código o progreso, validar:
+En 0.14.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -272,7 +275,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.13.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.14.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -298,7 +301,7 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.13.0` conserva los controles 0.8.x/0.9.x/0.10.x
+Además de la evidencia base, `0.14.0` conserva los controles 0.8.x/0.9.x/0.10.x
 y agrega verificación de runtime, approvals, gateway y hooks si la tarea toca
 ese tipo de decisión:
 
@@ -471,7 +474,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.5.x / 0.13.0
+## 10 · Roadmap 3.6.x / 0.14.0
 
 Principio central:
 
@@ -567,7 +570,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.13.0 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.14.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -592,9 +595,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 12 · Controles 0.8.3 a 0.13.0
+## 12 · Controles 0.8.3 a 0.14.0
 
-Además de los controles base, la versión operativa 0.13.0 exige revisar:
+Además de los controles base, la versión operativa 0.14.0 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -611,6 +614,7 @@ Además de los controles base, la versión operativa 0.13.0 exige revisar:
 | 0.11.0 | runtime enforcement | `state-machine.ps1`, `agent-runtime.ps1`, schemas/templates runtime y validadores negativos |
 | 0.12.0 | approvals, gateway y hooks reales | `hebrinex approve`, approval store, Command Gateway v0.4, hooks Claude, shared core de adapters y ruta `0.11.0 -> 0.12.0` |
 | 0.13.0 | daemon MCP y fuente única de roles | `.mcp.json`, `mcp/server.mjs`, `mcp/smoke.mjs`, `validate-mcp.ps1`, `agents/<rol>.md`, headers GENERATED, drift-check del builder y ruta `0.12.0 -> 0.13.0` |
+| 0.14.0 | uso de tokens medido y MCP de consumo | `hebrinex usage`, `usage-baseline-0.14.0.yaml`, `savings_docs_pct`, `savings_pct`, `session_usage`, `mcp/model-pricing.yaml`, `validate-release.ps1`, `validate-cli.ps1`, `validate-mcp.ps1` y ruta `0.13.0 -> 0.14.0` |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
 
@@ -1021,3 +1025,59 @@ Criterio de cierre: 0.13.0 está aplicado sólo si el daemon MCP existe,
 drift de roles, la ruta `0.12.0-to-0.13.0` aparece en el migration registry y
 `validate-harness.ps1 -RunNegativeTests` termina sin abortos ni falsos
 positivos por manifest.
+
+---
+
+## 21 · Actualización 0.14.0: Uso Medido y Ahorro de Tokens
+
+`Hebri-AI-Harness 0.14.0` convierte la economia de contexto en evidencia
+medible. El claim publico del README del harness es conservador: ahorro medido
+del 90% frente a la documentacion operativa completa. La medicion de release
+registra `savings_docs_pct=94` y `savings_pct=99`.
+
+Componentes:
+
+```text
+scripts/hebrinex.ps1
+scripts/validate-cli.ps1
+scripts/validate-release.ps1
+scripts/validate-mcp.ps1
+mcp/model-pricing.yaml
+mcp/server.mjs
+mcp/smoke.mjs
+orquestador/context-budget.yaml
+orquestador/method/cli-contract.md
+orquestador/method/context-loading-policy.md
+orquestador/sdd/progress/evidence/usage-baseline-0.14.0.yaml
+orquestador/migration/versions/0.13.0-to-0.14.0.yaml
+```
+
+Markers obligatorios de `hebrinex usage`:
+
+| Marker | Qué valida |
+|---|---|
+| `kernel_tokens` | Tamaño del kernel liviano usado como numerador |
+| `docs_tree_tokens` | Denominador del claim publico del README |
+| `savings_docs_pct` | Ahorro medido frente a documentacion operativa completa |
+| `full_tree_tokens` | Denominador del arbol completo del manifest |
+| `savings_pct` | Ahorro medido frente al arbol completo |
+| `profile_<name>_tokens` | Presupuesto real o `dynamic` por perfil |
+| `writes=false` | Garantia de que la medicion es read-only |
+
+Validacion minima:
+
+```powershell
+.\.hebrinex\scripts\hebrinex.ps1 usage -Root .\.hebrinex
+.\.hebrinex\scripts\validate-release.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-cli.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-mcp.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-migration.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+Criterio de cierre: 0.14.0 está aplicado sólo si `hebrinex usage` existe,
+emite todos los markers, el README declara `ahorro medido: 90% (hebrinex
+usage)`, `validate-release.ps1` recalcula `savings_docs_pct` y bloquea drift,
+`session_usage` aparece en el MCP, `mcp/model-pricing.yaml` existe, la ruta
+`0.13.0-to-0.14.0` está registrada y `validate-harness.ps1 -RunNegativeTests`
+termina sin fallas.

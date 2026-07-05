@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.6.0] - 2026-07-05
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.14.0` como referencia operativa.
+- Vol 07 documenta `hebrinex usage`, la ruta de migracion
+  `0.13.0 -> 0.14.0`, la evidencia `usage-baseline-0.14.0.yaml` y el claim
+  conservador de ahorro medido: 90% frente a la documentacion operativa
+  completa.
+- Vol 08 incorpora `session_usage` como tool MCP de observabilidad de
+  consumo/costo, respaldada por `mcp/model-pricing.yaml` y sin datos
+  inventados cuando no hay transcripts.
+- El apendice suma checklist para validar `savings_docs_pct`, `savings_pct`,
+  `validate-release.ps1`, `validate-cli.ps1`, `validate-mcp.ps1` y el baseline
+  de consumo 0.14.0.
+
+### Changed
+- README, indices, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.14.0`.
+- La referencia activa del apendice pasa de 0.13.0 a 0.14.0, conservando
+  0.13.0 como hito historico de daemon MCP y fuente unica de roles.
+
 ## [3.5.0] — 2026-07-05
 
 ### Added
