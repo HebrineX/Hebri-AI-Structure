@@ -1,9 +1,9 @@
-# Apéndice · Operación, Seguridad y Auditoría de Harness 0.14.0
+# Apéndice · Operación, Seguridad y Auditoría de Harness 0.16.0
 
 > Anterior: [Apéndice · Ejemplo end-to-end](./apendice-ejemplo-end-to-end.md)
 
 Este apéndice define cómo auditar, regularizar y operar proyectos que usan
-`Hebri-AI-Harness 0.14.0`.
+`Hebri-AI-Harness 0.16.0`.
 
 No reemplaza al harness. Explica cómo verificar que un proyecto lo está
 respetando.
@@ -14,7 +14,7 @@ respetando.
 
 | Veredicto | Criterio |
 |---|---|
-| `cumple` | Estructura 0.14.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks/MCP aplicados si corresponden, medicion de uso disponible, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
+| `cumple` | Estructura 0.16.0 presente, binding correcto, contrato declarado, state/registry coherentes, Agent Contract System activo, runtime enforcement activo, seguridad deny-by-default, approval store/gateway/hooks/MCP/integraciones host aplicados si corresponden, medicion de uso disponible, migración aplicada si corresponde, preflight/approvals/gates/evidencia/cierre de agentes reales |
 | `parcial` | Estructura instalada, pero evidencia P0 incompleta o estado inconsistente |
 | `no cumple` | Falta `.hebrinex/`, faltan controles P0, o el flujo ejecuta sin contrato/aprobación |
 
@@ -26,7 +26,7 @@ ciclos viejos no tienen evidencia P0. Eso es aceptable solo si se marca como
 
 ## 2 · Auditoría de Estructura
 
-Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
+Archivos mínimos de `Hebri-AI-Harness 0.16.0`:
 
 ```text
 .hebrinex/PROJECT_BINDING.yaml
@@ -41,6 +41,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
 .hebrinex/scripts/validate-command-gateway.ps1
 .hebrinex/scripts/validate-mcp.ps1
 .hebrinex/scripts/audit-harness.ps1
+.hebrinex/scripts/install-host-integrations.ps1
 .hebrinex/scripts/regularize-state.ps1
 .hebrinex/scripts/regularize-registry.ps1
 .hebrinex/scripts/state-machine.ps1
@@ -54,8 +55,12 @@ Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
 .hebrinex/mcp/package-lock.json
 .hebrinex/mcp/README.md
 .hebrinex/mcp/model-pricing.yaml
+.hebrinex/mcp/agents-backend.yaml
+.hebrinex/mcp/agent-backends.mjs
 .hebrinex/mcp/server.mjs
 .hebrinex/mcp/smoke.mjs
+.hebrinex/.claude/agents/auditor-detractor.md
+.hebrinex/.claude/agents/reviewer.md
 .hebrinex/agents/worker.md
 .hebrinex/orquestador/harness-manifest.txt
 .hebrinex/orquestador/context-budget.yaml
@@ -104,6 +109,8 @@ Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
 .hebrinex/orquestador/migration/versions/0.11.0-to-0.12.0.yaml
 .hebrinex/orquestador/migration/versions/0.12.0-to-0.13.0.yaml
 .hebrinex/orquestador/migration/versions/0.13.0-to-0.14.0.yaml
+.hebrinex/orquestador/migration/versions/0.14.0-to-0.15.0.yaml
+.hebrinex/orquestador/migration/versions/0.15.0-to-0.16.0.yaml
 .hebrinex/orquestador/migration/contracts/post-migration-contract.yaml
 .hebrinex/orquestador/migration/reports/migration-report.template.yaml
 .hebrinex/orquestador/method/session-contract.md
@@ -135,6 +142,11 @@ Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
 .hebrinex/orquestador/adapters/gemini.md
 .hebrinex/orquestador/adapters/qwen.md
 .hebrinex/orquestador/adapters/deepseek.md
+.hebrinex/orquestador/integrations/claude/agents/auditor-detractor.md
+.hebrinex/orquestador/integrations/claude/agents/reviewer.md
+.hebrinex/orquestador/integrations/cursor/rules/hebrinex.mdc
+.hebrinex/orquestador/integrations/copilot/copilot-instructions.md
+.hebrinex/orquestador/portability/mcp-hosts.md
 .hebrinex/orquestador/sdd/progress/state.yaml
 .hebrinex/orquestador/sdd/progress/registry.yaml
 .hebrinex/orquestador/sdd/progress/templates/preflight-template.md
@@ -160,7 +172,7 @@ Archivos mínimos de `Hebri-AI-Harness 0.14.0`:
 .hebrinex/orquestador/sdd/progress/templates/verification-matrix.yaml
 .hebrinex/orquestador/sdd/progress/templates/final-report.md
 .hebrinex/orquestador/sdd/progress/templates/agent-closure.md
-.hebrinex/orquestador/sdd/progress/evidence/usage-baseline-0.14.0.yaml
+.hebrinex/orquestador/sdd/progress/evidence/usage-baseline-0.15.0.yaml
 .hebrinex/orquestador/method/agent-role-taxonomy.md
 .hebrinex/agents/auditor.md
 .hebrinex/agents/reporter.md
@@ -255,7 +267,7 @@ Incumplimientos típicos:
 
 ## 3.1 · Auditoría de Binding y Re-entry
 
-En 0.14.0, antes de revisar código o progreso, validar:
+En 0.16.0, antes de revisar código o progreso, validar:
 
 ```text
 Binding:
@@ -275,7 +287,7 @@ Reglas:
   expiran.
 - El agente debe ejecutar re-entry: contrato, binding, state, registry, locks,
   agentes abiertos y handoffs.
-- En 0.14.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
+- En 0.16.0, el re-entry liviano debe leer `session-pin.md`, `memory-registry.yaml` y `memory-routing.yaml` antes de state/registry.
 - La memoria completa no se carga para debug diario; requiere motivo y aprobacion cuando aplica.
 
 ---
@@ -301,7 +313,7 @@ Si un ciclo histórico no tiene estos archivos:
 
 ### 4.1 · Evidencia Condicional 0.8.x
 
-Además de la evidencia base, `0.14.0` conserva los controles 0.8.x/0.9.x/0.10.x
+Además de la evidencia base, `0.16.0` conserva los controles 0.8.x/0.9.x/0.10.x
 y agrega verificación de runtime, approvals, gateway y hooks si la tarea toca
 ese tipo de decisión:
 
@@ -474,7 +486,7 @@ Ante logs, errores o debug:
 
 ---
 
-## 10 · Roadmap 3.6.x / 0.14.0
+## 10 · Roadmap Operativo 3.8.x / 0.16.0
 
 Principio central:
 
@@ -570,7 +582,7 @@ Qué debe probar:
 - Registry Kanban.
 - Cierre con evidencia.
 
-Criterio de éxito: el Harness 0.14.0 se respeta sin que el operador tenga que
+Criterio de éxito: el Harness 0.16.0 se respeta sin que el operador tenga que
 reencauzarlo constantemente, el portfolio queda funcional y los roles
 especializados aportan claridad sin aumentar el límite de agentes.
 
@@ -595,9 +607,9 @@ desfasado aunque los índices pasen.
 
 ---
 
-## 12 · Controles 0.8.3 a 0.14.0
+## 12 · Controles 0.8.3 a 0.16.0
 
-Además de los controles base, la versión operativa 0.14.0 exige revisar:
+Además de los controles base, la versión operativa 0.16.0 exige revisar:
 
 | Versión | Control | Evidencia esperada |
 |---|---|---|
@@ -615,6 +627,8 @@ Además de los controles base, la versión operativa 0.14.0 exige revisar:
 | 0.12.0 | approvals, gateway y hooks reales | `hebrinex approve`, approval store, Command Gateway v0.4, hooks Claude, shared core de adapters y ruta `0.11.0 -> 0.12.0` |
 | 0.13.0 | daemon MCP y fuente única de roles | `.mcp.json`, `mcp/server.mjs`, `mcp/smoke.mjs`, `validate-mcp.ps1`, `agents/<rol>.md`, headers GENERATED, drift-check del builder y ruta `0.12.0 -> 0.13.0` |
 | 0.14.0 | uso de tokens medido y MCP de consumo | `hebrinex usage`, `usage-baseline-0.14.0.yaml`, `savings_docs_pct`, `savings_pct`, `session_usage`, `mcp/model-pricing.yaml`, `validate-release.ps1`, `validate-cli.ps1`, `validate-mcp.ps1` y ruta `0.13.0 -> 0.14.0` |
+| 0.15.0 | locks ejecutables y autonomia endurecida | `hebrinex lock`, hooks Claude `WriteGuard`/`Stop`/`PreCompact`, rate limiting del gateway, `role_assume`, `lock_acquire`, `lock_release` y ruta `0.14.0 -> 0.15.0` |
+| 0.16.0 | portabilidad host y agentes derivados | `install-host-integrations.ps1`, `.claude/agents/`, reglas Cursor, instrucciones Copilot, `agent_audit`, `agent_review`, `mcp/agents-backend.yaml`, `orquestador/portability/mcp-hosts.md`, `adapter-matrix.yaml` con madurez y ruta `0.15.0 -> 0.16.0` |
 
 Criterio de auditoría: si el agente usa memoria, presets o adapters como autoridad en vez de binding/state/registry/evidencia, el cumplimiento es parcial o bajo.
 
@@ -1081,3 +1095,93 @@ usage)`, `validate-release.ps1` recalcula `savings_docs_pct` y bloquea drift,
 `session_usage` aparece en el MCP, `mcp/model-pricing.yaml` existe, la ruta
 `0.13.0-to-0.14.0` está registrada y `validate-harness.ps1 -RunNegativeTests`
 termina sin fallas.
+
+---
+
+## 22 · Actualización 0.15.0: Locks, Hooks y Autonomía Endurecida
+
+`Hebri-AI-Harness 0.15.0` vuelve operativos los locks y reduce acciones con
+efecto sin control.
+
+Componentes:
+
+```text
+scripts/hebrinex.ps1
+scripts/validate-command-gateway.ps1
+scripts/validate-mcp.ps1
+scripts/validate-release.ps1
+orquestador/sdd/progress/locks/
+orquestador/integrations/claude/
+mcp/server.mjs
+mcp/smoke.mjs
+orquestador/migration/versions/0.14.0-to-0.15.0.yaml
+orquestador/sdd/progress/evidence/usage-baseline-0.15.0.yaml
+```
+
+Controles esperados:
+
+- `hebrinex lock -Acquire|-Release|-List` bloquea escrituras concurrentes por
+  path y TTL.
+- Claude Code incorpora `WriteGuard`, `Stop` y `PreCompact`.
+- Command Gateway limita frecuencia de `Apply`.
+- MCP expone `role_assume`, `lock_acquire` y `lock_release`.
+- El rol asumido por MCP no reemplaza contracts ni capabilities.
+
+Criterio de cierre: 0.15.0 está aplicado sólo si locks, hooks, gateway,
+MCP role identity, migration route y baseline de uso pasan validadores con
+pruebas negativas.
+
+---
+
+## 23 · Actualización 0.16.0: Portabilidad Host y Role Agents Derivados
+
+`Hebri-AI-Harness 0.16.0` mejora la capacidad de tomar distintos hosts de IA
+y acercarlos a un agente moderno sin dejar que el host defina autoridad.
+
+Componentes:
+
+```text
+scripts/install-host-integrations.ps1
+.claude/agents/auditor-detractor.md
+.claude/agents/reviewer.md
+mcp/agents-backend.yaml
+mcp/agent-backends.mjs
+orquestador/integrations/claude/agents/
+orquestador/integrations/cursor/rules/hebrinex.mdc
+orquestador/integrations/copilot/copilot-instructions.md
+orquestador/portability/mcp-hosts.md
+orquestador/portability/adapter-matrix.yaml
+orquestador/testing/fixtures/negative/claude-agent-write-tool.md
+orquestador/migration/versions/0.15.0-to-0.16.0.yaml
+```
+
+Controles esperados:
+
+- Los agentes nativos de Claude son derivados de fuentes canonicas del harness.
+- Cursor y Copilot reciben reglas/instrucciones, no autoridad para crear roles.
+- `agent_audit` y `agent_review` pueden usar backend configurado, pero deben
+  devolver evidencia y respetar capabilities.
+- `mcp/agents-backend.yaml` declara backend real o fallback; no se simula
+  soporte inexistente.
+- La matriz de adapters declara madurez, hooks, role agents y via recomendada.
+- La fixture negativa `claude-agent-write-tool.md` bloquea escritura desde
+  agente read-only.
+- `init.sh` debe correr como ejecutable POSIX (`100755`) en GitHub Actions.
+
+Validacion minima:
+
+```powershell
+.\.hebrinex\scripts\hebrinex.ps1 usage -Root .\.hebrinex
+.\.hebrinex\scripts\validate-release.ps1 -Root .\.hebrinex
+.\.hebrinex\scripts\validate-cli.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-mcp.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-fixtures.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-security-policy.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\validate-migration.ps1 -Root .\.hebrinex -RunNegativeTests
+.\.hebrinex\scripts\audit-harness.ps1 -Root .\.hebrinex -RunNegativeTests
+```
+
+Criterio de cierre: 0.16.0 está aplicado sólo si las integraciones host son
+instalables o reportan CheckOnly claro, los adapters no quedan en estado
+`unknown`, las tools MCP de agentes respetan backend/capability/evidencia, la
+ruta `0.15.0-to-0.16.0` está registrada y GitHub Actions corre limpio.

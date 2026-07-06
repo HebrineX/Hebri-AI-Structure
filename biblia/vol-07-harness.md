@@ -370,7 +370,7 @@ operativa nueva demuestra ser general, vuelve a la biblia.
 **Descripción:** El presente volumen describe cómo acoplar un harness al
 flujo de Hebri-AI-Structure. Ya existe una materialización publicada como
 repo independiente. La referencia operativa actual es
-`Hebri-AI-Harness 0.14.0`, que agrega binding de proyecto, resolución estricta
+`Hebri-AI-Harness 0.16.0`, que agrega binding de proyecto, resolución estricta
 del harness, re-entry post-compactación, contrato de sesión, controles P0
 estructurados, state/registry YAML, preflight, approval envelope, policies
 deny-by-default, audit trail, gate logs, cierre explícito de agentes,
@@ -398,12 +398,16 @@ gateway, approvals, gates ni cierre de ciclo.
 Desde 0.14.0, el ahorro de contexto deja de ser declarativo: `hebrinex usage`
 mide `savings_docs_pct` contra la documentacion operativa completa y
 `validate-release.ps1` bloquea drift del claim del README.
+Desde 0.15.0, locks, approvals, gateway, hooks y MCP endurecen autonomia con
+controles ejecutables.
+Desde 0.16.0, el harness agrega integraciones host, role agents nativos
+derivados y backends MCP de agentes sin transferir autoridad al modelo.
 
 **Contexto:** El template implementa la biblia. Sin él, cada proyecto nuevo
 tiene que reconstruir manualmente la estructura inicial — lo cual
 contradice el principio de no repetir el mismo razonamiento.
 
-**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.14.0.
+**Motivo de diferimiento:** El harness ya existe y evolucionó hasta 0.16.0.
 El trabajo pendiente es validarlo en proyectos reales y retroalimentar la
 biblia con fricciones repetidas.
 
@@ -411,15 +415,15 @@ biblia con fricciones repetidas.
 Cuando pase validación piloto, se marcará como resuelto.
 
 **Resuelto por:** Publicación y hardening P0 de `Hebri-AI-Harness`
-0.14.0 (pendiente de validación continua en proyecto piloto
+0.16.0 (pendiente de validación continua en proyecto piloto
 `Hebri-AI-Portfolio`).
 
 ---
 
-## Harness 0.14.0 - Contratos, Enforcement, MCP, Roles y Uso Medido
+## Harness 0.16.0 - Contratos, Enforcement, MCP, Roles, Uso Medido e Integraciones
 
-La referencia operativa actual es `Hebri-AI-Harness 0.14.0`. La línea
-0.8.3-0.14.0 agrega controles que la biblia trata como criterio metodológico:
+La referencia operativa actual es `Hebri-AI-Harness 0.16.0`. La línea
+0.8.3-0.16.0 agrega controles que la biblia trata como criterio metodológico:
 
 - 0.8.3: `detractor-senior` antes de implementar cambios relevantes.
 - 0.8.4: core portable + adapters declarativos por IA.
@@ -448,6 +452,13 @@ La referencia operativa actual es `Hebri-AI-Harness 0.14.0`. La línea
   `usage-baseline-0.14.0.yaml`, claim conservador de ahorro medido del 90%,
   MCP `session_usage`, `mcp/model-pricing.yaml` y validacion anti-drift del
   README contra `savings_docs_pct`.
+- 0.15.0: locks ejecutables con TTL y conflicto de paths, hooks Claude
+  `WriteGuard`/`Stop`/`PreCompact`, rate limiting del gateway, role identity
+  en MCP y ruta `0.14.0-to-0.15.0`.
+- 0.16.0: integraciones host para Claude, Cursor y Copilot, agentes nativos
+  Claude derivados de las fuentes canonicas, backends MCP configurables para
+  `agent_audit`/`agent_review`, matriz de adapters con madurez/hook/role
+  agents y ruta `0.15.0-to-0.16.0`.
 
 Regla conceptual: el harness puede generar o resumir contexto, pero la autoridad sigue en binding, state, registry, gates, evidencia y locks.
 
@@ -559,11 +570,29 @@ Hooks reales de host:
   PowerShell: permite comandos read-only seguros, fuerza `ask` para patrones
   bloqueados y delega el resto al flujo normal de permisos del host.
 
+En 0.16.0, el harness separa mejor "soporte de host" de "autoridad del rol":
+
+- `scripts/install-host-integrations.ps1` instala o chequea integraciones
+  nativas para Claude, Cursor y Copilot sin inventar agentes nuevos.
+- `.claude/agents/*.md` y `orquestador/integrations/claude/agents/*.md` son
+  derivados operativos: deben seguir a `agents/<rol>.md` y al registry.
+- `orquestador/integrations/cursor/rules/hebrinex.mdc` y
+  `orquestador/integrations/copilot/copilot-instructions.md` trasladan el
+  contrato a hosts que no tienen subagentes nativos equivalentes.
+- `mcp/agents-backend.yaml` y `mcp/agent-backends.mjs` definen como se ejecuta
+  un backend de agente; si no hay backend real, el harness reporta fallback
+  claro en vez de fingir capacidad.
+- `orquestador/portability/mcp-hosts.md` documenta que soporte existe por host
+  y que limitaciones quedan manuales.
+- `orquestador/portability/adapter-matrix.yaml` deja de tratar adapters como
+  texto generico: declara madurez, hooks, role agents y via recomendada.
+
 Regla de adopción: desde 0.9.0 se migra por la ruta `0.9.0-to-0.10.0`; desde
 0.8.10 existe ruta directa `0.8.10-to-0.10.0`; desde 0.10.11 se migra a
 `0.11.0`; desde 0.11.0 se migra por `0.11.0-to-0.12.0`; desde 0.12.0 se migra
 por `0.12.0-to-0.13.0`; desde 0.13.0 se migra por
-`0.13.0-to-0.14.0`. En todos los casos
+`0.13.0-to-0.14.0`; desde 0.14.0 se migra por `0.14.0-to-0.15.0`; desde
+0.15.0 se migra por `0.15.0-to-0.16.0`. En todos los casos
 CheckOnly no escribe, Apply requiere backup, se preservan `state.yaml`,
 `registry.yaml`, ciclos, locks, approvals, memoria local/proyecto y evidencia,
 y el cierre solo vale si los validadores pasan y el contrato post-migración

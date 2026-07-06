@@ -1,5 +1,51 @@
 # Changelog
 
+## [3.8.0] - 2026-07-06
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.16.0` como referencia operativa.
+- Vol 07 documenta integraciones host para Claude, Cursor y Copilot,
+  backends MCP de agentes, matriz de adapters con madurez verificable y ruta
+  de migracion `0.15.0 -> 0.16.0`.
+- Vol 08 incorpora la lectura de seguridad/autonomia de `0.16.0`: los role
+  agents nativos y las tools MCP `agent_audit`/`agent_review` no amplian
+  permisos; heredan binding, capabilities, profiles, gates y evidence policy.
+- Vol 09 aclara que los agentes nativos de host son derivados del harness:
+  Claude puede tener archivos `.claude/agents/`, Cursor reglas y Copilot
+  instrucciones, pero la autoridad sigue en `agent-registry.yaml`,
+  `agents/<rol>.md` y contratos derivados.
+- Se agregan `infoHebriBiblia.md` y la referencia a `infoHebriHarness.md`
+  como informes humanos de cambios aplicados.
+
+### Changed
+- README, indices, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.16.0`.
+- La referencia activa del apendice pasa a 0.16.0, conservando 0.14.0 como
+  hito historico de uso medido y 0.15.0 como hito historico de locks/hooks.
+
+## [3.7.0] - 2026-07-05
+
+### Added
+- La biblia adopta `Hebri-AI-Harness 0.15.0` como referencia operativa.
+- Vol 07 documenta locks ejecutables, hooks Claude `WriteGuard`/`Stop`/
+  `PreCompact`, rate limiting del gateway, identidad de rol via MCP y ruta de
+  migracion `0.14.0 -> 0.15.0`.
+- Vol 08 incorpora los controles de autonomia nuevos: locks con TTL,
+  proteccion de ediciones, cierre/compactacion con advertencias y limite de
+  `Apply` por ventana.
+- Vol 09 aclara que `role_assume` gobierna el rol del daemon MCP y que las
+  tools con efecto (`run_command`, `lock_acquire`, `lock_release`) deben pasar
+  por capabilities del rol asumido.
+- El apendice suma checklist y criterio de cierre para `hebrinex lock`,
+  `validate-command-gateway.ps1`, hooks nuevos, `mcp/smoke.mjs` con 11 tools y
+  `usage-baseline-0.15.0.yaml`.
+
+### Changed
+- README, indices, `BIBLIA.md`, `AGENTS.md`, prompts operativos y
+  `HARNESS_VERSION` quedan alineados con `Hebri-AI-Harness 0.15.0`.
+- La referencia activa del apendice pasa de 0.14.0 a 0.15.0, conservando
+  0.14.0 como hito historico de uso medido y MCP `session_usage`.
+
 ## [3.6.0] - 2026-07-05
 
 ### Added

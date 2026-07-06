@@ -13,7 +13,7 @@ humano. Si no lo está, parar inmediatamente y reportar.
 
 Carga mínima: spec activa, ownership, comando de verificación, Vol 03 y
 Vol 09. Si el proyecto usa `Hebri-AI-Harness`, usar su perfil `implementer`
-y respetar controles 0.14.0: binding válido, Agent Contract System,
+y respetar controles 0.16.0: binding válido, Agent Contract System,
 capability explícita, security profile, preflight, approval envelope,
 write-set, lock, state y registry estructurados. Si el Command Gateway aplica,
 el `ApprovalId` debe existir, no estar vencido y coincidir con la acción exacta.
@@ -30,7 +30,7 @@ Verificación: ${input:verificacion:Comando exacto para validar al cerrar}
 
 1. Leer `specs/<feature>/requirements.md`, `design.md`, `tasks.md`.
 2. Verificar que la spec esté aprobada. Si no lo está, parar.
-3. Si hay Harness 0.14.0, verificar `PROJECT_BINDING.yaml`, agent contract,
+3. Si hay Harness 0.16.0, verificar `PROJECT_BINDING.yaml`, agent contract,
    capability/security profile, approval envelope,
    `session-pin.md`, `memory-registry.yaml`, `memory-routing.yaml`,
    `context-budget.yaml`, lock y write-set.
@@ -87,6 +87,6 @@ Implementación registrada en progress/impl_<feature>.md
   arreglás la lógica o paras y reportás.
 - Si un comando falla, mostrás el error exacto. No lo resumís.
 - Si falta binding, agent contract, capability, approval, lock o write-set en
-  Harness 0.14.0, bloqueás antes de escribir.
+  Harness 0.16.0, bloqueás antes de escribir.
 - Si el gateway rechaza `ApprovalId` por inexistente, vencido o mismatch de
   comando, no ejecutás y devolvés el bloqueo al leader.
